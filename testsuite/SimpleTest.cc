@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
 
 class SimpleTest : public CPPUNIT_NS::TestFixture
 {
@@ -18,7 +18,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -27,7 +26,7 @@ protected:
 
     void test_insert_erase_32()
     {
-	typedef btree<unsigned int, unsigned int,
+	typedef stx::btree_multiset<unsigned int,
 	    std::less<unsigned int>, struct traits_nodebug> btree_type;
 
 	btree_type bt;
@@ -36,7 +35,7 @@ protected:
 	for(unsigned int i = 0; i < 32; i++)
 	{
 	    CPPUNIT_ASSERT(bt.size() == i);
-	    bt.insert2(rand() % 100, 0);
+	    bt.insert(rand() % 100);
 	    CPPUNIT_ASSERT(bt.size() == i + 1);
 	}
 
@@ -51,7 +50,7 @@ protected:
 
     void test_insert_erase_32_descending()
     {
-	typedef btree<unsigned int, unsigned int,
+	typedef stx::btree_multiset<unsigned int,
 	    std::greater<unsigned int>, struct traits_nodebug> btree_type;
 
 	btree_type bt;
@@ -60,7 +59,7 @@ protected:
 	for(unsigned int i = 0; i < 32; i++)
 	{
 	    CPPUNIT_ASSERT(bt.size() == i);
-	    bt.insert2(rand() % 100, 0);
+	    bt.insert(rand() % 100);
 	    CPPUNIT_ASSERT(bt.size() == i + 1);
 	}
 

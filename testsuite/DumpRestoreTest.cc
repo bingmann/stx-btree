@@ -7,7 +7,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
 
 class DumpRestoreTest : public CPPUNIT_NS::TestFixture
 {
@@ -20,7 +20,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -29,7 +28,7 @@ protected:
 
     void test_dump_restore_3200()
     {
-	typedef btree<unsigned int, unsigned int,
+	typedef stx::btree_multiset<unsigned int,
 	    std::less<unsigned int>, struct traits_nodebug> btree_type;
 
 	std::string dumpstr;
@@ -40,7 +39,7 @@ protected:
 	    srand(34234235);
 	    for(unsigned int i = 0; i < 3200; i++)
 	    {
-		bt.insert2(rand() % 100, 0);
+		bt.insert(rand() % 100);
 	    }
 
 	    CPPUNIT_ASSERT(bt.size() == 3200);
@@ -51,8 +50,8 @@ protected:
 	    dumpstr = os.str();
 	}
 
-	// std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
-	CPPUNIT_ASSERT( dumpstr.size() == 65388 );
+        // std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
+	CPPUNIT_ASSERT( dumpstr.size() == 47772 );
 
 	// cannot check the string with a hash function, because it contains
 	// memory pointers
@@ -74,7 +73,7 @@ protected:
 
 	{ // try restore the btree image using a different instantiation
 
-	    typedef btree<unsigned int, long long,
+	    typedef stx::btree_multiset<long long,
 		std::less<unsigned int>, struct traits_nodebug> otherbtree_type;
 
 	    otherbtree_type bt3;

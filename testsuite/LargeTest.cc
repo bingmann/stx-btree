@@ -5,11 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
 #include <set>
-
-// explicit instantiation
-template class btree<unsigned int, unsigned int>;
 
 class LargeTest : public CPPUNIT_NS::TestFixture
 {
@@ -24,7 +21,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -33,7 +29,8 @@ protected:
 
     void test_multi(const unsigned int insnum, const unsigned int modulo)
     {
-	typedef btree<unsigned int, unsigned int, std::less<unsigned int>, struct traits_nodebug> btree_type;
+	typedef stx::btree_multiset<unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
 
 	btree_type bt;
 
@@ -45,10 +42,9 @@ protected:
 	for(unsigned int i = 0; i < insnum; i++)
 	{
 	    unsigned int k = rand() % modulo;
-	    unsigned int v = 234;
 
 	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	    CPPUNIT_ASSERT( bt.insert(k, v).second );
+	    bt.insert(k);
 	    set.insert(k);
 	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
 

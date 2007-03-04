@@ -9,7 +9,8 @@
 #include <iostream>
 #include <fstream>
 
-#include "btree.h"
+#include <stx/btree_base.h>
+#include <stx/btree_multimap.h>
 
 #include <assert.h>
 
@@ -52,11 +53,11 @@ struct testcomp
     }
 };
 
-typedef btree<unsigned int, unsigned int> btree_type;
+typedef stx::btree_multimap<unsigned int, unsigned int> btree_type;
 
-template class btree<unsigned int, unsigned int>;
+template class stx::btree_multimap<unsigned int, unsigned int>;
 
-//template class btree<struct testx, int>;
+//template class stx::btree<struct testx, int>;
 template class std::map<struct testx, int, testcomp>;
 
 int main()
@@ -65,7 +66,7 @@ int main()
 
     double ts1 = timestamp();
 
-#if 1
+#if 0
 
     btree_type bt;
 
@@ -73,7 +74,7 @@ int main()
 
     assert( bt.restore(dumpof) );
 
-        for(btree_type::iterator bi = bt.begin(); bi != bt.end(); ++bi)
+    for(btree_type::iterator bi = bt.begin(); bi != bt.end(); ++bi)
     {
 	std::cout << bi.key() << " ";
     }
@@ -83,7 +84,7 @@ int main()
 
     btree_type bt;
 
-    int innum = 320000;
+    int innum = 3200;
     int ratio = 100000;
 
     typedef std::multiset<testx, testcomp> multiset_type;
@@ -96,7 +97,7 @@ int main()
 	unsigned int v = 234;
 
 	//assert(bt.size() == set.size());
-	assert( bt.insert2(k, v).second );
+	bt.insert2(k, v);
 	//set.insert(k);
 	//assert( bt.count(k) == set.count(k) );
 

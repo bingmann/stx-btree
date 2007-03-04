@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
 
 class StructureTest : public CPPUNIT_NS::TestFixture
 {
@@ -51,7 +51,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -60,7 +59,7 @@ protected:
 
     void test_insert_erase()
     {
-	typedef btree<struct testdata, unsigned int, struct testcomp, struct traits_nodebug> btree_type;
+	typedef stx::btree_multiset<struct testdata, struct testcomp, struct traits_nodebug> btree_type;
 
         btree_type bt( testcomp(42) );
 
@@ -68,7 +67,7 @@ protected:
 	for(unsigned int i = 0; i < 320; i++)
 	{
 	    CPPUNIT_ASSERT(bt.size() == i);
-	    bt.insert2(rand() % 100, 0);
+	    bt.insert(rand() % 100);
 	    CPPUNIT_ASSERT(bt.size() == i + 1);
 	}
 

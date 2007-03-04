@@ -29,14 +29,27 @@
 
 #define BTREE_MAX(a,b)		((a) < (b) ? (b) : (a))
 
+namespace stx {
+
+/** Generates default traits for a B+ tree. It estimates leaf and inner node
+ * sizes by assuming a cache line size of 256 bytes. */
+template <typename _Key>
+struct btree_default_set_traits
+{
+    static const bool	selfverify = false;
+    static const bool	debug = false;
+
+    static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key)) );
+    static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
+};
+
 /** Generates default traits for a B+ tree. It estimates leaf and inner node
  * sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key, typename _Data>
-struct btree_default_traits
+struct btree_default_map_traits
 {
     static const bool	selfverify = false;
-    static const bool	allow_duplicates = true;
-    static const bool	debug = true;
+    static const bool	debug = false;
 
     static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
     static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
@@ -46,7 +59,10 @@ struct btree_default_traits
  *
  */
 template <typename _Key, typename _Data,
-	  typename _Compare = std::less<_Key>, typename _Traits = btree_default_traits<_Key, _Data> >
+	  typename _Value = std::pair<_Key, _Data>,
+	  typename _Compare = std::less<_Key>,
+	  typename _Traits = btree_default_map_traits<_Key, _Data>,
+	  bool _AllowDuplicates = false>
 class btree
 {
 public:
@@ -60,6 +76,10 @@ public:
     /// key. Stored in the B+ tree's leaves
     typedef _Data			data_type;
 
+    /// Composition pair of key and data types, this is required by the STL
+    /// standard. The B+ tree does not store key and data together.
+    typedef _Value			value_type;
+
     /// Third template parameter: Key comparison function object
     typedef _Compare			key_compare;
 
@@ -67,18 +87,21 @@ public:
     /// of the B+ tree
     typedef _Traits			traits;
 
+    /// Fifth template parameter: Allow duplicate keys in the btree. Used to
+    /// implement multiset and multimap.
+    static const bool			allow_duplicates = _AllowDuplicates;
+
 public:
     // *** Constructed Types
 
-    /// Composition pair of key and data types, this is required by the STL
-    /// standard. The B+ tree does not store key and data together.
-    typedef std::pair<key_type, data_type>	value_type;
-
     /// Typedef of our own type
-    typedef btree<key_type, data_type, key_compare, traits>	btree_self;
+    typedef btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>	btree_self;
 
     /// Size type used to count keys
-    typedef size_t			size_type;
+    typedef size_t				size_type;
+
+    /// The pair of key_type and data_type, this may be different from value_type.
+    typedef std::pair<key_type, data_type>	pair_type;
 
 public:
     // *** Static Constant Options and Values of the B+ Tree
@@ -108,10 +131,6 @@ public:
     /// algorithms change the tree. Requires the header file to be compiled
     /// with BTREE_PRINT and the key type must be std::ostream outputable.
     static const bool 			debug = traits::debug;
-
-    /// Operational parameter: Allow duplicate keys in the btree. Used to
-    /// implement multiset and multimap.
-    static const bool			allow_duplicates = traits::allow_duplicates;
 
 private:
     // *** Node Classes for In-Memory Nodes
@@ -220,6 +239,42 @@ private:
 	}
     };
 
+private:
+    // *** Template Magic to Convert a pair or key/data types to a value_type
+
+    /// For sets the second pair_type is an empty struct, so the value_type
+    /// should only be the first.
+    template <typename value_type, typename pair_type>
+    struct btree_pair_to_value
+    {
+	/// Convert a fake pair type to just the first component
+	inline value_type operator()(pair_type& p) const {
+	    return p.first;
+	}
+	/// Convert a fake pair type to just the first component
+	inline value_type operator()(const pair_type& p) const {
+	    return p.first;
+	}
+    };
+
+    /// For maps value_type is the same as the pair_type
+    template <typename value_type>
+    struct btree_pair_to_value<value_type, value_type>
+    {
+	/// Identity "convert" a real pair type to just the first component
+	inline value_type operator()(pair_type& p) const {
+	    return p;
+	}
+	/// Identity "convert" a real pair type to just the first component
+	inline value_type operator()(const pair_type& p) const {
+	    return p;
+	}
+    };
+
+    /// Using template specialization select the correct converter used by the
+    /// iterators
+    typedef btree_pair_to_value<value_type, pair_type> pair_to_value_type;
+
 public:
     // *** Iterators and Reverse Iterators
 
@@ -238,6 +293,9 @@ public:
 
 	/// The value type of the btree. Returned by operator*().
 	typedef typename btree::value_type		value_type;
+
+	/// The pair type of the btree.
+	typedef typename btree::pair_type		pair_type;
 
 	/// Reference to the value_type. Required by the reverse_iterator.
 	typedef value_type&		reference;
@@ -264,7 +322,7 @@ public:
 	unsigned short	currslot;
     
 	/// Friendly to the const_iterator, so it may access the two data items directly
-	friend class btree<key_type, data_type, key_compare, traits>::const_iterator;
+	friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>::const_iterator;
 	
 	/// Evil! A temporary value_type to STL-correctly deliver operator* and
 	/// operator->
@@ -282,8 +340,8 @@ public:
 	/// value are not stored together
 	inline reference operator*() const
 	{
-	    temp_value = value_type(currnode->slotkey[currslot],
-				    currnode->slotdata[currslot]);
+	    temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
+							 currnode->slotdata[currslot]) );
 	    return temp_value;
 	}
 
@@ -292,8 +350,8 @@ public:
 	/// together.
 	inline pointer operator->() const
 	{
-	    temp_value = value_type(currnode->slotkey[currslot],
-				    currnode->slotdata[currslot]);
+	    temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
+							 currnode->slotdata[currslot]) );
 	    return &temp_value;
 	}
 
@@ -414,6 +472,9 @@ public:
 	/// The value type of the btree. Returned by operator*().
 	typedef typename btree::value_type		value_type;
 
+	/// The pair type of the btree.
+	typedef typename btree::pair_type		pair_type;
+
 	/// Reference to the value_type. Required by the reverse_iterator.
 	typedef const value_type&	reference;
 
@@ -460,8 +521,8 @@ public:
 	/// together.
 	inline reference operator*() const
 	{
-	    temp_value = value_type(currnode->slotkey[currslot],
-				    currnode->slotdata[currslot]);
+	    temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
+							 currnode->slotdata[currslot]) );
 	    return temp_value;
 	}
 
@@ -470,8 +531,8 @@ public:
 	/// together.
 	inline pointer operator->() const
 	{
-	    temp_value = value_type(currnode->slotkey[currslot],
-				    currnode->slotdata[currslot]);
+	    temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
+							 currnode->slotdata[currslot]) );
 	    return &temp_value;
 	}
 
@@ -656,7 +717,7 @@ public:
 	std::swap(itemcount, from.itemcount);
     }
 
-private:
+public:
     // *** Key and Value Comparison Function Objects
 
     /// Function class to compare value_type objects. required by the STL
@@ -672,7 +733,7 @@ private:
 	{ }
 
 	/// Friendly to the btree class so it may call the constructor
-	friend class btree<key_type, data_type, key_compare, traits>;
+	friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>;
  
     public:
 	/// Function call "less"-operator resulting in true if x < y.
@@ -682,7 +743,6 @@ private:
 	}
     };
 
-public:
     /// Constant access to the key comparison object sorting the B+ tree
     inline key_compare key_comp() const
     {
@@ -1297,7 +1357,7 @@ public:
     /// Attempt to insert a key/data pair into the B+ tree. If the tree does not
     /// allow duplicate keys, then the insert may fail if it is already
     /// present.
-    inline std::pair<iterator, bool> insert(const value_type& x)
+    inline std::pair<iterator, bool> insert(const pair_type& x)
     {
 	return insert_start(x.first, x.second);
     }
@@ -1322,7 +1382,7 @@ public:
 
     /// Attempt to insert a key/data pair into the B+ tree. The iterator hint
     /// is currently ignored by the B+ tree insertion routine.
-    inline iterator insert(iterator /* hint */, const value_type &x)
+    inline iterator insert(iterator /* hint */, const pair_type &x)
     {
 	return insert_start(x.first, x.second).first;
     }
@@ -2705,5 +2765,7 @@ private:
 	}
     }
 };
+
+} // namespace stx
 
 #endif // _STX_BTREE_H_

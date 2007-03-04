@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "btree.h"
+#include <stx/btree_multimap.h>
 #include <set>
 
 class BoundTest : public CPPUNIT_NS::TestFixture
@@ -19,7 +19,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -28,7 +27,7 @@ protected:
 
     void test_multi(const unsigned int insnum, const int modulo)
     {
-	typedef btree<unsigned int, unsigned int, std::less<unsigned int>, struct traits_nodebug> btree_type;
+	typedef stx::btree_multimap<unsigned int, unsigned int, std::less<unsigned int>, struct traits_nodebug> btree_type;
 	btree_type bt;
 
 	typedef std::multiset<unsigned int> multiset_type;
@@ -42,7 +41,7 @@ protected:
 	    unsigned int v = 234;
 
 	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	    CPPUNIT_ASSERT( bt.insert2(k, v).second );
+	    bt.insert2(k, v);
 	    set.insert(k);
 	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
 

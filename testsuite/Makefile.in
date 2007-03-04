@@ -44,16 +44,17 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am__testsuite_SOURCES_DIST = TestTrue.cc TestRunner.cc SimpleTest.cc \
-	LargeTest.cc BoundTest.cc IteratorTest.cc StructureTest.cc \
-	DumpRestoreTest.cc InstantiationTest.cc RelationTest.cc
+am__testsuite_SOURCES_DIST = TestTrue.cc TestRunner.cc \
+	InstantiationTest.cc SimpleTest.cc LargeTest.cc BoundTest.cc \
+	IteratorTest.cc StructureTest.cc DumpRestoreTest.cc \
+	RelationTest.cc
 @HAVE_CPPUNIT_FALSE@am_testsuite_OBJECTS = TestTrue.$(OBJEXT)
 @HAVE_CPPUNIT_TRUE@am_testsuite_OBJECTS = TestRunner.$(OBJEXT) \
+@HAVE_CPPUNIT_TRUE@	InstantiationTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	SimpleTest.$(OBJEXT) LargeTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	BoundTest.$(OBJEXT) IteratorTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	StructureTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	DumpRestoreTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	InstantiationTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	RelationTest.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_LDADD = $(LDADD)
@@ -163,10 +164,11 @@ target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @HAVE_CPPUNIT_FALSE@testsuite_SOURCES = TestTrue.cc
-@HAVE_CPPUNIT_TRUE@testsuite_SOURCES = TestRunner.cc SimpleTest.cc \
+@HAVE_CPPUNIT_TRUE@testsuite_SOURCES = TestRunner.cc \
+@HAVE_CPPUNIT_TRUE@	InstantiationTest.cc SimpleTest.cc \
 @HAVE_CPPUNIT_TRUE@	LargeTest.cc BoundTest.cc IteratorTest.cc \
 @HAVE_CPPUNIT_TRUE@	StructureTest.cc DumpRestoreTest.cc \
-@HAVE_CPPUNIT_TRUE@	InstantiationTest.cc RelationTest.cc
+@HAVE_CPPUNIT_TRUE@	RelationTest.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DBTREE_DEBUG -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
 LDADD = @CPPUNIT_LIBS@
 all: all-am

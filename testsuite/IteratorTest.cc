@@ -6,7 +6,8 @@
 
 #include <vector>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
+#include <stx/btree_multimap.h>
 
 class IteratorTest : public CPPUNIT_NS::TestFixture
 {
@@ -19,7 +20,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = true;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -28,7 +28,69 @@ protected:
 
     void test_iterator1()
     {
-	typedef btree<unsigned int, unsigned int,
+	typedef stx::btree_multiset<unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+
+	std::vector<unsigned int> vector;
+
+	srand(34234235);
+	for(unsigned int i = 0; i < 3200; i++)
+	{
+	    vector.push_back( rand() % 1000 );
+	}
+
+	CPPUNIT_ASSERT( vector.size() == 3200 );
+
+	// test construction and insert(iter, iter) function
+        btree_type bt(vector.begin(), vector.end());
+
+	CPPUNIT_ASSERT( bt.size() == 3200 );
+
+	// copy for later use
+	btree_type bt2 = bt;
+
+	// empty out the first bt
+	srand(34234235);
+	for(unsigned int i = 0; i < 3200; i++)
+	{
+	    CPPUNIT_ASSERT(bt.size() == 3200 - i);
+	    CPPUNIT_ASSERT( bt.erase_one(rand() % 1000) );
+	    CPPUNIT_ASSERT(bt.size() == 3200 - i - 1);
+	}
+
+	CPPUNIT_ASSERT( bt.empty() );
+
+	// copy btree values back to a vector
+
+	std::vector<unsigned int> vector2;
+	vector2.assign( bt2.begin(), bt2.end() );
+
+	// afer sorting the vector, the two must be the same
+	std::sort(vector.begin(), vector.end());
+
+	CPPUNIT_ASSERT( vector == vector2 );
+
+	// test reverse iterator
+	vector2.clear();
+	vector2.assign( bt2.rbegin(), bt2.rend() );
+
+	std::reverse(vector.begin(), vector.end());
+
+	btree_type::reverse_iterator ri = bt2.rbegin();
+	for(unsigned int i = 0; i < vector2.size(); ++i)
+	{
+	    CPPUNIT_ASSERT( vector[i] == vector2[i] );
+	    CPPUNIT_ASSERT( vector[i] == *ri );
+
+	    ri++;
+	}
+
+	CPPUNIT_ASSERT( ri == bt2.rend() );
+    }
+
+    void test_iterator2()
+    {
+	typedef stx::btree_multimap<unsigned int, unsigned int,
 	    std::less<unsigned int>, struct traits_nodebug> btree_type;
 
 	std::vector< btree_type::value_type > vector;

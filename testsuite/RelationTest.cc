@@ -4,7 +4,7 @@
 
 #include <stdlib.h>
 
-#include "btree.h"
+#include <stx/btree_multiset.h>
 
 class RelationTest : public CPPUNIT_NS::TestFixture
 {
@@ -17,7 +17,6 @@ protected:
     struct traits_nodebug
     {
 	static const bool	selfverify = true;
-	static const bool	allow_duplicates = false;
 	static const bool	debug = false;
 
 	static const int 	leafslots = 8;
@@ -26,7 +25,7 @@ protected:
 
     void test_relations()
     {
-	typedef btree<unsigned int, unsigned int,
+	typedef stx::btree_multiset<unsigned int,
 	    std::less<unsigned int>, struct traits_nodebug> btree_type;
 
 	btree_type bt1, bt2;
@@ -36,21 +35,21 @@ protected:
 	{
 	    unsigned int key = rand() % 1000;
 
-	    bt1.insert2(key, 0);
-	    bt2.insert2(key, 0);
+	    bt1.insert(key);
+	    bt2.insert(key);
 	}
 
 	CPPUNIT_ASSERT( bt1 == bt2 );
 	
-	bt1.insert2(499, 0);
-	bt2.insert2(500, 0);
+	bt1.insert(499);
+        bt2.insert(500);
 
 	CPPUNIT_ASSERT( bt1 != bt2 );
 	CPPUNIT_ASSERT( bt1 < bt2 );
 	CPPUNIT_ASSERT( !(bt1 > bt2) );
 
-	bt1.insert2(500, 0);
-	bt2.insert2(499, 0);
+	bt1.insert(500);
+	bt2.insert(499);
 
 	CPPUNIT_ASSERT( bt1 == bt2 );
 	CPPUNIT_ASSERT( bt1 <= bt2 );
