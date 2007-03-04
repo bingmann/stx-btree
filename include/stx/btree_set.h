@@ -32,7 +32,7 @@ public:
 public:
     // *** Constructed Types
 
-    /// The empty struct used as a placeholder for the data_type
+    /// \internal The empty struct used as a placeholder for the data_type
     struct empty_struct
     {
     };
@@ -58,16 +58,16 @@ public:
 public:
     // *** Static Constant Options and Values of the B+ Tree
 
-    /// Base B+ tree parameter: The number of key/data slots in each leaf
+    /// Base B+ tree parameter: The number of key slots in each leaf
     static const unsigned short		leafslotmax =  btree_impl::leafslotmax;
 
     /// Base B+ tree parameter: The number of key slots in each inner node,
     /// this can differ from slots in each leaf.
     static const unsigned short		innerslotmax =  btree_impl::innerslotmax;
 
-    /// Computed B+ tree parameter: The minimum number of key/data slots used
-    /// in a leaf. If fewer slots are used, the leaf will be merged or slots
-    /// shifted from it's siblings.
+    /// Computed B+ tree parameter: The minimum number of key slots used in a
+    /// leaf. If fewer slots are used, the leaf will be merged or slots shifted
+    /// from it's siblings.
     static const unsigned short 	minleafslots = btree_impl::minleafslots;
 
     /// Computed B+ tree parameter: The minimum number of key slots used
@@ -174,7 +174,7 @@ public:
 public:
     // *** Fast Destruction of the B+ Tree
 
-    /// Frees all key/data pairs and all nodes of the tree
+    /// Frees all keys and all nodes of the tree
     void clear()
     {
 	tree.clear();
@@ -242,13 +242,13 @@ public:
 public:
     // *** Access Functions to the Item Count
 
-    /// Return the number of key/data pairs in the B+ tree
+    /// Return the number of keys in the B+ tree
     inline size_type size() const
     {
 	return tree.size();
     }
 
-    /// Returns true if there is at least one key/data pair in the B+ tree
+    /// Returns true if there is at least one key in the B+ tree
     inline bool empty() const
     {
 	return tree.empty();
@@ -272,14 +272,14 @@ public:
     }
 
     /// Tries to locate a key in the B+ tree and returns an iterator to the
-    /// key/data slot if found. If unsuccessful it returns end().
+    /// key slot if found. If unsuccessful it returns end().
     iterator find(const key_type &key)
     {
 	return tree.find(key);
     }
 
     /// Tries to locate a key in the B+ tree and returns an constant iterator
-    /// to the key/data slot if found. If unsuccessful it returns end().
+    /// to the key slot if found. If unsuccessful it returns end().
     const_iterator find(const key_type &key) const
     {
 	return tree.find(key);
@@ -377,7 +377,7 @@ public:
 public:
     /// *** Fast Copy: Assign Operator and Copy Constructors
 
-    /// Assignment operator. All the key/data pairs are copied
+    /// Assignment operator. All the keys are copied
     inline self& operator= (const self &other)
     {
 	if (this != &other)
@@ -388,7 +388,7 @@ public:
     }
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
-    /// copy or all key/data pairs.
+    /// copy or all keys.
     inline btree_set(const self &other)
 	: tree(other.tree)
     {
@@ -397,22 +397,21 @@ public:
 public:
     // *** Public Insertion Functions
 
-    /// Attempt to insert a key/data pair into the B+ tree. If the tree does not
-    /// allow duplicate keys, then the insert may fail if it is already
-    /// present.
+    /// Attempt to insert a key into the B+ tree. The insert will fail if it is
+    /// already present.
     inline std::pair<iterator, bool> insert(const key_type& x)
     {
 	return tree.insert2(x, data_type());
     }
     
-    /// Attempt to insert a key/data pair into the B+ tree. The iterator hint
-    /// is currently ignored by the B+ tree insertion routine.
+    /// Attempt to insert a key into the B+ tree. The iterator hint is
+    /// currently ignored by the B+ tree insertion routine.
     inline iterator insert(iterator hint, const key_type &x)
     {
 	return tree.insert2(hint, x, data_type());
     }
 
-    /// Attempt to insert the range [first,last) of value_type pairs into the B+
+    /// Attempt to insert the range [first,last) of key_type into the B+
     /// tree. Each key/data pair is inserted individually.
     template <typename InputIterator>
     inline void insert(InputIterator first, InputIterator last)
@@ -428,8 +427,7 @@ public:
 public:
     // *** Public Erase Functions
 
-    /// Erases one (the first) of the key/data pairs associated with the given
-    /// key.
+    /// Erases the key from the set.
     bool erase_one(const key_type &key)
     {
 	return tree.erase_one(key);

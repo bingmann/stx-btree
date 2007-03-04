@@ -3,7 +3,7 @@
 
 AC_PREREQ(2.59)
 AC_INIT(stx-btree, 0.6)
-AC_CONFIG_SRCDIR([include/stx/btree_base.h])
+AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
 
 AM_INIT_AUTOMAKE([foreign])

@@ -576,7 +576,7 @@ PACKAGE_VERSION='0.6'
 PACKAGE_STRING='stx-btree 0.6'
 PACKAGE_BUGREPORT=''
 
-ac_unique_file="include/stx/btree_base.h"
+ac_unique_file="include/stx/btree.h"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>

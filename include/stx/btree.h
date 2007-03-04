@@ -31,7 +31,7 @@
 
 namespace stx {
 
-/** Generates default traits for a B+ tree. It estimates leaf and inner node
+/** Generates default traits for a set B+ tree. It estimates leaf and inner node
  * sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key>
 struct btree_default_set_traits
@@ -55,7 +55,7 @@ struct btree_default_set_traits
     static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 
-/** Generates default traits for a B+ tree. It estimates leaf and inner node
+/** Generates default traits for a map B+ tree. It estimates leaf and inner node
  * sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key, typename _Data>
 struct btree_default_map_traits
@@ -268,8 +268,8 @@ private:
 private:
     // *** Template Magic to Convert a pair or key/data types to a value_type
 
-    /// For sets the second pair_type is an empty struct, so the value_type
-    /// should only be the first.
+    /// \internal For sets the second pair_type is an empty struct, so the
+    /// value_type should only be the first.
     template <typename value_type, typename pair_type>
     struct btree_pair_to_value
     {
@@ -283,7 +283,7 @@ private:
 	}
     };
 
-    /// For maps value_type is the same as the pair_type
+    /// \internal For maps value_type is the same as the pair_type
     template <typename value_type>
     struct btree_pair_to_value<value_type, value_type>
     {
@@ -746,7 +746,7 @@ public:
 public:
     // *** Key and Value Comparison Function Objects
 
-    /// Function class to compare value_type objects. required by the STL
+    /// Function class to compare value_type objects. Required by the STL
     class value_compare
     {
     protected:
@@ -775,7 +775,7 @@ public:
 	return key_less;
     }
 
-    /// Constant access to a constructed value_type comparison object. required
+    /// Constant access to a constructed value_type comparison object. Required
     /// by the STL
     inline value_compare value_comp() const
     {
@@ -1718,8 +1718,8 @@ private:
 	btree_fixmerge = 4
     };
 
-    /// B+ tree recursive deletion has much information which is needs to be
-    /// passed upward.
+    /// \internal B+ tree recursive deletion has much information which is
+    /// needs to be passed upward.
     struct result_t
     {
 	/// Merged result flags
@@ -2586,8 +2586,8 @@ private:
 private:
     // *** Dump and Restore of B+ Trees
 
-    /// A header for the binary image containing the base properties of the B+
-    /// tree. These properties have to match the current template
+    /// \internal A header for the binary image containing the base properties
+    /// of the B+ tree. These properties have to match the current template
     /// instantiation.
     struct dump_header
     {

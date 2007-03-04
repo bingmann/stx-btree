@@ -32,7 +32,7 @@ public:
 public:
     // *** Constructed Types
 
-    /// The empty struct used as a placeholder for the data_type
+    /// \internal The empty struct used as a placeholder for the data_type
     struct empty_struct
     {
     };
