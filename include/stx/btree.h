@@ -36,10 +36,22 @@ namespace stx {
 template <typename _Key>
 struct btree_default_set_traits
 {
+    /// If true, the tree will self verify it's invariants after each insert()
+    /// or erase(). The header must have been compiled with BTREE_DEBUG defined.
     static const bool	selfverify = false;
+
+    /// If true, the tree will print out debug information and a tree dump
+    /// during insert() or erase() operation. The header must have been
+    /// compiled with BTREE_DEBUG defined and key_type must be std::ostream
+    /// printable.
     static const bool	debug = false;
 
+    /// Number of slots in each leaf of the tree. Estimated so that each node
+    /// has a size of about 256 bytes.
     static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key)) );
+
+    /// Number of slots in each inner node of the tree. Estimated so that each node
+    /// has a size of about 256 bytes.
     static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 
@@ -48,10 +60,22 @@ struct btree_default_set_traits
 template <typename _Key, typename _Data>
 struct btree_default_map_traits
 {
+    /// If true, the tree will self verify it's invariants after each insert()
+    /// or erase(). The header must have been compiled with BTREE_DEBUG defined.
     static const bool	selfverify = false;
+
+    /// If true, the tree will print out debug information and a tree dump
+    /// during insert() or erase() operation. The header must have been
+    /// compiled with BTREE_DEBUG defined and key_type must be std::ostream
+    /// printable.
     static const bool	debug = false;
 
+    /// Number of slots in each leaf of the tree. Estimated so that each node
+    /// has a size of about 256 bytes.
     static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
+
+    /// Number of slots in each inner node of the tree. Estimated so that each node
+    /// has a size of about 256 bytes.
     static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 
@@ -76,18 +100,20 @@ public:
     /// key. Stored in the B+ tree's leaves
     typedef _Data			data_type;
 
-    /// Composition pair of key and data types, this is required by the STL
-    /// standard. The B+ tree does not store key and data together.
+    /// Third template parameter: Composition pair of key and data types, this
+    /// is required by the STL standard. The B+ tree does not store key and
+    /// data together. If value_type == key_type then the B+ tree implements a
+    /// set.
     typedef _Value			value_type;
 
-    /// Third template parameter: Key comparison function object
+    /// Fourth template parameter: Key comparison function object
     typedef _Compare			key_compare;
 
-    /// Fourth template parameter: Traits object used to define more parameters
+    /// Fifth template parameter: Traits object used to define more parameters
     /// of the B+ tree
     typedef _Traits			traits;
 
-    /// Fifth template parameter: Allow duplicate keys in the btree. Used to
+    /// Sixth template parameter: Allow duplicate keys in the btree. Used to
     /// implement multiset and multimap.
     static const bool			allow_duplicates = _AllowDuplicates;
 

@@ -3,7 +3,7 @@
 #ifndef _STX_BTREE_MAP_H_
 #define _STX_BTREE_MAP_H_
 
-#include <stx/btree_base.h>
+#include <stx/btree.h>
 
 namespace stx {
 

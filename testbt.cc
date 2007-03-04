@@ -9,8 +9,9 @@
 #include <iostream>
 #include <fstream>
 
-#include <stx/btree_base.h>
+#include <stx/btree.h>
 #include <stx/btree_multimap.h>
+#include <stx/btree_multiset.h>
 
 #include <assert.h>
 

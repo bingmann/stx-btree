@@ -2,7 +2,7 @@
 
 SUBDIRS = . testsuite
 
-include_HEADERS = include/stx/btree_base.h \
+include_HEADERS = include/stx/btree.h \
 		include/stx/btree_set.h \
 		include/stx/btree_map.h \
 		include/stx/btree_multiset.h \
