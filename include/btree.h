@@ -3,6 +3,15 @@
 #ifndef _STX_BTREE_H_
 #define _STX_BTREE_H_
 
+// *** Required Headers from the STL
+
+#include <functional>
+#include <algorithm>
+#include <istream>
+#include <ostream>
+
+// *** Debugging Macros
+
 #ifdef BTREE_DEBUG
 
 #include <iostream>
@@ -796,7 +805,7 @@ private:
 		i--;
 	    i++;
 
-	    BTREE_PRINT("btree::find_lower testfind: " << i << std::endl);
+	    BTREE_PRINT("testfind: " << i << std::endl);
 	    BTREE_ASSERT(i == hi);
 	}
 	else {
@@ -1069,6 +1078,52 @@ public:
     inline std::pair<const_iterator, const_iterator> equal_range(const key_type& key) const
     {
 	return std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
+    }
+
+    /** Assignment operator. All the key/data pairs are copied */
+    // inline btree_self& operator= (const map &__x)
+
+	
+public:
+    // *** B+ Tree Object Comparison Functions
+
+    /// Equality relation of B+ trees of the same type. B+ trees of the same
+    /// size and equal elements (both key and data) are considered
+    /// equal. Beware of the random ordering of duplicate keys.
+    inline bool operator==(const btree_self &other) const
+    {
+	return (size() == other.size()) && std::equal(begin(), end(), other.begin());
+    }
+
+    /// Inequality relation. Based on operator==.
+    inline bool operator!=(const btree_self &other) const
+    {
+	return !(*this == other);
+    }
+
+    /// Total ordering relation of B+ trees of the same type. It uses
+    /// std::lexicographical_compare() for the actual comparison of elements.
+    inline bool operator<(const btree_self &other) const
+    {
+	return std::lexicographical_compare(begin(), end(), other.begin(), other.end());
+    }
+
+    /// Greater relation. Based on operator<.
+    inline bool operator>(const btree_self &other) const
+    {
+	return other < *this;
+    }
+
+    /// Less-equal relation. Based on operator<.
+    inline bool operator<=(const btree_self &other) const
+    {
+	return !(other < *this);
+    }
+
+    /// Greater-equal relation. Based on operator<.
+    inline bool operator>=(const btree_self &other) const
+    {
+	return !(*this < other);
     }
 
 public:
@@ -2196,7 +2251,7 @@ private:
 		key_type subminkey = key_type();
 		key_type submaxkey = key_type();
 
-		BTREE_ASSERT(subnode->level == inner->level + 1);
+		BTREE_ASSERT(subnode->level + 1 == inner->level);
 		verify_node(subnode, &subminkey, &submaxkey);
 
 		BTREE_PRINT("verify subnode " << subnode << ": " << subminkey << " - " << submaxkey << std::endl);

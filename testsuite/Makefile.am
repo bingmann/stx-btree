@@ -9,7 +9,7 @@ if HAVE_CPPUNIT
 
 testsuite_SOURCES = TestRunner.cc
 
-testsuite_SOURCES += BoundTest.cc IteratorTest.cc StructureTest.cc LargeTest.cc SimpleTest.cc DumpRestoreTest.cc
+testsuite_SOURCES += SimpleTest.cc LargeTest.cc BoundTest.cc IteratorTest.cc StructureTest.cc DumpRestoreTest.cc InstantiationTest.cc RelationTest.cc
 
 else
 
@@ -17,5 +17,5 @@ testsuite_SOURCES = TestTrue.cc
 
 endif
 
-AM_CXXFLAGS = -W -Wall -Wold-style-cast -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
+AM_CXXFLAGS = -W -Wall -Wold-style-cast -DBTREE_DEBUG -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
 LDADD = @CPPUNIT_LIBS@
