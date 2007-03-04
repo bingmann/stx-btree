@@ -8,7 +8,6 @@
 namespace stx {
 
 /** @brief Basic class implementing a B+ tree data structure in memory.
- *
  */
 template <typename _Key,
 	  typename _Compare = std::less<_Key>,
@@ -29,13 +28,16 @@ public:
     /// of the B+ tree
     typedef _Traits			traits;
 
-public:
-    // *** Constructed Types
+private:
+    // *** The Data_Type
 
     /// \internal The empty struct used as a placeholder for the data_type
     struct empty_struct
     {
     };
+
+public:
+    // *** Constructed Types
 
     /// The empty data_type
     typedef struct empty_struct		data_type;

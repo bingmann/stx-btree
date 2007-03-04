@@ -29,6 +29,7 @@
 
 #define BTREE_MAX(a,b)		((a) < (b) ? (b) : (a))
 
+/// STX - Some Template Extensions namespace
 namespace stx {
 
 /** Generates default traits for a set B+ tree. It estimates leaf and inner node
@@ -219,7 +220,6 @@ private:
 	{
 	    return (node::slotuse < mininnerslots);
 	}
-
     };
 
     /// Extended structure of a leaf node in memory. Contains pairs of keys and

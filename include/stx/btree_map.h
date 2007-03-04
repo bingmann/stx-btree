@@ -432,6 +432,15 @@ public:
 	return tree.insert2(hint, key, data);
     }
 
+    /// Returns a reference to the object that is associated with a particular
+    /// key. If the map does not already contain such an object, operator[]
+    /// inserts the default object data_type().
+    inline data_type& operator[](const key_type& key)
+    {
+	iterator i = insert( value_type(key, data_type()) ).first;
+	return i.data();
+    }
+
     /// Attempt to insert the range [first,last) of value_type pairs into the B+
     /// tree. Each key/data pair is inserted individually.
     template <typename InputIterator>
