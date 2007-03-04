@@ -45,12 +45,14 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
 am__testsuite_SOURCES_DIST = TestTrue.cc TestRunner.cc BoundTest.cc \
-	IteratorTest.cc StructureTest.cc LargeTest.cc SimpleTest.cc
+	IteratorTest.cc StructureTest.cc LargeTest.cc SimpleTest.cc \
+	DumpRestoreTest.cc
 @HAVE_CPPUNIT_FALSE@am_testsuite_OBJECTS = TestTrue.$(OBJEXT)
 @HAVE_CPPUNIT_TRUE@am_testsuite_OBJECTS = TestRunner.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	BoundTest.$(OBJEXT) IteratorTest.$(OBJEXT) \
 @HAVE_CPPUNIT_TRUE@	StructureTest.$(OBJEXT) LargeTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	SimpleTest.$(OBJEXT)
+@HAVE_CPPUNIT_TRUE@	SimpleTest.$(OBJEXT) \
+@HAVE_CPPUNIT_TRUE@	DumpRestoreTest.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_LDADD = $(LDADD)
 testsuite_DEPENDENCIES =
@@ -161,7 +163,8 @@ top_srcdir = @top_srcdir@
 @HAVE_CPPUNIT_FALSE@testsuite_SOURCES = TestTrue.cc
 @HAVE_CPPUNIT_TRUE@testsuite_SOURCES = TestRunner.cc BoundTest.cc \
 @HAVE_CPPUNIT_TRUE@	IteratorTest.cc StructureTest.cc \
-@HAVE_CPPUNIT_TRUE@	LargeTest.cc SimpleTest.cc
+@HAVE_CPPUNIT_TRUE@	LargeTest.cc SimpleTest.cc \
+@HAVE_CPPUNIT_TRUE@	DumpRestoreTest.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
 LDADD = @CPPUNIT_LIBS@
 all: all-am
@@ -211,6 +214,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BoundTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DumpRestoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratorTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/LargeTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleTest.Po@am__quote@

@@ -22,7 +22,7 @@ int main()
     runner.eventManager().addListener( new CppUnit::BriefTestProgressListener() );
 
     // Change the default outputter to a compiler error format outputter
-    runner.setOutputter( new CppUnit::TextOutputter( &runner.result(), std::cerr ) );
+    runner.setOutputter( new CppUnit::TextOutputter( &runner.result(), std::cout ) );
     
     // Run the tests.
     bool wasSucessful = runner.run();

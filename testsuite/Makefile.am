@@ -9,7 +9,7 @@ if HAVE_CPPUNIT
 
 testsuite_SOURCES = TestRunner.cc
 
-testsuite_SOURCES += BoundTest.cc IteratorTest.cc StructureTest.cc LargeTest.cc SimpleTest.cc
+testsuite_SOURCES += BoundTest.cc IteratorTest.cc StructureTest.cc LargeTest.cc SimpleTest.cc DumpRestoreTest.cc
 
 else
 
