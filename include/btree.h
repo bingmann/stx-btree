@@ -1080,10 +1080,6 @@ public:
 	return std::pair<const_iterator, const_iterator>(lower_bound(key), upper_bound(key));
     }
 
-    /** Assignment operator. All the key/data pairs are copied */
-    // inline btree_self& operator= (const map &__x)
-
-	
 public:
     // *** B+ Tree Object Comparison Functions
 
@@ -1124,6 +1120,86 @@ public:
     inline bool operator>=(const btree_self &other) const
     {
 	return !(*this < other);
+    }
+
+public:
+    /// *** Fast Copy: Assign Operator and Copy Constructors
+
+    /// Assignment operator. All the key/data pairs are copied
+    inline btree_self& operator= (const btree_self &other)
+    {
+	if (this != &other)
+	{
+	    clear();
+
+	    key_less = other.key_comp();
+	    if (other.size() != 0)
+	    {
+		root = copy_recursive(other.root);
+		itemcount = other.itemcount;
+	    }
+
+	    if (selfverify) verify();
+	}
+	return *this;
+    }
+
+    /// Copy constructor. The newly initialized B+ tree object will contain a
+    /// copy or all key/data pairs.
+    inline btree(const btree_self &other)
+	: root(NULL), headleaf(NULL), tailleaf(NULL),
+	  itemcount( other.itemcount ),
+	  key_less( other.key_comp() )
+    {
+	if (itemcount > 0)
+	{
+	    root = copy_recursive(other.root);
+	    if (selfverify) verify();
+	}
+    }
+    
+private:
+    /// Recursively copy nodes from another B+ tree object
+    node* copy_recursive(const node *node)
+    {
+	if (node->isleafnode())
+	{
+	    const leaf_node *leaf = static_cast<const leaf_node*>(node);
+	    leaf_node *newleaf = allocate_leaf();
+
+	    newleaf->slotuse = leaf->slotuse;
+	    std::copy(leaf->slotkey, leaf->slotkey + leaf->slotuse, newleaf->slotkey);
+	    std::copy(leaf->slotdata, leaf->slotdata + leaf->slotuse, newleaf->slotdata);
+
+	    if (headleaf == NULL)
+	    {
+		headleaf = tailleaf = newleaf;
+		newleaf->prevleaf = newleaf->nextleaf = NULL;
+	    }
+	    else
+	    {
+		newleaf->prevleaf = tailleaf;
+		tailleaf->nextleaf = newleaf;
+		tailleaf = newleaf;
+	    }
+
+	    return newleaf;
+	}
+	else
+	{
+	    const inner_node *inner = static_cast<const inner_node*>(node);
+	    inner_node *newinner = allocate_inner(inner->level);
+
+	    newinner->slotuse = inner->slotuse;
+	    std::copy(inner->slotkey, inner->slotkey + inner->slotuse, newinner->slotkey);
+
+	    for (unsigned short slot = 0; slot <= inner->slotuse; ++slot)
+	    {
+		newinner->childid[slot] = copy_recursive(inner->childid[slot]);
+	    }
+
+	    return newinner;
+	}
     }
 
 public:
@@ -2510,8 +2586,7 @@ private:
 	    // reconstruct the linked list from the order in the file
 	    if (headleaf == NULL) {
 		BTREE_ASSERT(newleaf->prevleaf == NULL);
-		headleaf = newleaf;
-		tailleaf = newleaf;
+		headleaf = tailleaf = newleaf;
 	    }
 	    else {
 		newleaf->prevleaf = tailleaf;

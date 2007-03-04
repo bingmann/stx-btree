@@ -54,6 +54,18 @@ protected:
 
 	CPPUNIT_ASSERT( bt1 == bt2 );
 	CPPUNIT_ASSERT( bt1 <= bt2 );
+
+	// test assignment operator
+	btree_type bt3;
+
+	bt3 = bt1;
+	CPPUNIT_ASSERT( bt1 == bt3 );
+	CPPUNIT_ASSERT( bt1 >= bt3 );
+
+	// test copy constructor
+	btree_type bt4 = bt3;
+
+	CPPUNIT_ASSERT( bt1 == bt4 );
     }
 };
 
