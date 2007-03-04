@@ -41,10 +41,15 @@ protected:
 
 	CPPUNIT_ASSERT( vector.size() == 3200 );
 
+	// test construction and insert(iter, iter) function
 	btree_type bt(vector.begin(), vector.end());
 
 	CPPUNIT_ASSERT( bt.size() == 3200 );
 
+	// copy for later use
+	btree_type bt2 = bt;
+
+	// empty out the first bt
 	srand(34234235);
 	for(unsigned int i = 0; i < 3200; i++)
 	{
@@ -54,6 +59,35 @@ protected:
 	}
 
 	CPPUNIT_ASSERT( bt.empty() );
+
+	// copy btree values back to a vector
+
+	std::vector< btree_type::value_type > vector2;
+	vector2.assign( bt2.begin(), bt2.end() );
+
+	// afer sorting the vector, the two must be the same
+	std::sort(vector.begin(), vector.end());
+
+	CPPUNIT_ASSERT( vector == vector2 );
+
+	// test reverse iterator
+	vector2.clear();
+	vector2.assign( bt2.rbegin(), bt2.rend() );
+
+	std::reverse(vector.begin(), vector.end());
+
+	btree_type::reverse_iterator ri = bt2.rbegin();
+	for(unsigned int i = 0; i < vector2.size(); ++i)
+	{
+	    CPPUNIT_ASSERT( vector[i].first == vector2[i].first );
+	    CPPUNIT_ASSERT( vector[i].first == ri->first );
+
+	    // there are some undetermined problems with the second value
+	    // std::cout << vector[i].second << " " << vector2[i].second << " " << ri->second << "\n";
+	    ri++;
+	}
+
+	CPPUNIT_ASSERT( ri == bt2.rend() );
     }
 };
 

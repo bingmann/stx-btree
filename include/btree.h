@@ -239,6 +239,21 @@ public:
 	/// The value type of the btree. Returned by operator*().
 	typedef typename btree::value_type		value_type;
 
+	/// Reference to the value_type. Required by the reverse_iterator.
+	typedef value_type&		reference;
+
+	/// Pointer to the value_type. Required by the reverse_iterator.
+	typedef value_type*		pointer;
+
+	/// STL-magic iterator category
+	typedef std::bidirectional_iterator_tag iterator_category;
+
+	/// STL-magic
+	typedef ptrdiff_t               difference_type;
+
+	/// Our own type
+	typedef iterator		self;
+
     private:
 	// *** Members
 
@@ -248,12 +263,13 @@ public:
 	/// Current key/data slot referenced
 	unsigned short	currslot;
     
-	/// Our own type
-	typedef iterator		self;
-
 	/// Friendly to the const_iterator, so it may access the two data items directly
 	friend class btree<key_type, data_type, key_compare, traits>::const_iterator;
 	
+	/// Evil! A temporary value_type to STL-correctly deliver operator* and
+	/// operator->
+	mutable value_type		temp_value;
+
     public:
 	// *** Methods
 
@@ -264,10 +280,21 @@ public:
 
 	/// Dereference the iterator, this is not a value_type& because key and
 	/// value are not stored together
-	inline value_type operator*() const
+	inline reference operator*() const
 	{
-	    return value_type(currnode->slotkey[currslot],
-			      currnode->slotdata[currslot]);
+	    temp_value = value_type(currnode->slotkey[currslot],
+				    currnode->slotdata[currslot]);
+	    return temp_value;
+	}
+
+	/// Dereference the iterator. Do not use this if possible, use key()
+	/// and data() instead. The B+ tree does not stored key and data
+	/// together.
+	inline pointer operator->() const
+	{
+	    temp_value = value_type(currnode->slotkey[currslot],
+				    currnode->slotdata[currslot]);
+	    return &temp_value;
 	}
 
 	/// Key of the current slot
@@ -387,6 +414,21 @@ public:
 	/// The value type of the btree. Returned by operator*().
 	typedef typename btree::value_type		value_type;
 
+	/// Reference to the value_type. Required by the reverse_iterator.
+	typedef const value_type&	reference;
+
+	/// Pointer to the value_type. Required by the reverse_iterator.
+	typedef const value_type*	pointer;
+
+	/// STL-magic iterator category
+	typedef std::bidirectional_iterator_tag iterator_category;
+
+	/// STL-magic
+	typedef ptrdiff_t         	difference_type;
+
+	/// Our own type
+	typedef const_iterator		self;
+
     private:
 	// *** Members
 
@@ -396,8 +438,9 @@ public:
 	/// Current key/data slot referenced
 	unsigned short	currslot;
     
-	/// Our own type
-	typedef const_iterator		self;
+	/// Evil! A temporary value_type to STL-correctly deliver operator* and
+	/// operator->
+	mutable value_type		temp_value;
 
     public:
 	// *** Methods
@@ -412,12 +455,24 @@ public:
 	    : currnode(it.currnode), currslot(it.currslot)
 	{ }
 
-	/// Dereference the iterator, this is not a value_type& because key and
-	/// value are not stored together
-	const value_type operator*() const
+	/// Dereference the iterator. Do not use this if possible, use key()
+	/// and data() instead. The B+ tree does not stored key and data
+	/// together.
+	inline reference operator*() const
 	{
-	    return value_type(currnode->slotkey[currslot],
-			      currnode->slotdata[currslot]);
+	    temp_value = value_type(currnode->slotkey[currslot],
+				    currnode->slotdata[currslot]);
+	    return temp_value;
+	}
+
+	/// Dereference the iterator. Do not use this if possible, use key()
+	/// and data() instead. The B+ tree does not stored key and data
+	/// together.
+	inline pointer operator->() const
+	{
+	    temp_value = value_type(currnode->slotkey[currslot],
+				    currnode->slotdata[currslot]);
+	    return &temp_value;
 	}
 
 	/// Key of the current slot
@@ -520,6 +575,12 @@ public:
 	    return (x.currnode != currnode) || (x.currslot != currslot);
 	}    
     };
+
+    /// create mutable reverse iterator by using STL magic
+    typedef std::reverse_iterator<iterator>       reverse_iterator;
+
+    /// create constant reverse iterator by using STL magic
+    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
 private:
     // *** Tree Object Data Members
@@ -763,6 +824,34 @@ public:
     inline const_iterator end() const
     {
 	return const_iterator(tailleaf, tailleaf->slotuse);
+    }
+
+    /// Constructs a read/data-write reverse iterator that points to the first
+    /// invalid slot in the last leaf of the B+ tree. Uses STL magic.
+    inline reverse_iterator rbegin()
+    {
+	return reverse_iterator(end());
+    }
+
+    /// Constructs a read/data-write reverse iterator that points to the first
+    /// slot in the first leaf of the B+ tree. Uses STL magic.
+    inline reverse_iterator rend()
+    {
+	return reverse_iterator(begin());
+    }
+
+    /// Constructs a read-only reverse iterator that points to the first
+    /// invalid slot in the last leaf of the B+ tree. Uses STL magic.
+    inline const_reverse_iterator rbegin() const
+    {
+	return const_reverse_iterator(end());
+    }
+
+    /// Constructs a read-only reverse iterator that points to the first slot
+    /// in the first leaf of the B+ tree. Uses STL magic.
+    inline const_reverse_iterator rend() const
+    {
+	return const_reverse_iterator(begin());
     }
 
 private:
