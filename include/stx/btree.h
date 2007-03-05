@@ -87,7 +87,7 @@ template <typename _Key, typename _Data,
 	  typename _Value = std::pair<_Key, _Data>,
 	  typename _Compare = std::less<_Key>,
 	  typename _Traits = btree_default_map_traits<_Key, _Data>,
-	  bool _AllowDuplicates = false>
+	  bool _Duplicates = false>
 class btree
 {
 public:
@@ -116,7 +116,7 @@ public:
 
     /// Sixth template parameter: Allow duplicate keys in the btree. Used to
     /// implement multiset and multimap.
-    static const bool			allow_duplicates = _AllowDuplicates;
+    static const bool			allow_duplicates = _Duplicates;
 
 public:
     // *** Constructed Types
@@ -680,34 +680,34 @@ public:
 	size_type	itemcount;
 
 	/// Number of leaves in the B+ tree
-	size_type	num_leaves;
+	size_type	leaves;
 
 	/// Number of inner nodes in the B+ tree
-	size_type	num_innernodes;
+	size_type	innernodes;
 
 	/// Base B+ tree parameter: The number of key/data slots in each leaf
-	static const unsigned short	leafslots = btree_self::leafslots;
+	static const unsigned short	leafslots = btree_self::leafslotmax;
 
 	/// Base B+ tree parameter: The number of key slots in each inner node.
-	static const unsigned short	innerslots = btree_self::innerslots;
+	static const unsigned short	innerslots = btree_self::innerslotmax;
 
 	/// Zero initialized
 	inline tree_stats()
 	    : itemcount(0),
-	      num_leaves(0), num_innernodes(0)
+	      leaves(0), innernodes(0)
 	{
 	}
 
 	/// Return the total number of nodes
-	inline size_type num_nodes() const
+	inline size_type nodes() const
 	{
-	    return num_innernodes + num_leaves;
+	    return innernodes + leaves;
 	}
 
 	/// Return the average fill of leaves
 	inline double avgfill_leaves() const
 	{
-	    return static_cast<double>(itemcount) / (num_leaves * leafslots);
+	    return static_cast<double>(itemcount) / (leaves * leafslots);
 	}
     };
 
@@ -856,7 +856,7 @@ private:
     {
 	leaf_node* n = new leaf_node;
 	n->initialize();
-	stats.num_leaves++;
+	stats.leaves++;
 	return n;
     }
 
@@ -865,7 +865,7 @@ private:
     {
 	inner_node* n = new inner_node;
 	n->initialize(l);
-	stats.num_innernodes++;
+	stats.innernodes++;
 	return n;
     }
     
@@ -875,11 +875,11 @@ private:
     {
 	if (n->isleafnode()) {
 	    delete static_cast<leaf_node*>(n);
-	    stats.num_leaves--;
+	    stats.leaves--;
 	}
 	else {
 	    delete static_cast<inner_node*>(n);
-	    stats.num_innernodes--;
+	    stats.innernodes--;
 	}
     }
 
@@ -1107,7 +1107,7 @@ public:
     }
 
     /// Return a const reference to the current statistics.
-    inline const struct stats& get_stats() const
+    inline const struct tree_stats& get_stats() const
     {
 	return stats;
     }
@@ -1363,7 +1363,7 @@ public:
 	    key_less = other.key_comp();
 	    if (other.size() != 0)
 	    {
-		stats.num_leaves = stats.num_innernodes = 0;
+		stats.leaves = stats.innernodes = 0;
 		root = copy_recursive(other.root);
 		stats = other.stats;
 	    }
@@ -1382,7 +1382,7 @@ public:
     {
 	if (size() > 0)
 	{
-	    stats.num_leaves = stats.num_innernodes = 0;
+	    stats.leaves = stats.innernodes = 0;
 	    root = copy_recursive(other.root);
 	    if (selfverify) verify();
 	}
@@ -2519,8 +2519,8 @@ public:
 	    verify_node(root, &minkey, &maxkey, vstats);
 
 	    assert( vstats.itemcount == stats.itemcount );
-	    assert( vstats.num_leaves == stats.num_leaves );
-	    assert( vstats.num_innernodes == stats.num_innernodes );
+	    assert( vstats.leaves == stats.leaves );
+	    assert( vstats.innernodes == stats.innernodes );
 	}
 
 	verify_leaflinks();
@@ -2547,13 +2547,13 @@ private:
 	    *minkey = leaf->slotkey[0];
 	    *maxkey = leaf->slotkey[leaf->slotuse - 1];
 
-	    vstats.num_leaves++;
+	    vstats.leaves++;
 	    vstats.itemcount += leaf->slotuse;
 	}
 	else // !n->isleafnode()
 	{
 	    const inner_node *inner = static_cast<const inner_node*>(n);
-	    vstats.num_innernodes++;
+	    vstats.innernodes++;
 
 	    assert(inner == root || !inner->isunderflow());
 

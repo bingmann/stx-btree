@@ -58,6 +58,9 @@ public:
     /// Size type used to count keys
     typedef typename btree_impl::size_type	size_type;
 
+    /// Small structure containing statistics about the tree
+    typedef typename btree_impl::tree_stats	tree_stats;
+
 public:
     // *** Static Constant Options and Values of the B+ Tree
 
@@ -262,6 +265,12 @@ public:
     inline size_type max_size() const
     {
 	return tree.max_size();
+    }
+
+    /// Return a const reference to the current statistics.
+    inline const tree_stats& get_stats() const
+    {
+	return tree.get_stats();
     }
 
 public:
