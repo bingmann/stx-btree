@@ -1,0 +1,8 @@
+// $Id: btree.h 13 2007-03-04 22:58:47Z tb $
+
+#ifndef _STX_BTREE_MULTIMAP_
+#define _STX_BTREE_MULTIMAP_
+
+#include <stx/btree_multimap.h>
+
+#endif // _STX_BTREE_MULTIMAP_
