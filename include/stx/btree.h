@@ -669,6 +669,48 @@ public:
     /// create constant reverse iterator by using STL magic
     typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
+public:
+    // *** Small Statistics Structure
+
+    /** A small struct containing basic statistics about the B+ tree. It can be
+     * fetched using get_stats(). */
+    struct tree_stats
+    {
+	/// Number of items in the B+ tree
+	size_type	itemcount;
+
+	/// Number of leaves in the B+ tree
+	size_type	num_leaves;
+
+	/// Number of inner nodes in the B+ tree
+	size_type	num_innernodes;
+
+	/// Base B+ tree parameter: The number of key/data slots in each leaf
+	static const unsigned short	leafslots = btree_self::leafslots;
+
+	/// Base B+ tree parameter: The number of key slots in each inner node.
+	static const unsigned short	innerslots = btree_self::innerslots;
+
+	/// Zero initialized
+	inline tree_stats()
+	    : itemcount(0),
+	      num_leaves(0), num_innernodes(0)
+	{
+	}
+
+	/// Return the total number of nodes
+	inline size_type num_nodes() const
+	{
+	    return num_innernodes + num_leaves;
+	}
+
+	/// Return the average fill of leaves
+	inline double avgfill_leaves() const
+	{
+	    return static_cast<double>(itemcount) / (num_leaves * leafslots);
+	}
+    };
+
 private:
     // *** Tree Object Data Members
 
@@ -681,8 +723,8 @@ private:
     /// Pointer to last leaf in the double linked leaf chain
     leaf_node	*tailleaf;
 
-    /// Number of items in the B+ tree
-    size_type	itemcount;
+    /// Other small statistics about the B+ tree
+    tree_stats	stats;
 
     /// Key comparison object. More comparison functions are generated from
     /// this < relation.
@@ -694,8 +736,7 @@ public:
     /// Default constructor initializing an empty B+ tree with the standard key
     /// comparison function
     inline btree()
-	: root(NULL), headleaf(NULL), tailleaf(NULL),
-	  itemcount(0)
+	: root(NULL), headleaf(NULL), tailleaf(NULL)
     {
     }
 
@@ -703,7 +744,6 @@ public:
     /// comparison object
     inline btree(const key_compare &kcf)
 	: root(NULL), headleaf(NULL), tailleaf(NULL),
-	  itemcount(0),
 	  key_less(kcf)
     {
     }
@@ -711,8 +751,7 @@ public:
     /// Constructor initializing a B+ tree with the range [first,last)
     template <class InputIterator>
     inline btree(InputIterator first, InputIterator last)
-	: root(NULL), headleaf(NULL), tailleaf(NULL),
-	  itemcount(0)
+	: root(NULL), headleaf(NULL), tailleaf(NULL)
     {
 	insert(first, last);
     }
@@ -722,7 +761,6 @@ public:
     template <class InputIterator>
     inline btree(InputIterator first, InputIterator last, const key_compare &kcf)
 	: root(NULL), headleaf(NULL), tailleaf(NULL),
-	  itemcount(0),
 	  key_less(kcf)
     {
 	insert(first, last);
@@ -740,7 +778,7 @@ public:
 	std::swap(root, from.root);
 	std::swap(headleaf, from.headleaf);
 	std::swap(tailleaf, from.tailleaf);
-	std::swap(itemcount, from.itemcount);
+	std::swap(stats, from.stats);
     }
 
 public:
@@ -814,29 +852,35 @@ private:
     // *** Node Object Allocation and Deallocation Functions
 
     /// Allocate and initialize a leaf node
-    static inline leaf_node* allocate_leaf()
+    inline leaf_node* allocate_leaf()
     {
 	leaf_node* n = new leaf_node;
 	n->initialize();
+	stats.num_leaves++;
 	return n;
     }
 
     /// Allocate and initialize an inner node
-    static inline inner_node* allocate_inner(unsigned short l)
+    inline inner_node* allocate_inner(unsigned short l)
     {
 	inner_node* n = new inner_node;
 	n->initialize(l);
+	stats.num_innernodes++;
 	return n;
     }
     
     /// Correctly free either inner or leaf node, destructs all contained key
     /// and value objects
-    static inline void free_node(node *n)
+    inline void free_node(node *n)
     {
-	if (n->isleafnode())
+	if (n->isleafnode()) {
 	    delete static_cast<leaf_node*>(n);
-	else
+	    stats.num_leaves--;
+	}
+	else {
 	    delete static_cast<inner_node*>(n);
+	    stats.num_innernodes--;
+	}
     }
 
 public:
@@ -849,16 +893,19 @@ public:
 	{
 	    clear_recursive(root);
 	    free_node(root);
+
 	    root = NULL;
 	    headleaf = tailleaf = NULL;
+
+	    stats = tree_stats();
 	}
 
-	itemcount = 0;
+	BTREE_ASSERT(stats.itemcount == 0);
     }
 
 private:
     /// Recursively free up nodes
-    static void clear_recursive(node *node)
+    void clear_recursive(node *node)
     {
 	if (node->isleafnode())
 	{
@@ -1043,7 +1090,7 @@ public:
     /// Return the number of key/data pairs in the B+ tree
     inline size_type size() const
     {
-	return itemcount;
+	return stats.itemcount;
     }
 
     /// Returns true if there is at least one key/data pair in the B+ tree
@@ -1057,6 +1104,12 @@ public:
     inline size_type max_size() const
     {
 	return size_type(-1);
+    }
+
+    /// Return a const reference to the current statistics.
+    inline const struct stats& get_stats() const
+    {
+	return stats;
     }
 
 public:
@@ -1310,8 +1363,9 @@ public:
 	    key_less = other.key_comp();
 	    if (other.size() != 0)
 	    {
+		stats.num_leaves = stats.num_innernodes = 0;
 		root = copy_recursive(other.root);
-		itemcount = other.itemcount;
+		stats = other.stats;
 	    }
 
 	    if (selfverify) verify();
@@ -1323,11 +1377,12 @@ public:
     /// copy or all key/data pairs.
     inline btree(const btree_self &other)
 	: root(NULL), headleaf(NULL), tailleaf(NULL),
-	  itemcount( other.itemcount ),
+	  stats( other.stats ),
 	  key_less( other.key_comp() )
     {
-	if (itemcount > 0)
+	if (size() > 0)
 	{
+	    stats.num_leaves = stats.num_innernodes = 0;
 	    root = copy_recursive(other.root);
 	    if (selfverify) verify();
 	}
@@ -1464,7 +1519,7 @@ private:
 	}
 
 	// increment itemcount if the item was inserted
-	if (r.second) ++itemcount;
+	if (r.second) ++stats.itemcount;
 
 	if (debug)
 	    print();
@@ -1662,7 +1717,7 @@ private:
     /// the new nodes and it's insertion key in the two parameters. Requires
     /// the slot of the item will be inserted, so the nodes will be the same
     /// size after the insert.
-    static void split_inner_node(inner_node* inner, key_type* _newkey, node** _newinner, unsigned int addslot)
+    void split_inner_node(inner_node* inner, key_type* _newkey, node** _newinner, unsigned int addslot)
     {
 	BTREE_ASSERT(inner->isfull());
 
@@ -1765,14 +1820,14 @@ public:
     /// key.
     bool erase_one(const key_type &key)
     {
-	BTREE_PRINT("btree::erase_one(" << key << ") on btree itemcount " << size() << std::endl);
+	BTREE_PRINT("btree::erase_one(" << key << ") on btree size " << size() << std::endl);
 
 	if (selfverify) verify();
 	
 	result_t result = erase_one_descend(key, root, NULL, NULL, NULL, NULL, NULL, 0);
 
 	if (!result.has(btree_not_found))
-	    --itemcount;
+	    --stats.itemcount;
 
 	if (debug) print();
 	if (selfverify) verify();
@@ -2453,13 +2508,20 @@ public:
     // *** Verification of B+ Tree Invariants
 
     /// Run a thorough verification of all B+ tree invariants. The program
-    /// aborts via BTREE_ASSERT() if something is wrong.
+    /// aborts via assert() if something is wrong.
     void verify() const
     {
 	key_type minkey, maxkey;
-
+	tree_stats vstats;
+	
 	if (root)
-	    verify_node(root, &minkey, &maxkey);
+	{
+	    verify_node(root, &minkey, &maxkey, vstats);
+
+	    assert( vstats.itemcount == stats.itemcount );
+	    assert( vstats.num_leaves == stats.num_leaves );
+	    assert( vstats.num_innernodes == stats.num_innernodes );
+	}
 
 	verify_leaflinks();
     }
@@ -2467,7 +2529,7 @@ public:
 private:
 
     /// Recursively descend down the tree and verify each node
-    void verify_node(const node* n, key_type* minkey, key_type* maxkey) const
+    void verify_node(const node* n, key_type* minkey, key_type* maxkey, tree_stats &vstats) const
     {
 	BTREE_PRINT("verifynode " << n << std::endl);
 
@@ -2475,25 +2537,29 @@ private:
 	{
 	    const leaf_node *leaf = static_cast<const leaf_node*>(n);
 
-	    BTREE_ASSERT(leaf == root || !leaf->isunderflow());
+	    assert(leaf == root || !leaf->isunderflow());
 
 	    for(unsigned short slot = 0; slot < leaf->slotuse - 1; ++slot)
 	    {
-		BTREE_ASSERT(key_lessequal(leaf->slotkey[slot], leaf->slotkey[slot + 1]));
+		assert(key_lessequal(leaf->slotkey[slot], leaf->slotkey[slot + 1]));
 	    }
 
 	    *minkey = leaf->slotkey[0];
 	    *maxkey = leaf->slotkey[leaf->slotuse - 1];
+
+	    vstats.num_leaves++;
+	    vstats.itemcount += leaf->slotuse;
 	}
 	else // !n->isleafnode()
 	{
 	    const inner_node *inner = static_cast<const inner_node*>(n);
+	    vstats.num_innernodes++;
 
-	    BTREE_ASSERT(inner == root || !inner->isunderflow());
+	    assert(inner == root || !inner->isunderflow());
 
 	    for(unsigned short slot = 0; slot < inner->slotuse - 1; ++slot)
 	    {
-		BTREE_ASSERT(key_lessequal(inner->slotkey[slot], inner->slotkey[slot + 1]));
+		assert(key_lessequal(inner->slotkey[slot], inner->slotkey[slot + 1]));
 	    }
 
 	    for(unsigned short slot = 0; slot <= inner->slotuse; ++slot)
@@ -2502,20 +2568,20 @@ private:
 		key_type subminkey = key_type();
 		key_type submaxkey = key_type();
 
-		BTREE_ASSERT(subnode->level + 1 == inner->level);
-		verify_node(subnode, &subminkey, &submaxkey);
+		assert(subnode->level + 1 == inner->level);
+		verify_node(subnode, &subminkey, &submaxkey, vstats);
 
 		BTREE_PRINT("verify subnode " << subnode << ": " << subminkey << " - " << submaxkey << std::endl);
 
 		if (slot == 0)
 		    *minkey = subminkey;
 		else
-		    BTREE_ASSERT(key_greaterequal(subminkey, inner->slotkey[slot-1]));
+		    assert(key_greaterequal(subminkey, inner->slotkey[slot-1]));
 
 		if (slot == inner->slotuse)
 		    *maxkey = submaxkey;
 		else
-		    BTREE_ASSERT(key_equal(inner->slotkey[slot], submaxkey));
+		    assert(key_equal(inner->slotkey[slot], submaxkey));
 
 		if (inner->level == 1 && slot < inner->slotuse)
 		{
@@ -2524,8 +2590,8 @@ private:
 		    const leaf_node *leafa = static_cast<const leaf_node*>(inner->childid[slot]);
 		    const leaf_node *leafb = static_cast<const leaf_node*>(inner->childid[slot + 1]);
 
-		    BTREE_ASSERT(leafa->nextleaf == leafb);
-		    BTREE_ASSERT(leafa == leafb->prevleaf);
+		    assert(leafa->nextleaf == leafb);
+		    assert(leafa == leafb->prevleaf);
 		    (void)leafa; (void)leafb;
 		}
 		if (inner->level == 2 && slot < inner->slotuse)
@@ -2537,8 +2603,8 @@ private:
 		    const leaf_node *leafa = static_cast<const leaf_node*>(parenta->childid[parenta->slotuse]);
 		    const leaf_node *leafb = static_cast<const leaf_node*>(parentb->childid[0]);
 
-		    BTREE_ASSERT(leafa->nextleaf == leafb);
-		    BTREE_ASSERT(leafa == leafb->prevleaf);
+		    assert(leafa->nextleaf == leafb);
+		    assert(leafa == leafb->prevleaf);
 		    (void)leafa; (void)leafb;
 		}
 	    }
@@ -2550,37 +2616,37 @@ private:
     {
 	const leaf_node *n = headleaf;
 
-	BTREE_ASSERT(n->level == 0);
-	BTREE_ASSERT(!n || n->prevleaf == NULL);
+	assert(n->level == 0);
+	assert(!n || n->prevleaf == NULL);
 
 	unsigned int count = 0;
 
 	while(n)
 	{
-	    BTREE_ASSERT(n->level == 0);
+	    assert(n->level == 0);
 
 	    for(unsigned short slot = 0; slot < n->slotuse - 1; ++slot)
 	    {
-		BTREE_ASSERT(key_lessequal(n->slotkey[slot], n->slotkey[slot + 1]));
+		assert(key_lessequal(n->slotkey[slot], n->slotkey[slot + 1]));
 	    }
 
 	    count += n->slotuse;
 
 	    if (n->nextleaf)
 	    {
-		BTREE_ASSERT(key_lessequal(n->slotkey[n->slotuse-1], n->nextleaf->slotkey[0]));
+		assert(key_lessequal(n->slotkey[n->slotuse-1], n->nextleaf->slotkey[0]));
 
-		BTREE_ASSERT(n == n->nextleaf->prevleaf);
+		assert(n == n->nextleaf->prevleaf);
 	    }
 	    else
 	    {
-		BTREE_ASSERT(tailleaf == n);
+		assert(tailleaf == n);
 	    }
 
 	    n = n->nextleaf;
 	}
 
-	BTREE_ASSERT(count == itemcount);
+	assert(count == size());
     }
 
 private:
@@ -2661,7 +2727,7 @@ public:
     {
 	struct dump_header header;
 	header.fill();
-	header.itemcount = itemcount;
+	header.itemcount = size();
 
 	os.write(reinterpret_cast<char*>(&header), sizeof(header));
 
@@ -2696,7 +2762,7 @@ public:
 	    root = restore_node(is);
 	    if (root == NULL) return false;
 
-	    itemcount = fileheader.itemcount;
+	    stats.itemcount = fileheader.itemcount;
 	}
 
 	if (debug) print();
