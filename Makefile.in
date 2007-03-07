@@ -184,7 +184,7 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = . testsuite speedtest
+SUBDIRS = . testsuite
 include_HEADERS = \
 	include/stx/btree.h \
 	include/stx/btree_set.h \
