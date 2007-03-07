@@ -17,5 +17,5 @@ testsuite_SOURCES = TestTrue.cc
 
 endif
 
-AM_CXXFLAGS = -W -Wall -Wold-style-cast -DBTREE_DEBUG -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
+AM_CXXFLAGS = -W -Wall -Wold-style-cast -Wshadow -DBTREE_DEBUG -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
 LDADD = @CPPUNIT_LIBS@

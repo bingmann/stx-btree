@@ -41,5 +41,6 @@ AM_CONDITIONAL(HAVE_CPPUNIT, test x$CPPUNIT_CONFIG != xno)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-		 testsuite/Makefile])
+		 testsuite/Makefile
+		 speedtest/Makefile])
 AC_OUTPUT

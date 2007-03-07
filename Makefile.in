@@ -184,12 +184,18 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-SUBDIRS = . testsuite
-include_HEADERS = include/stx/btree.h \
-		include/stx/btree_set.h \
-		include/stx/btree_map.h \
-		include/stx/btree_multiset.h \
-		include/stx/btree_multimap.h
+SUBDIRS = . testsuite speedtest
+include_HEADERS = \
+	include/stx/btree.h \
+	include/stx/btree_set.h \
+	include/stx/btree_map.h \
+	include/stx/btree_multiset.h \
+	include/stx/btree_multimap.h \
+	include/stx/btree \
+	include/stx/btree_set \
+	include/stx/btree_map \
+	include/stx/btree_multiset \
+	include/stx/btree_multimap
 
 testbt_SOURCES = testbt.cc
 AM_CFLAGS = -W -Wall -I$(srcdir)/include
