@@ -51,14 +51,16 @@ protected:
 	CPPUNIT_ASSERT( bt.size() == insnum );
 
 	// *** iterate
-	btree_type::iterator bi = bt.begin();
-	multiset_type::const_iterator si = set.begin();
-	for(; bi != bt.end() && si != set.end(); ++bi, ++si)
 	{
-	    CPPUNIT_ASSERT( *si == bi.key() );
+	    btree_type::iterator bi = bt.begin();
+	    multiset_type::const_iterator si = set.begin();
+	    for(; bi != bt.end() && si != set.end(); ++bi, ++si)
+	    {
+		CPPUNIT_ASSERT( *si == bi.key() );
+	    }
+	    CPPUNIT_ASSERT( bi == bt.end() );
+	    CPPUNIT_ASSERT( si == set.end() );
 	}
-	CPPUNIT_ASSERT( bi == bt.end() );
-	CPPUNIT_ASSERT( si == set.end() );
 
 	// *** existance
 	srand(34234235);

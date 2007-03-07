@@ -9,13 +9,13 @@
 #include <algorithm>
 #include <istream>
 #include <ostream>
+#include <assert.h>
 
 // *** Debugging Macros
 
 #ifdef BTREE_DEBUG
 
 #include <iostream>
-#include <assert.h>
 
 #define BTREE_PRINT(x)		do { if (debug) (std::cout << x); } while(0)
 #define BTREE_ASSERT(x)		do { assert(x); } while(0)
@@ -905,11 +905,11 @@ public:
 
 private:
     /// Recursively free up nodes
-    void clear_recursive(node *node)
+    void clear_recursive(node *n)
     {
-	if (node->isleafnode())
+	if (n->isleafnode())
 	{
-	    leaf_node *leafnode = static_cast<leaf_node*>(node);
+	    leaf_node *leafnode = static_cast<leaf_node*>(n);
 
 	    for (unsigned int slot = 0; slot < leafnode->slotuse; ++slot)
 	    {
@@ -918,7 +918,7 @@ private:
 	}
 	else
 	{
-	    inner_node *innernode = static_cast<inner_node*>(node);
+	    inner_node *innernode = static_cast<inner_node*>(n);
 
 	    for (unsigned short slot = 0; slot < innernode->slotuse + 1; ++slot)
 	    {
@@ -1390,11 +1390,11 @@ public:
     
 private:
     /// Recursively copy nodes from another B+ tree object
-    node* copy_recursive(const node *node)
+    class node* copy_recursive(const node *n)
     {
-	if (node->isleafnode())
+	if (n->isleafnode())
 	{
-	    const leaf_node *leaf = static_cast<const leaf_node*>(node);
+	    const leaf_node *leaf = static_cast<const leaf_node*>(n);
 	    leaf_node *newleaf = allocate_leaf();
 
 	    newleaf->slotuse = leaf->slotuse;
@@ -1417,7 +1417,7 @@ private:
 	}
 	else
 	{
-	    const inner_node *inner = static_cast<const inner_node*>(node);
+	    const inner_node *inner = static_cast<const inner_node*>(n);
 	    inner_node *newinner = allocate_inner(inner->level);
 
 	    newinner->slotuse = inner->slotuse;
@@ -2619,7 +2619,7 @@ private:
 	assert(n->level == 0);
 	assert(!n || n->prevleaf == NULL);
 
-	unsigned int count = 0;
+	unsigned int testcount = 0;
 
 	while(n)
 	{
@@ -2630,7 +2630,7 @@ private:
 		assert(key_lessequal(n->slotkey[slot], n->slotkey[slot + 1]));
 	    }
 
-	    count += n->slotuse;
+	    testcount += n->slotuse;
 
 	    if (n->nextleaf)
 	    {
@@ -2646,7 +2646,7 @@ private:
 	    n = n->nextleaf;
 	}
 
-	assert(count == size());
+	assert(testcount == size());
     }
 
 private:
