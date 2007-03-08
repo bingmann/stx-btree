@@ -1,4 +1,7 @@
 // $Id$
+/** \file btree_multimap.h
+ * Contains the specialized B+ tree template class btree_multimap
+ */
 
 #ifndef _STX_BTREE_MULTIMAP_H_
 #define _STX_BTREE_MULTIMAP_H_
@@ -7,8 +10,19 @@
 
 namespace stx {
 
-/** @brief Basic class implementing a B+ tree data structure in memory.
+/** @brief Specialized B+ tree template class implementing STL's multimap
+ * container.
  *
+ * Implements the STL multimap using a B+ tree. It can be used as a drop-in
+ * replacement for std::multimap. Not all asymptotic time requirements are met in
+ * theory. There is no allocator template parameter, instead the class has a
+ * traits class defining B+ tree properties like slots and self-verification.
+ *
+ * Most noteworthy difference to the default red-black implementation of
+ * std::multimap is that the B+ tree does not hold key and data pair together
+ * in memory. Instead each B+ tree node has two arrays of keys and data
+ * values. This design directly generates many problems in implementing the
+ * iterator's operator's which return value_type composition pairs.
  */
 template <typename _Key, typename _Data,
 	  typename _Compare = std::less<_Key>,
@@ -46,7 +60,7 @@ public:
     /// Implementation type of the btree_base
     typedef stx::btree<key_type, data_type, value_type, key_compare, traits, true> btree_impl;
 
-    /// Size type used to count keys
+    /// Function class comparing two value_type pairs.
     typedef typename btree_impl::value_compare	value_compare;
 
     /// Size type used to count keys
@@ -81,7 +95,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream outputable.
+    /// with BTREE_PRINT and the key type must be std::ostream printable.
     static const bool 			debug = btree_impl::debug;
 
     /// Operational parameter: Allow duplicate keys in the btree.
@@ -401,9 +415,8 @@ public:
 public:
     // *** Public Insertion Functions
 
-    /// Attempt to insert a key/data pair into the B+ tree. If the tree does not
-    /// allow duplicate keys, then the insert may fail if it is already
-    /// present.
+    /// Attempt to insert a key/data pair into the B+ tree. As this tree allows
+    /// duplicates insertion never fails.
     inline iterator insert(const value_type& x)
     {
 	return tree.insert2(x.first, x.second).first;
@@ -411,8 +424,7 @@ public:
     
     /// Attempt to insert a key/data pair into the B+ tree. Beware that if
     /// key_type == data_type, then the template iterator insert() is called
-    /// instead. If the tree does not allow duplicate keys, then the insert may
-    /// fail if it is already present.
+    /// instead. As this tree allows duplicates insertion never fails.
     inline iterator insert(const key_type& key, const data_type& data)
     {
 	return tree.insert2(key, data).first;
@@ -420,8 +432,8 @@ public:
 
     /// Attempt to insert a key/data pair into the B+ tree. This function is the
     /// same as the other insert, however if key_type == data_type then the
-    /// non-template function cannot be called. If the tree does not allow
-    /// duplicate keys, then the insert may fail if it is already present.
+    /// non-template function cannot be called.  As this tree allows duplicates
+    /// insertion never fails.
     inline iterator insert2(const key_type& key, const data_type& data)
     {
 	return tree.insert2(key, data).first;
@@ -460,7 +472,7 @@ public:
     }
 
     /// Erases all the key/data pairs associated with the given key. This is
-    /// implemented using erase_one().
+    /// implemented using erase_one() and thus not very efficient.
     size_type erase(const key_type &key)
     {
 	return tree.erase(key);
@@ -488,7 +500,7 @@ public:
 
     /// Print out the B+ tree structure with keys onto std::cout. This function
     /// requires that the header is compiled with BTREE_PRINT and that key_type
-    /// is outputtable via std::ostream.
+    /// is printable via std::ostream.
     void print() const
     {
 	tree.print();

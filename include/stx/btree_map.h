@@ -1,4 +1,7 @@
 // $Id$
+/** \file btree_map.h
+ * Contains the specialized B+ tree template class btree_map
+ */
 
 #ifndef _STX_BTREE_MAP_H_
 #define _STX_BTREE_MAP_H_
@@ -7,8 +10,18 @@
 
 namespace stx {
 
-/** @brief Basic class implementing a B+ tree data structure in memory.
+/** @brief Specialized B+ tree template class implementing STL's map container.
  *
+ * Implements the STL map using a B+ tree. It can be used as a drop-in
+ * replacement for std::map. Not all asymptotic time requirements are met in
+ * theory. There is no allocator template parameter, instead the class has a
+ * traits class defining B+ tree properties like slots and self-verification.
+ *
+ * Most noteworthy difference to the default red-black implementation of
+ * std::map is that the B+ tree does not hold key and data pair together in
+ * memory. Instead each B+ tree node has two arrays of keys and data
+ * values. This design directly generates many problems in implementing the
+ * iterator's operator's which return value_type composition pairs.
  */
 template <typename _Key, typename _Data,
 	  typename _Compare = std::less<_Key>,
@@ -46,7 +59,7 @@ public:
     /// Implementation type of the btree_base
     typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false> btree_impl;
 
-    /// Size type used to count keys
+    /// Function class comparing two value_type pairs.
     typedef typename btree_impl::value_compare	value_compare;
 
     /// Size type used to count keys
@@ -81,7 +94,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream outputable.
+    /// with BTREE_PRINT and the key type must be std::ostream printable.
     static const bool 			debug = btree_impl::debug;
 
     /// Operational parameter: Allow duplicate keys in the btree.
@@ -290,7 +303,8 @@ public:
     }
 
     /// Tries to locate a key in the B+ tree and returns the number of
-    /// identical key entries found.    
+    /// identical key entries found. Since this is a unique map, count()
+    /// returns either 0 or 1.
     size_type count(const key_type &key) const
     {
 	return tree.count(key);
@@ -341,7 +355,7 @@ public:
 
     /// Equality relation of B+ trees of the same type. B+ trees of the same
     /// size and equal elements (both key and data) are considered
-    /// equal. Beware of the random ordering of duplicate keys.
+    /// equal.
     inline bool operator==(const self &other) const
     {
 	return (tree == other.tree);
@@ -392,7 +406,7 @@ public:
     }
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
-    /// copy or all key/data pairs.
+    /// copy of all key/data pairs.
     inline btree_map(const self &other)
 	: tree(other.tree)
     {
@@ -401,9 +415,8 @@ public:
 public:
     // *** Public Insertion Functions
 
-    /// Attempt to insert a key/data pair into the B+ tree. If the tree does not
-    /// allow duplicate keys, then the insert may fail if it is already
-    /// present.
+    /// Attempt to insert a key/data pair into the B+ tree. Fails if the pair
+    /// is already present.
     inline std::pair<iterator, bool> insert(const value_type& x)
     {
 	return tree.insert2(x.first, x.second);
@@ -411,8 +424,7 @@ public:
     
     /// Attempt to insert a key/data pair into the B+ tree. Beware that if
     /// key_type == data_type, then the template iterator insert() is called
-    /// instead. If the tree does not allow duplicate keys, then the insert may
-    /// fail if it is already present.
+    /// instead. Fails if the inserted pair is already present.
     inline std::pair<iterator, bool> insert(const key_type& key, const data_type& data)
     {
 	return tree.insert2(key, data);
@@ -420,8 +432,8 @@ public:
 
     /// Attempt to insert a key/data pair into the B+ tree. This function is the
     /// same as the other insert, however if key_type == data_type then the
-    /// non-template function cannot be called. If the tree does not allow
-    /// duplicate keys, then the insert may fail if it is already present.
+    /// non-template function cannot be called. Fails if the inserted pair is
+    /// already present.
     inline std::pair<iterator, bool> insert2(const key_type& key, const data_type& data)
     {
 	return tree.insert2(key, data);
@@ -461,8 +473,8 @@ public:
 public:
     // *** Public Erase Functions
 
-    /// Erases one (the first) of the key/data pairs associated with the given
-    /// key.
+    /// Erases the key/data pairs associated with the given key. For this
+    /// unique-associative map there is no difference to erase().
     bool erase_one(const key_type &key)
     {
 	return tree.erase_one(key);
@@ -497,7 +509,7 @@ public:
 
     /// Print out the B+ tree structure with keys onto std::cout. This function
     /// requires that the header is compiled with BTREE_PRINT and that key_type
-    /// is outputtable via std::ostream.
+    /// is printable via std::ostream.
     void print() const
     {
 	tree.print();

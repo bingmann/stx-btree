@@ -1,4 +1,7 @@
 // $Id$
+/** \file btree.h
+ * Contains the main B+ tree implementation template class "btree".
+ */
 
 #ifndef _STX_BTREE_H_
 #define _STX_BTREE_H_
@@ -17,23 +20,30 @@
 
 #include <iostream>
 
+/// Print out debug information to std::cout if BTREE_DEBUG is defined.
 #define BTREE_PRINT(x)		do { if (debug) (std::cout << x); } while(0)
+
+/// Assertion only if BTREE_DEBUG is defined. This is not used in verify().
 #define BTREE_ASSERT(x)		do { assert(x); } while(0)
 
 #else
 
+/// Print out debug information to std::cout if BTREE_DEBUG is defined.
 #define BTREE_PRINT(x)		do { } while(0)
+
+/// Assertion only if BTREE_DEBUG is defined. This is not used in verify().
 #define BTREE_ASSERT(x)		do { } while(0)
 
 #endif
 
+/// The maximum of a and b. Used in some compile-time formulas.
 #define BTREE_MAX(a,b)		((a) < (b) ? (b) : (a))
 
 /// STX - Some Template Extensions namespace
 namespace stx {
 
-/** Generates default traits for a set B+ tree. It estimates leaf and inner node
- * sizes by assuming a cache line size of 256 bytes. */
+/** Generates default traits for a B+ tree used as a set. It estimates leaf and
+ * inner node sizes by assuming a cache line size of 128 bytes. */
 template <typename _Key>
 struct btree_default_set_traits
 {
@@ -49,15 +59,15 @@ struct btree_default_set_traits
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key)) );
+    static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
+    static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
 };
 
-/** Generates default traits for a map B+ tree. It estimates leaf and inner node
- * sizes by assuming a cache line size of 256 bytes. */
+/** Generates default traits for a B+ tree used as a map. It estimates leaf and
+ * inner node sizes by assuming a cache line size of 128 bytes. */
 template <typename _Key, typename _Data>
 struct btree_default_map_traits
 {
@@ -73,15 +83,25 @@ struct btree_default_map_traits
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
+    static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(_Data)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
+    static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
 };
 
-/** @brief Basic class implementing a B+ tree data structure in memory.
+/** @brief Basic class implementing a base B+ tree data structure in memory.
  *
+ * The base implementation of a memory B+ tree. It is based on the
+ * implementation in Cormen's Introduction into Algorithms, Jan Jannink's paper
+ * and other algorithm resources. Almost all STL-required function calls are
+ * implemented. The asymptotic time requirements of the STL are not always
+ * fulfilled in theory, however in practice this B+ tree performs better than a
+ * red-black tree by using more memory. The insertion function splits the nodes
+ * on the recursion unroll. Erase is largely based on Jannink's ideas.
+ *
+ * This class is specialized into btree_set, btree_multiset, btree_map and
+ * btree_multimap using prepared template parameters and facade-functions.
  */
 template <typename _Key, typename _Data,
 	  typename _Value = std::pair<_Key, _Data>,
@@ -93,8 +113,8 @@ class btree
 public:
     // *** Template Parameter Types
 
-    /// First template parameter: The key type of the btree. This is stored in
-    /// inner nodes and leaves
+    /// First template parameter: The key type of the B+ tree. This is stored
+    /// in inner nodes and leaves
     typedef _Key			key_type;
 
     /// Second template parameter: The data type associated with each
@@ -114,7 +134,7 @@ public:
     /// of the B+ tree
     typedef _Traits			traits;
 
-    /// Sixth template parameter: Allow duplicate keys in the btree. Used to
+    /// Sixth template parameter: Allow duplicate keys in the B+ tree. Used to
     /// implement multiset and multimap.
     static const bool			allow_duplicates = _Duplicates;
 
@@ -156,7 +176,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream outputable.
+    /// with BTREE_PRINT and the key type must be std::ostream printable.
     static const bool 			debug = traits::debug;
 
 private:
@@ -532,7 +552,7 @@ public:
     public:
 	// *** Methods
 
-	/// Construtor of a const iterator
+	/// Constructor of a const iterator
 	inline const_iterator(const typename btree::leaf_node *l, unsigned short s)
 	    : currnode(l), currslot(s)
 	{ }
@@ -1374,7 +1394,7 @@ public:
     }
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
-    /// copy or all key/data pairs.
+    /// copy of all key/data pairs.
     inline btree(const btree_self &other)
 	: root(NULL), headleaf(NULL), tailleaf(NULL),
 	  stats( other.stats ),
@@ -1632,7 +1652,7 @@ private:
 
 	    int slot = find_lower(leaf, key);
 
-	    if (!allow_duplicates && key_equal(key, leaf->slotkey[slot])) {
+	    if (!allow_duplicates && slot < leaf->slotuse && key_equal(key, leaf->slotkey[slot])) {
 		return std::pair<iterator, bool>(iterator(leaf, slot), false);
 	    }
 
@@ -1922,7 +1942,7 @@ private:
 		}
 		else
 		{
-		    BTREE_PRINT("Schedueling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
+		    BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
 		    myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
 		}
 	    }
@@ -2436,7 +2456,7 @@ public:
 
     /// Print out the B+ tree structure with keys onto std::cout. This function
     /// requires that the header is compiled with BTREE_PRINT and that key_type
-    /// is outputtable via std::ostream.
+    /// is printable via std::ostream.
     void print() const
     {
 	print_node(root, 0, true);

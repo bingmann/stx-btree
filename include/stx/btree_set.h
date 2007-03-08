@@ -1,4 +1,7 @@
 // $Id$
+/** \file btree_set.h
+ * Contains the specialized B+ tree template class btree_set
+ */
 
 #ifndef _STX_BTREE_SET_H_
 #define _STX_BTREE_SET_H_
@@ -7,7 +10,22 @@
 
 namespace stx {
 
-/** @brief Basic class implementing a B+ tree data structure in memory.
+/** @brief Specialized B+ tree template class implementing STL's set container.
+ *
+ * Implements the STL set using a B+ tree. It can be used as a drop-in
+ * replacement for std::set. Not all asymptotic time requirements are met in
+ * theory. There is no allocator template parameter, instead the class has a
+ * traits class defining B+ tree properties like slots and self-verification.
+ *
+ * It is somewhat inefficient to implement a set using a B+ tree, a plain B
+ * tree would hold fewer copies of the keys.
+ *
+ * The set class is derived from the base implementation class btree by
+ * specifying an empty struct as data_type. All function are adapted to provide
+ * the inner class with placeholder objects. Most tricky to get right were the
+ * return type's of iterators which as value_type should be the same as
+ * key_type, and not a pair of key and dummy-struct. This is taken case of
+ * using some template magic in the btree class.
  */
 template <typename _Key,
 	  typename _Compare = std::less<_Key>,
@@ -17,8 +35,8 @@ class btree_set
 public:
     // *** Template Parameter Types
 
-    /// First template parameter: The key type of the btree. This is stored in
-    /// inner nodes and leaves
+    /// First template parameter: The key type of the B+ tree. This is stored
+    /// in inner nodes and leaves
     typedef _Key			key_type;
 
     /// Second template parameter: Key comparison function object
@@ -29,7 +47,7 @@ public:
     typedef _Traits			traits;
 
 private:
-    // *** The Data_Type
+    // *** The data_type
 
     /// \internal The empty struct used as a placeholder for the data_type
     struct empty_struct
@@ -51,7 +69,7 @@ public:
     /// Implementation type of the btree_base
     typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false> btree_impl;
 
-    /// Size type used to count keys
+    /// Function class comparing two value_type keys.
     typedef typename btree_impl::value_compare	value_compare;
 
     /// Size type used to count keys
@@ -86,7 +104,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream outputable.
+    /// with BTREE_PRINT and the key type must be std::ostream printable.
     static const bool 			debug = btree_impl::debug;
 
     /// Operational parameter: Allow duplicate keys in the btree.
@@ -297,7 +315,8 @@ public:
     }
 
     /// Tries to locate a key in the B+ tree and returns the number of
-    /// identical key entries found.    
+    /// identical key entries found. As this is a unique set, count() returns
+    /// either 0 or 1.
     size_type count(const key_type &key) const
     {
 	return tree.count(key);
@@ -310,8 +329,8 @@ public:
 	return tree.lower_bound(key);
     }
 
-    /// Searches the B+ tree and returns an constant iterator to the first key less or
-    /// equal to the parameter. If unsuccessful it returns end().
+    /// Searches the B+ tree and returns an constant iterator to the first key
+    /// less or equal to the parameter. If unsuccessful it returns end().
     const_iterator lower_bound(const key_type& key) const
     {
 	return tree.lower_bound(key);
@@ -347,8 +366,7 @@ public:
     // *** B+ Tree Object Comparison Functions
 
     /// Equality relation of B+ trees of the same type. B+ trees of the same
-    /// size and equal elements (both key and data) are considered
-    /// equal. Beware of the random ordering of duplicate keys.
+    /// size and equal elements are considered equal.
     inline bool operator==(const self &other) const
     {
 	return (tree == other.tree);
@@ -399,7 +417,7 @@ public:
     }
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
-    /// copy or all keys.
+    /// copy of all keys.
     inline btree_set(const self &other)
 	: tree(other.tree)
     {
@@ -422,8 +440,8 @@ public:
 	return tree.insert2(hint, x, data_type());
     }
 
-    /// Attempt to insert the range [first,last) of key_type into the B+
-    /// tree. Each key/data pair is inserted individually.
+    /// Attempt to insert the range [first,last) of iterators dereferencing to
+    /// key_type into the B+ tree. Each key/data pair is inserted individually.
     template <typename InputIterator>
     inline void insert(InputIterator first, InputIterator last)
     {
@@ -438,21 +456,21 @@ public:
 public:
     // *** Public Erase Functions
 
-    /// Erases the key from the set.
+    /// Erases the key from the set. As this is a unique set, there is no
+    /// difference to erase().
     bool erase_one(const key_type &key)
     {
 	return tree.erase_one(key);
     }
 
-    /// Erases all the key/data pairs associated with the given key. This is
-    /// implemented using erase_one().
+    /// Erases all the key/data pairs associated with the given key.
     size_type erase(const key_type &key)
     {
 	return tree.erase(key);
     }
 
 #ifdef BTREE_TODO
-    /// Erase the key/data pair referenced by the iterator.
+    /// Erase the keys referenced by the iterator.
     void erase(iterator iter)
     {
 
@@ -460,8 +478,8 @@ public:
 #endif
 
 #ifdef BTREE_TODO
-    /// Erase all key/data pairs in the range [first,last). This function is
-    /// currently not implemented by the B+ Tree.
+    /// Erase all keys in the range [first,last). This function is currently
+    /// not implemented by the B+ Tree.
     void erase(iterator /* first */, iterator /* last */)
     {
 	abort();
@@ -473,7 +491,7 @@ public:
 
     /// Print out the B+ tree structure with keys onto std::cout. This function
     /// requires that the header is compiled with BTREE_PRINT and that key_type
-    /// is outputtable via std::ostream.
+    /// is printable via std::ostream.
     void print() const
     {
 	tree.print();
@@ -499,8 +517,8 @@ public:
 
     /// Dump the contents of the B+ tree out onto an ostream as a binary
     /// image. The image contains memory pointers which will be fixed when the
-    /// image is restored. For this to work your key_type and data_type must be
-    /// integral types and contain no pointers or references.
+    /// image is restored. For this to work your key_type must be an integral
+    /// type and contain no pointers or references.
     void dump(std::ostream &os) const
     {
 	tree.dump(os);
@@ -508,8 +526,8 @@ public:
 
     /// Restore a binary image of a dumped B+ tree from an istream. The B+ tree
     /// pointers are fixed using the dump order. For dump and restore to work
-    /// your key_type and data_type must be integral types and contain no
-    /// pointers or references. Returns true if the restore was successful.
+    /// your key_type must be an integral type and contain no pointers or
+    /// references. Returns true if the restore was successful.
     bool restore(std::istream &is)
     {
 	return tree.restore(is);
