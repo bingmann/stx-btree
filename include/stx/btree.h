@@ -58,11 +58,11 @@ struct btree_default_set_traits
     static const bool	debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
-    /// has a size of about 256 bytes.
+    /// has a size of about 128 bytes.
     static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
-    /// has a size of about 256 bytes.
+    /// has a size of about 128 bytes.
     static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
 };
 
@@ -82,11 +82,11 @@ struct btree_default_map_traits
     static const bool	debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
-    /// has a size of about 256 bytes.
+    /// has a size of about 128 bytes.
     static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(_Data)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
-    /// has a size of about 256 bytes.
+    /// has a size of about 128 bytes.
     static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
 };
 
@@ -101,7 +101,7 @@ struct btree_default_map_traits
  * on the recursion unroll. Erase is largely based on Jannink's ideas.
  *
  * This class is specialized into btree_set, btree_multiset, btree_map and
- * btree_multimap using prepared template parameters and facade-functions.
+ * btree_multimap using default template parameters and facade-functions.
  */
 template <typename _Key, typename _Data,
 	  typename _Value = std::pair<_Key, _Data>,
@@ -142,7 +142,8 @@ public:
     // *** Constructed Types
 
     /// Typedef of our own type
-    typedef btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>	btree_self;
+    typedef btree<key_type, data_type, value_type,
+		  key_compare, traits, allow_duplicates>	btree_self;
 
     /// Size type used to count keys
     typedef size_t				size_type;
@@ -323,6 +324,9 @@ private:
 
 public:
     // *** Iterators and Reverse Iterators
+
+    class iterator;
+    class const_iterator;
 
     /// STL-like iterator object for B+ tree items. The iterator points to a
     /// specific slot number in a leaf.
@@ -588,7 +592,7 @@ public:
 	    return currnode->slotkey[currslot];
 	}
 
-	/// Writable reference to the current data object
+	/// Read-only reference to the current data object
 	inline const data_type& data() const
 	{
 	    return currnode->slotdata[currslot];
@@ -799,6 +803,7 @@ public:
 	std::swap(headleaf, from.headleaf);
 	std::swap(tailleaf, from.tailleaf);
 	std::swap(stats, from.stats);
+	std::swap(key_less, from.key_less);
     }
 
 public:
