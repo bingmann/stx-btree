@@ -14,6 +14,7 @@ class LargeTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(test_3200_10);
     CPPUNIT_TEST(test_320_1000);
     CPPUNIT_TEST(test_320_10000);
+    CPPUNIT_TEST(test_sequence);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -117,6 +118,85 @@ protected:
     {
 	test_multi(320, 10000);
     }
+
+    void test_sequence()
+    {
+	typedef stx::btree_multiset<unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+
+	btree_type bt;
+
+	const unsigned int insnum = 10000;
+
+	typedef std::multiset<unsigned int> multiset_type;
+	multiset_type set;
+
+	// *** insert
+	srand(34234235);
+	for(unsigned int i = 0; i < insnum; i++)
+	{
+	    unsigned int k = i;
+
+	    CPPUNIT_ASSERT( bt.size() == set.size() );
+	    bt.insert(k);
+	    set.insert(k);
+	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+
+	    CPPUNIT_ASSERT( bt.size() == set.size() );
+	}
+
+	CPPUNIT_ASSERT( bt.size() == insnum );
+
+	// *** iterate
+	btree_type::iterator bi = bt.begin();
+	multiset_type::const_iterator si = set.begin();
+	for(; bi != bt.end() && si != set.end(); ++bi, ++si)
+	{
+	    CPPUNIT_ASSERT( *si == bi.key() );
+	}
+	CPPUNIT_ASSERT( bi == bt.end() );
+	CPPUNIT_ASSERT( si == set.end() );
+
+	// *** existance
+	srand(34234235);
+	for(unsigned int i = 0; i < insnum; i++)
+	{
+	    unsigned int k = i;
+
+	    CPPUNIT_ASSERT( bt.exists(k) );
+	}
+
+	// *** counting
+	srand(34234235);
+	for(unsigned int i = 0; i < insnum; i++)
+	{
+	    unsigned int k = i;
+
+	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+	}
+
+	// *** deletion
+	srand(34234235);
+	for(unsigned int i = 0; i < insnum; i++)
+	{
+	    unsigned int k = i;
+
+	    if (set.find(k) != set.end())
+	    {
+		CPPUNIT_ASSERT( bt.size() == set.size() );
+
+		CPPUNIT_ASSERT( bt.exists(k) );
+		CPPUNIT_ASSERT( bt.erase_one(k) );
+		set.erase( set.find(k) );
+
+		CPPUNIT_ASSERT( bt.size() == set.size() );
+	    }
+	}
+
+	CPPUNIT_ASSERT( bt.empty() );
+	CPPUNIT_ASSERT( set.empty() );
+    }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION( LargeTest );
