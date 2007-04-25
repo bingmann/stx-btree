@@ -33,7 +33,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-noinst_PROGRAMS = speedtest$(EXEEXT)
+@BUILD_SPEEDTEST_TRUE@noinst_PROGRAMS = speedtest$(EXEEXT)
 subdir = speedtest
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -152,6 +152,9 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 speedtest_SOURCES = speedtest.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -O3 -DNDEBUG -I$(top_srcdir)/include
+EXTRA_DIST = speed-all.trt speed-all.txt speed-insert.trt speed-insert.txt \
+	speedtest.gnuplot speedtest.pdf transpose.awk
+
 all: all-am
 
 .SUFFIXES:

@@ -702,6 +702,8 @@ CPPUNIT_CFLAGS
 CPPUNIT_LIBS
 HAVE_CPPUNIT_TRUE
 HAVE_CPPUNIT_FALSE
+BUILD_SPEEDTEST_TRUE
+BUILD_SPEEDTEST_FALSE
 LIBOBJS
 LTLIBOBJS'
 ac_subst_files=''
@@ -1294,6 +1296,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-speedtest	  Build the speedtest (takes lots of RAM) (default: no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -4950,6 +4953,8 @@ fi
 echo $ECHO_N "checking for Cppunit - version >= $cppunit_version_min... $ECHO_C" >&6; }
   no_cppunit=""
   if test "$CPPUNIT_CONFIG" = "no" ; then
+    { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
     no_cppunit=yes
   else
     CPPUNIT_CFLAGS=`$CPPUNIT_CONFIG --cflags`
@@ -4965,10 +4970,21 @@ echo $ECHO_N "checking for Cppunit - version >= $cppunit_version_min... $ECHO_C"
 
     cppunit_major_min=`echo $cppunit_version_min | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\1/'`
+    if test "x${cppunit_major_min}" = "x" ; then
+       cppunit_major_min=0
+    fi
+
     cppunit_minor_min=`echo $cppunit_version_min | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\2/'`
+    if test "x${cppunit_minor_min}" = "x" ; then
+       cppunit_minor_min=0
+    fi
+
     cppunit_micro_min=`echo $cppunit_version_min | \
            sed 's/\([0-9]*\).\([0-9]*\).\([0-9]*\)/\3/'`
+    if test "x${cppunit_micro_min}" = "x" ; then
+       cppunit_micro_min=0
+    fi
 
     cppunit_version_proper=`expr \
         $cppunit_major_version \> $cppunit_major_min \| \
@@ -5006,6 +5022,29 @@ echo "${ECHO_T}no" >&6; }
 else
   HAVE_CPPUNIT_TRUE='#'
   HAVE_CPPUNIT_FALSE=
+fi
+
+
+# Conditional whether to compile the speedtest binary
+# Check whether --enable-speedtest was given.
+if test "${enable_speedtest+set}" = set; then
+  enableval=$enable_speedtest; case "${enableval}" in
+       yes) speedtest=true ;;
+       no)  speedtest=false ;;
+       *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-speedtest" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-speedtest" >&2;}
+   { (exit 1); exit 1; }; } ;;
+     esac
+else
+  speedtest=false
+fi
+
+ if test x$speedtest = xtrue; then
+  BUILD_SPEEDTEST_TRUE=
+  BUILD_SPEEDTEST_FALSE='#'
+else
+  BUILD_SPEEDTEST_TRUE='#'
+  BUILD_SPEEDTEST_FALSE=
 fi
 
 
@@ -5164,6 +5203,13 @@ if test -z "${HAVE_CPPUNIT_TRUE}" && test -z "${HAVE_CPPUNIT_FALSE}"; then
   { { echo "$as_me:$LINENO: error: conditional \"HAVE_CPPUNIT\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAVE_CPPUNIT\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${BUILD_SPEEDTEST_TRUE}" && test -z "${BUILD_SPEEDTEST_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"BUILD_SPEEDTEST\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"BUILD_SPEEDTEST\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -5773,11 +5819,13 @@ CPPUNIT_CFLAGS!$CPPUNIT_CFLAGS$ac_delim
 CPPUNIT_LIBS!$CPPUNIT_LIBS$ac_delim
 HAVE_CPPUNIT_TRUE!$HAVE_CPPUNIT_TRUE$ac_delim
 HAVE_CPPUNIT_FALSE!$HAVE_CPPUNIT_FALSE$ac_delim
+BUILD_SPEEDTEST_TRUE!$BUILD_SPEEDTEST_TRUE$ac_delim
+BUILD_SPEEDTEST_FALSE!$BUILD_SPEEDTEST_FALSE$ac_delim
 LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 91; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 93; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

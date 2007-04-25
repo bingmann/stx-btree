@@ -38,6 +38,16 @@ AM_PATH_CPPUNIT(1.10.0)
 
 AM_CONDITIONAL(HAVE_CPPUNIT, test x$CPPUNIT_CONFIG != xno)
 
+# Conditional whether to compile the speedtest binary
+AC_ARG_ENABLE(speedtest,
+     [  --enable-speedtest	  Build the speedtest (takes lots of RAM) (default: no)],
+     [case "${enableval}" in
+       yes) speedtest=true ;;
+       no)  speedtest=false ;;
+       *) AC_MSG_ERROR(bad value ${enableval} for --enable-speedtest) ;;
+     esac],[speedtest=false])
+AM_CONDITIONAL(BUILD_SPEEDTEST, test x$speedtest = xtrue)
+
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
