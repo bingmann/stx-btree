@@ -6,7 +6,7 @@ AC_INIT(stx-btree, 0.6)
 AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
 
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE
 #AM_MAINTAINER_MODE
 
 if test "$CFLAGS" == ""; then
