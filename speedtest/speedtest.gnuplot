@@ -1,14 +1,14 @@
 #!/usr/bin/env gnuplot
 
-set terminal pdf
+set terminal pdf size 4, 2.4
 set output 'speedtest.pdf'
 
 ### 1st Plot
 
-set title "Speed Test Multiset - Absolute Time - Insertion Only (16000-4096000 Items)"
+set title "Speed Test Multiset - Absolute Time - Insertion Only (125-8000 Items)"
 set key top left
 set logscale x
-set xrange [10000:5000000]
+set xrange [100:10000]
 set xlabel "Inserts"
 set ylabel "Seconds"
 set format x "%.0f"
@@ -22,9 +22,9 @@ plot "speed-insert.txt" using 1:2 title "std::multiset" with linespoints pointty
 
 ### 2nd Plot
 
-set title "Speed Test Multiset - Absolute Time - Insertion Only (125-8000 Items)"
+set title "Speed Test Multiset - Absolute Time - Insertion Only (16000-4096000 Items)"
 
-set xrange [100:10000]
+set xrange [10000:5000000]
 
 replot
 
@@ -52,6 +52,7 @@ set title "Speed Test - Finding the Best Slot Size - Insertion Only - Plotted by
 set key top right
 set autoscale x
 set xlabel "Leaf/Inner Slots"
+set ylabel "Seconds"
 unset logscale x
 unset logscale y
 
@@ -63,10 +64,10 @@ plot "speed-insert.trt" using ($0 + 4):14 title "1024000 Inserts" with lines, \
 
 ### 1st Plot
 
-set title "Speed Test Multiset - Insert/Find/Erase (16000-4096000 Items)"
+set title "Speed Test Multiset - Insert/Find/Erase (125-8000 Items)"
 set key top left
 set logscale x
-set xrange [10000:5000000]
+set xrange [100:10000]
 set xlabel "Data Pairs"
 set ylabel "Seconds"
 set format x "%.0f"
@@ -80,9 +81,9 @@ plot "speed-all.txt" using 1:2 title "std::multiset" with linespoints pointtype 
 
 ### 2nd Plot
 
-set title "Speed Test Multiset - Insert/Find/Erase (125-8000 Items)"
+set title "Speed Test Multiset - Insert/Find/Erase (16000-4096000 Items)"
 
-set xrange [100:10000]
+set xrange [10000:5000000]
 
 replot
 
@@ -110,6 +111,7 @@ set title "Speed Test - Finding the Best Slot Size - Insert/Find/Erase - Plotted
 set key top right
 set autoscale x
 set xlabel "Leaf/Inner Slots"
+set ylabel "Seconds"
 unset logscale x
 unset logscale y
 

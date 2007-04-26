@@ -62,7 +62,7 @@
 namespace stx {
 
 /** Generates default traits for a B+ tree used as a set. It estimates leaf and
- * inner node sizes by assuming a cache line size of 128 bytes. */
+ * inner node sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key>
 struct btree_default_set_traits
 {
@@ -77,16 +77,16 @@ struct btree_default_set_traits
     static const bool	debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
-    /// has a size of about 128 bytes.
-    static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key)) );
+    /// has a size of about 256 bytes.
+    static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
-    /// has a size of about 128 bytes.
-    static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
+    /// has a size of about 256 bytes.
+    static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 
 /** Generates default traits for a B+ tree used as a map. It estimates leaf and
- * inner node sizes by assuming a cache line size of 128 bytes. */
+ * inner node sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key, typename _Data>
 struct btree_default_map_traits
 {
@@ -101,12 +101,12 @@ struct btree_default_map_traits
     static const bool	debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
-    /// has a size of about 128 bytes.
-    static const int 	leafslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(_Data)) );
+    /// has a size of about 256 bytes.
+    static const int 	leafslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
-    /// has a size of about 128 bytes.
-    static const int	innerslots = BTREE_MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
+    /// has a size of about 256 bytes.
+    static const int	innerslots = BTREE_MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 
 /** @brief Basic class implementing a base B+ tree data structure in memory.
