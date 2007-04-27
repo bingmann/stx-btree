@@ -1,10 +1,10 @@
 // $Id$
 /** \file btree.h
- * Contains the main B+ tree implementation template class "btree".
+ * Contains the main B+ tree implementation template class btree.
  */
 
 /*
- * STX B+ Tree Implementation
+ * STX B+ Tree Template Classes v0.7
  * Copyright (C) 2007 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
