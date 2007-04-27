@@ -193,24 +193,24 @@ static variables specify the options and the corresponding defaults:
 \code
 struct btree_default_map_traits
 {
-    /// If true, the tree will self verify it's invariants after each insert()
-    /// or erase(). The header must have been compiled with BTREE_DEBUG
-    /// defined.
+    // If true, the tree will self verify it's invariants after each insert()
+    // or erase(). The header must have been compiled with BTREE_DEBUG
+    // defined.
     static const bool	selfverify = false;
 
-    /// If true, the tree will print out debug information and a tree dump
-    /// during insert() or erase() operation. The header must have been
-    /// compiled with BTREE_DEBUG defined and key_type must be std::ostream
-    /// printable.
+    // If true, the tree will print out debug information and a tree dump
+    // during insert() or erase() operation. The header must have been
+    // compiled with BTREE_DEBUG defined and key_type must be std::ostream
+    // printable.
     static const bool	debug = false;
 
-    /// Number of slots in each leaf of the tree. Estimated so that each node
-    /// has a size of about 256 bytes.
+    // Number of slots in each leaf of the tree. Estimated so that each node
+    // has a size of about 256 bytes.
     static const int 	leafslots =
                              MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
 
-    /// Number of slots in each inner node of the tree. Estimated so that each
-    /// node has a size of about 256 bytes.
+    // Number of slots in each inner node of the tree. Estimated so that each
+    // node has a size of about 256 bytes.
     static const int	innerslots =
                              MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
