@@ -1,7 +1,10 @@
 #!/usr/bin/env gnuplot
 
-set terminal pdf size 4, 2.4
+set terminal pdf
 set output 'speedtest.pdf'
+
+# for generating smaller images:
+# set terminal pdf size 4, 2.4
 
 ### 1st Plot
 
