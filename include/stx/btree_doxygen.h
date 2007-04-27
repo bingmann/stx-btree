@@ -1,5 +1,5 @@
 // $Id$
-/** \file btree_mainpage.h
+/** \file btree_doxygen.h
  * Contains the doxygen comments. This header is not needed to compile the B+
  * tree.
  */
