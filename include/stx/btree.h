@@ -120,7 +120,7 @@ struct btree_default_map_traits
  * on the recursion unroll. Erase is largely based on Jannink's ideas.
  *
  * This class is specialized into btree_set, btree_multiset, btree_map and
- * btree_multimap using default template parameters and facade-functions.
+ * btree_multimap using default template parameters and facade functions.
  */
 template <typename _Key, typename _Data,
 	  typename _Value = std::pair<_Key, _Data>,
