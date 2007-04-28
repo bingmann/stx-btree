@@ -93,7 +93,7 @@ protected:
 	{ // try restore the btree image using a different instantiation
 
 	    typedef stx::btree_multiset<long long,
-		std::less<unsigned int>, struct traits_nodebug> otherbtree_type;
+		std::less<long long>, struct traits_nodebug> otherbtree_type;
 
 	    otherbtree_type bt3;
 

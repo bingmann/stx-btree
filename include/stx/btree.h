@@ -1434,7 +1434,7 @@ public:
     
 private:
     /// Recursively copy nodes from another B+ tree object
-    class node* copy_recursive(const node *n)
+    struct node* copy_recursive(const node *n)
     {
 	if (n->isleafnode())
 	{
@@ -1841,7 +1841,7 @@ private:
 	/// Test if this result object has a given flag set.
 	inline bool has(result_flags_t f) const
 	{
-	    return (flags & f);
+	    return (flags & f) != 0;
 	}
 
 	/// Merge two results OR-ing the result flags and overwriting lastkeys.
