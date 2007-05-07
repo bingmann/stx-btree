@@ -547,9 +547,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@GCOV_FALSE@clean-local:
 clean: clean-recursive
 
-clean-am: clean-generic mostlyclean-am
+clean-am: clean-generic clean-local mostlyclean-am
 
 distclean: distclean-recursive
 	-rm -f $(am__CONFIG_DISTCLEAN_FILES)
@@ -609,8 +610,8 @@ uninstall-am: uninstall-includeHEADERS
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am am--refresh check check-am clean clean-generic \
-	ctags ctags-recursive dist dist-all dist-bzip2 dist-gzip \
-	dist-shar dist-tarZ dist-zip distcheck distclean \
+	clean-local ctags ctags-recursive dist dist-all dist-bzip2 \
+	dist-gzip dist-shar dist-tarZ dist-zip distcheck distclean \
 	distclean-generic distclean-tags distcleancheck distdir \
 	distuninstallcheck dvi dvi-am html html-am info info-am \
 	install install-am install-data install-data-am install-dvi \
@@ -623,6 +624,20 @@ uninstall-am: uninstall-includeHEADERS
 	pdf-am ps ps-am tags tags-recursive uninstall uninstall-am \
 	uninstall-includeHEADERS
 
+
+@GCOV_TRUE@clean-local:
+@GCOV_TRUE@	find -name "*.da" -o -name "*.gcov" -o -name "*.gcda" -o -name "*.gcno" | xargs rm || true
+
+@GCOV_TRUE@run-gcov: clean-gcov
+@GCOV_TRUE@	mkdir -p coverage/
+@GCOV_TRUE@	lcov --directory . --zerocounters
+@GCOV_TRUE@	-$(MAKE) check
+@GCOV_TRUE@	lcov --directory . --capture --output-file coverage/all.info
+@GCOV_TRUE@	lcov -e coverage/all.info "/tdata/*" -o coverage/testsuite.info
+@GCOV_TRUE@	genhtml -o coverage --num-spaces 8 coverage/testsuite.info --title "STX B+ Tree Testsuite" --prefix `pwd`
+
+@GCOV_TRUE@clean-gcov:
+@GCOV_TRUE@	find -name "*.gcda" | xargs rm || true
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
