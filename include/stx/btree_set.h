@@ -522,6 +522,11 @@ public:
 	tree.print_leaves();
     }
 
+    void print_dot(std::ostream &os) const
+    {
+	tree.print_dot(os);
+    }
+
 public:
     // *** Verification of B+ Tree Invariants
 

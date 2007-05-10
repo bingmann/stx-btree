@@ -2549,6 +2549,72 @@ private:
     }
 
 public:
+    // *** Debug Printing in GraphViz's dot format
+
+    /// Print out the B+ tree structure with keys onto the std::ostream os
+    /// using graphviz's dot format. This function requires that the header is
+    /// compiled with BTREE_PRINT and that key_type is printable via
+    /// std::ostream.
+    void print_dot(std::ostream &os) const
+    {
+	os << "digraph structs {\n"
+	   << "    node [shape=record,height=0.3];\n";
+
+	print_dot_node(os, root, 0);
+
+	os << "}\n";
+    }
+
+private:
+
+    /// Recursively descend down the tree and print out nodes in dot format.
+    static void print_dot_node(std::ostream &os, const node* node, unsigned int depth=0)
+    {
+	for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
+	    
+	if (node->isleafnode())
+	{
+	    const leaf_node *leafnode = static_cast<const leaf_node*>(node);
+
+	    os << "    node" << leafnode << " [label=\"";
+
+	    for (unsigned int slot = 0; slot < leafnode->slotuse; ++slot)
+	    {
+		if (slot != 0) os << "|";
+		os << "<s" << slot << "> " << leafnode->slotkey[slot];
+	    }
+
+	    os << "\"];\n";
+	}
+	else
+	{
+	    const inner_node *innernode = static_cast<const inner_node*>(node);
+
+	    // boxes holding keys
+	    os << "    node" << innernode << " [label=\"";
+	    for (unsigned short slot = 0; slot < innernode->slotuse; ++slot)
+	    {
+		if (slot != 0) os << "|";
+		os << "<s" << slot << "> " << innernode->slotkey[slot];
+	    }
+	    os << "\"];\n";
+
+	    for (unsigned short slot = 0; slot < innernode->slotuse + 1; ++slot)
+	    {
+		print_dot_node(os, innernode->childid[slot], depth + 1);
+	    }
+
+	    // arrows to children
+	    for (unsigned short slot = 0; slot < innernode->slotuse; ++slot)
+	    {
+		os << "    node" << innernode << ":s" << slot << ":sw -> node" << innernode->childid[slot] << ";\n";
+	    }
+	    // last arrow
+	    os << "    node" << innernode << ":s" << innernode->slotuse-1 << ":se -> node" << innernode->childid[innernode->slotuse] << ";\n";
+	}
+    }
+
+public:
     // *** Verification of B+ Tree Invariants
 
     /// Run a thorough verification of all B+ tree invariants. The program
