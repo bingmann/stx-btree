@@ -123,7 +123,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream printable.
+    /// with BTREE_DEBUG and the key type must be std::ostream printable.
     static const bool 			debug = btree_impl::debug;
 
     /// Operational parameter: Allow duplicate keys in the btree.
@@ -505,27 +505,29 @@ public:
     }
 #endif
 
+#ifdef BTREE_DEBUG
 public:
     // *** Debug Printing
 
-    /// Print out the B+ tree structure with keys onto std::cout. This function
-    /// requires that the header is compiled with BTREE_PRINT and that key_type
+    /// Print out the B+ tree structure with keys onto the given ostream. This function
+    /// requires that the header is compiled with BTREE_DEBUG and that key_type
     /// is printable via std::ostream.
-    void print() const
+    void print(std::ostream &os) const
     {
-	tree.print();
+	tree.print(os);
     }
 
     /// Print out only the leaves via the double linked list.
-    void print_leaves() const
+    void print_leaves(std::ostream &os) const
     {
-	tree.print_leaves();
+	tree.print_leaves(os);
     }
 
     void print_dot(std::ostream &os) const
     {
 	tree.print_dot(os);
     }
+#endif
 
 public:
     // *** Verification of B+ Tree Invariants

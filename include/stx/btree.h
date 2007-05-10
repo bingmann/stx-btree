@@ -196,7 +196,7 @@ public:
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
-    /// with BTREE_PRINT and the key type must be std::ostream printable.
+    /// with BTREE_DEBUG and the key type must be std::ostream printable.
     static const bool 			debug = traits::debug;
 
 private:
@@ -1566,7 +1566,7 @@ private:
 	if (r.second) ++stats.itemcount;
 
 	if (debug)
-	    print();
+	    print(std::cout);
 
 	if (selfverify) {
 	    verify();
@@ -1613,8 +1613,8 @@ private:
 
 		    if (debug)
 		    {
-			print_node(inner);
-			print_node(*splitnode);
+			print_node(std::cout, inner);
+			print_node(std::cout, *splitnode);
 		    }
 
 		    // check if insert slot is in the split sibling node
@@ -1873,7 +1873,7 @@ public:
 	if (!result.has(btree_not_found))
 	    --stats.itemcount;
 
-	if (debug) print();
+	if (debug) print(std::cout);
 	if (selfverify) verify();
 
 	return !result.has(btree_not_found);
@@ -2475,27 +2475,28 @@ private:
 	left->slotuse -= shiftnum;
     }
 
+#ifdef BTREE_DEBUG
 public:
     // *** Debug Printing
 
-    /// Print out the B+ tree structure with keys onto std::cout. This function
-    /// requires that the header is compiled with BTREE_PRINT and that key_type
-    /// is printable via std::ostream.
-    void print() const
+    /// Print out the B+ tree structure with keys onto the given ostream. This
+    /// function requires that the header is compiled with BTREE_DEBUG and that
+    /// key_type is printable via std::ostream.
+    void print(std::ostream &os) const
     {
-	print_node(root, 0, true);
+	print_node(os, root, 0, true);
     }
 
     /// Print out only the leaves via the double linked list.
-    void print_leaves() const
+    void print_leaves(std::ostream &os) const
     {
-	BTREE_PRINT("leaves:" << std::endl);
+	os << "leaves:" << std::endl;
 
 	const leaf_node *n = headleaf;
 
 	while(n)
 	{
-	    BTREE_PRINT("  " << n << std::endl);
+	    os << "  " << n << std::endl;
 
 	    n = n->nextleaf;
 	}
@@ -2504,45 +2505,44 @@ public:
 private:
 
     /// Recursively descend down the tree and print out nodes.
-    static void print_node(const node* node, unsigned int depth=0, bool recursive=false)
+    static void print_node(std::ostream &os, const node* node, unsigned int depth=0, bool recursive=false)
     {
-	for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
+	for(unsigned int i = 0; i < depth; i++) os << "  ";
 	    
-	BTREE_PRINT("node " << node << " level " << node->level << " slotuse " << node->slotuse << std::endl);
+	os << "node " << node << " level " << node->level << " slotuse " << node->slotuse << std::endl;
 
 	if (node->isleafnode())
 	{
 	    const leaf_node *leafnode = static_cast<const leaf_node*>(node);
 
-	    for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
-	    BTREE_PRINT("  leaf prev " << leafnode->prevleaf << " next " << leafnode->nextleaf << std::endl);
+	    for(unsigned int i = 0; i < depth; i++) os << "  ";
+	    os << "  leaf prev " << leafnode->prevleaf << " next " << leafnode->nextleaf << std::endl;
 
-	    for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
+	    for(unsigned int i = 0; i < depth; i++) os << "  ";
 
 	    for (unsigned int slot = 0; slot < leafnode->slotuse; ++slot)
 	    {
-		BTREE_PRINT(leafnode->slotkey[slot] << "  "); // << "(data: " << leafnode->slotdata[slot] << ") ";
+		os << leafnode->slotkey[slot] << "  "; // << "(data: " << leafnode->slotdata[slot] << ") ";
 	    }
-	    BTREE_PRINT(std::endl);
+	    os << std::endl;
 	}
 	else
 	{
 	    const inner_node *innernode = static_cast<const inner_node*>(node);
 
-	    for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
+	    for(unsigned int i = 0; i < depth; i++) os << "  ";
 
 	    for (unsigned short slot = 0; slot < innernode->slotuse; ++slot)
 	    {
-		BTREE_PRINT("(" << innernode->childid[slot] << ") " << innernode->slotkey[slot] << " ");
+		os << "(" << innernode->childid[slot] << ") " << innernode->slotkey[slot] << " ";
 	    }
-	    BTREE_PRINT("(" << innernode->childid[innernode->slotuse] << ")");
-	    BTREE_PRINT(std::endl);
+	    os << "(" << innernode->childid[innernode->slotuse] << ")" << std::endl;
 
 	    if (recursive)
 	    {
 		for (unsigned short slot = 0; slot < innernode->slotuse + 1; ++slot)
 		{
-		    print_node(innernode->childid[slot], depth + 1, recursive);
+		    print_node(os, innernode->childid[slot], depth + 1, recursive);
 		}
 	    }
 	}
@@ -2553,7 +2553,7 @@ public:
 
     /// Print out the B+ tree structure with keys onto the std::ostream os
     /// using graphviz's dot format. This function requires that the header is
-    /// compiled with BTREE_PRINT and that key_type is printable via
+    /// compiled with BTREE_DEBUG and that key_type is printable via
     /// std::ostream.
     void print_dot(std::ostream &os) const
     {
@@ -2613,7 +2613,30 @@ private:
 	    os << "    node" << innernode << ":s" << innernode->slotuse-1 << ":se -> node" << innernode->childid[innernode->slotuse] << ";\n";
 	}
     }
+#else
+public:
+    // *** Dummy Debug Printing Functions
 
+    /// Print out the B+ tree structure with keys onto the given ostream. This
+    /// function requires that the header is compiled with BTREE_DEBUG and that
+    /// key_type is printable via std::ostream.
+    void print(std::ostream&) const
+    {
+    }
+
+    /// Print out only the leaves via the double linked list.
+    void print_leaves(std::ostream&) const
+    {
+    }
+
+private:
+
+    /// Recursively descend down the tree and print out nodes.
+    static void print_node(std::ostream &, const node*, unsigned int =0, bool =false)
+    {
+    }
+
+#endif
 public:
     // *** Verification of B+ Tree Invariants
 
@@ -2875,7 +2898,7 @@ public:
 	    stats.itemcount = fileheader.itemcount;
 	}
 
-	if (debug) print();
+	if (debug) print(std::cout);
 	if (selfverify) verify();
 
 	return true;
