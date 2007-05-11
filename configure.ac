@@ -7,7 +7,7 @@ AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
 
 AM_INIT_AUTOMAKE
-AM_MAINTAINER_MODE
+#AM_MAINTAINER_MODE
 
 if test "$CFLAGS" == ""; then
     CFLAGS="-g"
@@ -67,9 +67,30 @@ AC_ARG_ENABLE(speedtest,
      esac],[speedtest=false])
 AM_CONDITIONAL(BUILD_SPEEDTEST, test x$speedtest = xtrue)
 
+# Check for wxWidgets 2.6.0 or later
+AM_OPTIONS_WXCONFIG
+
+AM_PATH_WXCONFIG(2.6.0, wxWin=1)
+
+AM_CONDITIONAL(HAVE_WXWIDGETS, test "$wxWin" != 0)
+
+if test "$wxWin" != 1; then
+    AC_MSG_WARN([
+	wxWidgets does not seem to be installed on your system.
+	The wxParserDemo will not be built!
+
+        If you think wxWidgets >= 2.6.0 is installed,
+	please check that wx-config is in path, the directory
+	where wxWidgets libraries are installed (returned by
+	'wx-config --libs' command) is in LD_LIBRARY_PATH or
+	equivalent variable.
+    ])
+fi
+
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
 		 testsuite/Makefile
-		 speedtest/Makefile])
+		 speedtest/Makefile
+                 wxbtreedemo/Makefile])
 AC_OUTPUT

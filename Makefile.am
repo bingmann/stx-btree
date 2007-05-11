@@ -1,6 +1,6 @@
 # $Id$
 
-SUBDIRS = . testsuite speedtest
+SUBDIRS = . testsuite speedtest wxbtreedemo
 
 include_HEADERS = \
 	include/stx/btree.h \
