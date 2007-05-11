@@ -65,6 +65,11 @@ public:
     /// of the B+ tree
     typedef _Traits			traits;
 
+    // The macro BTREE_FRIENDS can be used by outside class to access the B+
+    // tree internals. This was added for wxBTreeDemo to be able to draw the
+    // tree.
+    BTREE_FRIENDS
+
 public:
     // *** Constructed Types
 

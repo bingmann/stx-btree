@@ -27,8 +27,8 @@
 
 // *** Required Headers from the STL
 
-#include <functional>
 #include <algorithm>
+#include <functional>
 #include <istream>
 #include <ostream>
 #include <assert.h>
@@ -57,6 +57,13 @@
 
 /// The maximum of a and b. Used in some compile-time formulas.
 #define BTREE_MAX(a,b)		((a) < (b) ? (b) : (a))
+
+#ifndef BTREE_FRIENDS
+/// The macro BTREE_FRIENDS can be used by outside class to access the B+
+/// tree internals. This was added for wxBTreeDemo to be able to draw the
+/// tree.
+#define BTREE_FRIENDS		friend class btree_friend;
+#endif
 
 /// STX - Some Template Extensions namespace
 namespace stx {
@@ -156,6 +163,11 @@ public:
     /// Sixth template parameter: Allow duplicate keys in the B+ tree. Used to
     /// implement multiset and multimap.
     static const bool			allow_duplicates = _Duplicates;
+
+    // The macro BTREE_FRIENDS can be used by outside class to access the B+
+    // tree internals. This was added for wxBTreeDemo to be able to draw the
+    // tree.
+    BTREE_FRIENDS
 
 public:
     // *** Constructed Types
@@ -2484,7 +2496,9 @@ public:
     /// key_type is printable via std::ostream.
     void print(std::ostream &os) const
     {
-	print_node(os, root, 0, true);
+	if (root) {
+	    print_node(os, root, 0, true);
+	}
     }
 
     /// Print out only the leaves via the double linked list.
@@ -2548,71 +2562,6 @@ private:
 	}
     }
 
-public:
-    // *** Debug Printing in GraphViz's dot format
-
-    /// Print out the B+ tree structure with keys onto the std::ostream os
-    /// using graphviz's dot format. This function requires that the header is
-    /// compiled with BTREE_DEBUG and that key_type is printable via
-    /// std::ostream.
-    void print_dot(std::ostream &os) const
-    {
-	os << "digraph structs {\n"
-	   << "    node [shape=record,height=0.3];\n";
-
-	print_dot_node(os, root, 0);
-
-	os << "}\n";
-    }
-
-private:
-
-    /// Recursively descend down the tree and print out nodes in dot format.
-    static void print_dot_node(std::ostream &os, const node* node, unsigned int depth=0)
-    {
-	for(unsigned int i = 0; i < depth; i++) BTREE_PRINT("  ");
-	    
-	if (node->isleafnode())
-	{
-	    const leaf_node *leafnode = static_cast<const leaf_node*>(node);
-
-	    os << "    node" << leafnode << " [label=\"";
-
-	    for (unsigned int slot = 0; slot < leafnode->slotuse; ++slot)
-	    {
-		if (slot != 0) os << "|";
-		os << "<s" << slot << "> " << leafnode->slotkey[slot];
-	    }
-
-	    os << "\"];\n";
-	}
-	else
-	{
-	    const inner_node *innernode = static_cast<const inner_node*>(node);
-
-	    // boxes holding keys
-	    os << "    node" << innernode << " [label=\"";
-	    for (unsigned short slot = 0; slot < innernode->slotuse; ++slot)
-	    {
-		if (slot != 0) os << "|";
-		os << "<s" << slot << "> " << innernode->slotkey[slot];
-	    }
-	    os << "\"];\n";
-
-	    for (unsigned short slot = 0; slot < innernode->slotuse + 1; ++slot)
-	    {
-		print_dot_node(os, innernode->childid[slot], depth + 1);
-	    }
-
-	    // arrows to children
-	    for (unsigned short slot = 0; slot < innernode->slotuse; ++slot)
-	    {
-		os << "    node" << innernode << ":s" << slot << ":sw -> node" << innernode->childid[slot] << ";\n";
-	    }
-	    // last arrow
-	    os << "    node" << innernode << ":s" << innernode->slotuse-1 << ":se -> node" << innernode->childid[innernode->slotuse] << ";\n";
-	}
-    }
 #else
 public:
     // *** Dummy Debug Printing Functions
@@ -2635,8 +2584,8 @@ private:
     static void print_node(std::ostream &, const node*, unsigned int =0, bool =false)
     {
     }
-
 #endif
+
 public:
     // *** Verification of B+ Tree Invariants
 
