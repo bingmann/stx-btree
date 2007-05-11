@@ -23,8 +23,6 @@ void WTreeDrawing::SetWMain(WMain *wm)
 
 void WTreeDrawing::OnDraw(wxDC &dc)
 {
-    dc.SetFont(*wxSMALL_FONT);
-    dc.SetPen(*wxBLACK_PEN);
     DrawBTree(dc);
 }
 
@@ -236,8 +234,15 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
 
     const btree_type& bt = wmain->btree_int_4slots;
 
+    dc.SetFont(*wxNORMAL_FONT);
+    dc.SetPen(*wxBLACK_PEN);
+
     if (bt.tree.root)
     {
+	if (bt.tree.root->level >= 2) {
+	    dc.SetFont(*wxSMALL_FONT);
+	}
+
 	wxSize ts = DrawBTreeNode(dc, 0, 0, bt.tree.root);
 
 	if (ts != oldTreeSize)

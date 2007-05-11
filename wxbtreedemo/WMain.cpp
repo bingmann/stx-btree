@@ -117,7 +117,7 @@ void WMain::UpdateTextDump()
     window_TreeDrawing->Refresh();
 }
 
-BEGIN_EVENT_TABLE(WMain, wxFrame)
+BEGIN_EVENT_TABLE(WMain, wxDialog)
 
     EVT_MENU_RANGE (500, 510,			WMain::OnMenuInsertRandom)
 
