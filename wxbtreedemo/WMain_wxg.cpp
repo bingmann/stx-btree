@@ -7,17 +7,16 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
     wxDialog(parent, id, title, pos, size, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER)
 {
     // begin wxGlade: WMain_wxg::WMain_wxg
-    notebook_1 = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0);
-    notebook_1_pane_2 = new wxPanel(notebook_1, wxID_ANY);
-    notebook_1_pane_1 = new wxPanel(notebook_1, wxID_ANY);
-    sizer_8_staticbox = new wxStaticBox(this, -1, wxT("Data Input"));
-    sizer_9_staticbox = new wxStaticBox(this, -1, wxT("Operation"));
-    sizer_3_staticbox = new wxStaticBox(this, -1, wxT("B+ Tree Properties"));
+    panel_Main = new wxPanel(this, wxID_ANY);
+    sizer_8_staticbox = new wxStaticBox(panel_Main, -1, wxT("Data Input"));
+    sizer_9_staticbox = new wxStaticBox(panel_Main, -1, wxT("Operation"));
+    sizer_10_staticbox = new wxStaticBox(panel_Main, -1, wxT("Drawing"));
+    sizer_3_staticbox = new wxStaticBox(panel_Main, -1, wxT("B+ Tree Properties"));
     const wxString choice_DataType_choices[] = {
         wxT("integer"),
         wxT("string")
     };
-    choice_DataType = new wxChoice(this, ID_CHOICE_DATATYPE, wxDefaultPosition, wxDefaultSize, 2, choice_DataType_choices, 0);
+    choice_DataType = new wxChoice(panel_Main, ID_CHOICE_DATATYPE, wxDefaultPosition, wxDefaultSize, 2, choice_DataType_choices, 0);
     const wxString choice_NodeSlots_choices[] = {
         wxT("4"),
         wxT("5"),
@@ -34,19 +33,18 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
         wxT("16"),
         wxT("32")
     };
-    choice_NodeSlots = new wxChoice(this, ID_CHOICE_NODESLOTS, wxDefaultPosition, wxDefaultSize, 14, choice_NodeSlots_choices, 0);
-    checkbox_Duplicates = new wxCheckBox(this, ID_CHECKBOX_DUPLICATES, wxT("Duplicate Keys"));
-    textctrl_Key = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    textctrl_Data = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
-    button_Insert = new wxButton(this, ID_BUTTON_INSERT, wxT("Insert"));
-    button_Erase = new wxButton(this, ID_BUTTON_ERASE, wxT("Erase"));
-    button_InsertRandom = new wxButton(this, ID_BUTTON_INSERTRANDOM, wxT("Insert Random"));
-    button_FindKey = new wxButton(this, ID_BUTTON_FINDKEY, wxT("Find Key"));
-    button_EqualRange = new wxButton(this, ID_BUTTON_EQUALRANGE, wxT("Equal Range"));
-    button_Clear = new wxButton(this, ID_BUTTON_CLEAR, wxT("Clear"));
-    textctrl_OpResult = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
-    window_TreeDrawing = new WTreeDrawing(notebook_1_pane_1, wxID_ANY);
-    textctrl_TextDump = new wxTextCtrl(notebook_1_pane_2, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY);
+    choice_NodeSlots = new wxChoice(panel_Main, ID_CHOICE_NODESLOTS, wxDefaultPosition, wxDefaultSize, 14, choice_NodeSlots_choices, 0);
+    checkbox_Duplicates = new wxCheckBox(panel_Main, ID_CHECKBOX_DUPLICATES, wxT("Duplicate Keys"));
+    textctrl_Key = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString);
+    textctrl_Data = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString);
+    button_Insert = new wxButton(panel_Main, ID_BUTTON_INSERT, wxT("Insert"));
+    button_Erase = new wxButton(panel_Main, ID_BUTTON_ERASE, wxT("Erase"));
+    button_InsertRandom = new wxButton(panel_Main, ID_BUTTON_INSERTRANDOM, wxT("Insert Random"));
+    button_FindKey = new wxButton(panel_Main, ID_BUTTON_FINDKEY, wxT("Find Key"));
+    button_EqualRange = new wxButton(panel_Main, ID_BUTTON_EQUALRANGE, wxT("Equal Range"));
+    button_Clear = new wxButton(panel_Main, ID_BUTTON_CLEAR, wxT("Clear"));
+    textctrl_OpResult = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
+    window_TreeDrawing = new WTreeDrawing(panel_Main, wxID_ANY);
 
     set_properties();
     do_layout();
@@ -67,9 +65,9 @@ void WMain_wxg::set_properties()
 void WMain_wxg::do_layout()
 {
     // begin wxGlade: WMain_wxg::do_layout
+    wxBoxSizer* sizer_4 = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* sizer_1 = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* sizer_6 = new wxBoxSizer(wxHORIZONTAL);
-    wxBoxSizer* sizer_5 = new wxBoxSizer(wxHORIZONTAL);
+    wxStaticBoxSizer* sizer_10 = new wxStaticBoxSizer(sizer_10_staticbox, wxVERTICAL);
     wxBoxSizer* sizer_2 = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* sizer_9 = new wxStaticBoxSizer(sizer_9_staticbox, wxVERTICAL);
     wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(1, 6, 0, 0);
@@ -78,10 +76,10 @@ void WMain_wxg::do_layout()
     wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(3, 2, 0, 0);
     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
     wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(3, 2, 0, 0);
-    wxStaticText* label_1 = new wxStaticText(this, wxID_ANY, wxT("Data Type"));
+    wxStaticText* label_1 = new wxStaticText(panel_Main, wxID_ANY, wxT("Data Type"));
     grid_sizer_1->Add(label_1, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_1->Add(choice_DataType, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
-    wxStaticText* label_3 = new wxStaticText(this, wxID_ANY, wxT("Node Slots"));
+    wxStaticText* label_3 = new wxStaticText(panel_Main, wxID_ANY, wxT("Node Slots"));
     grid_sizer_1->Add(label_3, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_1->Add(choice_NodeSlots, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_1->Add(2, 2, 0, wxADJUST_MINSIZE, 0);
@@ -91,10 +89,10 @@ void WMain_wxg::do_layout()
     sizer_3->Add(grid_sizer_1, 1, wxEXPAND, 0);
     sizer_7->Add(sizer_3, 1, wxALL|wxEXPAND, 6);
     sizer_8->Add(1, 1, 1, wxADJUST_MINSIZE, 0);
-    wxStaticText* label_5 = new wxStaticText(this, wxID_ANY, wxT("Key"));
+    wxStaticText* label_5 = new wxStaticText(panel_Main, wxID_ANY, wxT("Key"));
     grid_sizer_2->Add(label_5, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_2->Add(textctrl_Key, 0, wxALL|wxEXPAND, 4);
-    wxStaticText* label_6 = new wxStaticText(this, wxID_ANY, wxT("Data"));
+    wxStaticText* label_6 = new wxStaticText(panel_Main, wxID_ANY, wxT("Data"));
     grid_sizer_2->Add(label_6, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_2->Add(textctrl_Data, 1, wxALL|wxEXPAND, 4);
     grid_sizer_2->AddGrowableCol(1);
@@ -118,15 +116,12 @@ void WMain_wxg::do_layout()
     sizer_9->Add(textctrl_OpResult, 0, wxALL|wxEXPAND, 4);
     sizer_2->Add(sizer_9, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 6);
     sizer_1->Add(sizer_2, 0, wxEXPAND, 0);
-    sizer_5->Add(window_TreeDrawing, 1, wxALL|wxEXPAND, 6);
-    notebook_1_pane_1->SetSizer(sizer_5);
-    sizer_6->Add(textctrl_TextDump, 1, wxALL|wxEXPAND, 6);
-    notebook_1_pane_2->SetSizer(sizer_6);
-    notebook_1->AddPage(notebook_1_pane_1, wxT("Drawing"));
-    notebook_1->AddPage(notebook_1_pane_2, wxT("Text Dump"));
-    sizer_1->Add(notebook_1, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 6);
-    SetSizer(sizer_1);
-    sizer_1->Fit(this);
+    sizer_10->Add(window_TreeDrawing, 1, wxALL|wxEXPAND, 6);
+    sizer_1->Add(sizer_10, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 6);
+    panel_Main->SetSizer(sizer_1);
+    sizer_4->Add(panel_Main, 1, wxEXPAND, 0);
+    SetSizer(sizer_4);
+    sizer_4->Fit(this);
     Layout();
     Centre();
     // end wxGlade

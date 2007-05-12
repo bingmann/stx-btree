@@ -98,7 +98,7 @@ void WMain::OnButtonInsert(wxCommandEvent &)
     wxString result = treebundle.run<BTreeOp_Insert>(op);
     textctrl_OpResult->SetValue(result);
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 struct BTreeOp_Erase
@@ -152,7 +152,7 @@ void WMain::OnButtonErase(wxCommandEvent &)
     wxString result = treebundle.run<BTreeOp_Erase>(op);
     textctrl_OpResult->SetValue(result);
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 void WMain::OnButtonInsertRandom(wxCommandEvent &)
@@ -382,7 +382,7 @@ void WMain::OnMenuInsertRandom(wxCommandEvent &ce)
 	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
     }
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 struct BTreeOp_FindKey
@@ -451,7 +451,7 @@ void WMain::OnButtonFindKey(wxCommandEvent &)
     wxString result = treebundle.run<BTreeOp_FindKey>(op);
     textctrl_OpResult->SetValue(result);
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 struct BTreeOp_EqualRange
@@ -524,7 +524,7 @@ void WMain::OnButtonEqualRange(wxCommandEvent &)
     wxString result = treebundle.run<BTreeOp_EqualRange>(op);
     textctrl_OpResult->SetValue(result);
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 struct BTreeOp_Clear
@@ -564,7 +564,7 @@ void WMain::OnButtonClear(wxCommandEvent &)
     wxString result = treebundle.run<BTreeOp_Clear>(op);
     textctrl_OpResult->SetValue(result);
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 struct BTreeOp_GetDump
@@ -606,10 +606,8 @@ struct BTreeOp_GetDump
     }
 };
 
-void WMain::UpdateTextDump()
+void WMain::UpdateViews()
 {
-    textctrl_TextDump->SetValue( treebundle.run<BTreeOp_GetDump>( BTreeOp_GetDump() ) );
-
     window_TreeDrawing->Refresh();
 }
 
@@ -731,7 +729,7 @@ void WMain::OnChoiceDataType(wxCommandEvent &)
 
     textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 void WMain::OnChoiceNodeSlots(wxCommandEvent &)
@@ -759,7 +757,7 @@ void WMain::OnChoiceNodeSlots(wxCommandEvent &)
 
     textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 void WMain::OnCheckboxDuplicates(wxCommandEvent &)
@@ -780,7 +778,7 @@ void WMain::OnCheckboxDuplicates(wxCommandEvent &)
 
     textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
 
-    UpdateTextDump();
+    UpdateViews();
 }
 
 BEGIN_EVENT_TABLE(WMain, wxDialog)

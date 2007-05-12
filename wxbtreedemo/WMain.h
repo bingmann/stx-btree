@@ -16,19 +16,22 @@ struct BTreeBundle;
 #include <stx/btree_multimap.h>
 #include <string>
 
-template <int Slots>
-struct btree_traits_nodebug
-{
-    static const bool	selfverify = true;
-    static const bool	debug = false;
-
-    static const int 	leafslots = Slots;
-    static const int	innerslots = Slots;
-};
-
+/// The demo allows many different B+ trees to be used. All these must be
+/// instantiated and correctly switched using this tree bundling class.
 class BTreeBundle
 {
 public:
+
+    /// Traits structure for the enclosed B+ tree instances.
+    template <int Slots>
+    struct btree_traits_nodebug
+    {
+	static const bool	selfverify = true;
+	static const bool	debug = false;
+
+	static const int 	leafslots = Slots;
+	static const int	innerslots = Slots;
+    };
 
     // *** Many many instantiations of the B+ tree classes
 
@@ -358,22 +361,7 @@ public:
     }
 };
 
-template <typename InnerOp>
-struct BTreeOp_SameSingleMulti : public InnerOp
-{
-    template <class BTreeType>
-    inline typename InnerOp::result_type opIntegerMulti(BTreeType &bt) const
-    {
-	return InnerOp::opInteger(bt);
-    }
-
-    template <class BTreeType>
-    inline typename InnerOp::result_type opStringMulti(BTreeType &bt) const
-    {
-	return InnerOp::opString(bt);
-    }
-};
-
+/** Main Window class */
 class WMain : public WMain_wxg
 {
 public:
@@ -396,7 +384,7 @@ public:
 
     void	OnMenuInsertRandom(wxCommandEvent &ce);
 
-    void	UpdateTextDump();
+    void	UpdateViews();
 
     DECLARE_EVENT_TABLE();
 };

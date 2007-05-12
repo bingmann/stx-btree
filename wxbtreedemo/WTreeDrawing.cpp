@@ -10,6 +10,8 @@ WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
       wmain(NULL)
 {
     SetSize(300, 300);
+
+    scalefactor = 1.0;
 }
 
 void WTreeDrawing::SetWMain(WMain *wm)
@@ -19,11 +21,20 @@ void WTreeDrawing::SetWMain(WMain *wm)
 
 void WTreeDrawing::OnDraw(wxDC &dc)
 {
+    dc.SetUserScale(scalefactor, scalefactor);
+
     DrawBTree(dc);
 }
 
 void WTreeDrawing::OnSize(wxSizeEvent &se)
 {
+    Refresh();
+}
+
+void WTreeDrawing::OnMouseWheel(wxMouseEvent &me)
+{
+    scalefactor += 0.05 * me.GetWheelRotation() / me.GetWheelDelta();
+    scalefactor = std::max(0.1, scalefactor);
     Refresh();
 }
 
@@ -68,7 +79,8 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 		{
 		    dc.SetBrush(wxColor(128, 255, 128));
 		}
-		else {
+		else
+		{
 		    dc.SetBrush(*wxWHITE);
 		}
 
@@ -267,12 +279,11 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 	    ts = draw_node<BTreeType>(0, 0, bt.tree.root);
 	}
 
-	if (ts != w.oldTreeSize)
 	{
 	    // set scroll bar exents
 	    int scrx, scry;
 	    w.GetViewStart(&scrx, &scry);
-	    w.SetScrollbars(10, 10, ts.GetWidth() / 10, ts.GetHeight() / 10, scrx, scry);
+	    w.SetScrollbars(10, 10, int(ts.GetWidth() / 10 * w.scalefactor), int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
 	    w.oldTreeSize = ts;
 	}
     }
@@ -316,6 +327,8 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
-    EVT_SIZE	(WTreeDrawing::OnSize)
+    EVT_SIZE		(WTreeDrawing::OnSize)
+
+    EVT_MOUSEWHEEL	(WTreeDrawing::OnMouseWheel)
 
 END_EVENT_TABLE()

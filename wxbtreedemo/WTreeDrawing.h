@@ -5,18 +5,26 @@
 
 #include <wx/wx.h>
 
+/** The Custom wxScrolledWindow Canvas on which the B+ tree is drawng. It
+ * supports zooming via mouse wheel and scrolling from wxScrolledWindow. */
 class WTreeDrawing : public wxScrolledWindow
 {
 public:
     WTreeDrawing(wxWindow *parent, int id);
 
+    /// Used to determine when to update the scroll bars.
     wxSize		oldTreeSize;
+
+    /// Zoom factor changed by the mouse wheel.
+    double		scalefactor;
 
     virtual void	OnDraw(wxDC& dc);
     void		OnSize(wxSizeEvent &se);
+    void		OnMouseWheel(wxMouseEvent &me);
 
     void		DrawBTree(wxDC &dc);
 
+    /// Tree operation to draw the nodes on this canvas.
     struct BTreeOp_Draw
     {
 	BTreeOp_Draw(WTreeDrawing &_w, wxDC &_dc, const class BTreeBundle &_tb)

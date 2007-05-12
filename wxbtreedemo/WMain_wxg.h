@@ -7,7 +7,6 @@
 #define WMAIN_WXG_H
 
 // begin wxGlade: ::dependencies
-#include <wx/notebook.h>
 // end wxGlade
 
 class WTreeDrawing;
@@ -38,6 +37,7 @@ private:
 
 protected:
     // begin wxGlade: WMain_wxg::attributes
+    wxStaticBox* sizer_10_staticbox;
     wxStaticBox* sizer_9_staticbox;
     wxStaticBox* sizer_8_staticbox;
     wxStaticBox* sizer_3_staticbox;
@@ -54,10 +54,7 @@ protected:
     wxButton* button_Clear;
     wxTextCtrl* textctrl_OpResult;
     WTreeDrawing* window_TreeDrawing;
-    wxPanel* notebook_1_pane_1;
-    wxTextCtrl* textctrl_TextDump;
-    wxPanel* notebook_1_pane_2;
-    wxNotebook* notebook_1;
+    wxPanel* panel_Main;
     // end wxGlade
 }; // wxGlade: end class
 
