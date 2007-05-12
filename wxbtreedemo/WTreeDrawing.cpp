@@ -289,7 +289,19 @@ wxSize WTreeDrawing::BTreeOp_Draw::opInteger(BTreeType &bt)
 }
 
 template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::opIntegerMulti(BTreeType &bt)
+{
+    draw_tree(bt);
+}
+
+template <class BTreeType>
 wxSize WTreeDrawing::BTreeOp_Draw::opString(BTreeType &bt)
+{
+    draw_tree(bt);
+}
+
+template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::opStringMulti(BTreeType &bt)
 {
     draw_tree(bt);
 }

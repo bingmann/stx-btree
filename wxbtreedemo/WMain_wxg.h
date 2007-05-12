@@ -18,12 +18,13 @@ public:
     enum {
         ID_CHOICE_DATATYPE = wxID_HIGHEST + 1000,
         ID_CHOICE_NODESLOTS = wxID_HIGHEST + 1001,
-        ID_BUTTON_INSERT = wxID_HIGHEST + 1002,
-        ID_BUTTON_ERASE = wxID_HIGHEST + 1003,
-        ID_BUTTON_INSERTRANDOM = wxID_HIGHEST + 1004,
-        ID_BUTTON_FINDKEY = wxID_HIGHEST + 1005,
-        ID_BUTTON_EQUALRANGE = wxID_HIGHEST + 1006,
-        ID_BUTTON_CLEAR = wxID_HIGHEST + 1007
+        ID_CHECKBOX_DUPLICATES = wxID_HIGHEST + 1002,
+        ID_BUTTON_INSERT = wxID_HIGHEST + 1003,
+        ID_BUTTON_ERASE = wxID_HIGHEST + 1004,
+        ID_BUTTON_INSERTRANDOM = wxID_HIGHEST + 1005,
+        ID_BUTTON_FINDKEY = wxID_HIGHEST + 1006,
+        ID_BUTTON_EQUALRANGE = wxID_HIGHEST + 1007,
+        ID_BUTTON_CLEAR = wxID_HIGHEST + 1008
     };
     // end wxGlade
 
@@ -42,6 +43,7 @@ protected:
     wxStaticBox* sizer_3_staticbox;
     wxChoice* choice_DataType;
     wxChoice* choice_NodeSlots;
+    wxCheckBox* checkbox_Duplicates;
     wxTextCtrl* textctrl_Key;
     wxTextCtrl* textctrl_Data;
     wxButton* button_Insert;

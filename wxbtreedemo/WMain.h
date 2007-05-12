@@ -62,6 +62,36 @@ public:
     stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16> >		btmap_string_16_slots;
     stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32> >		btmap_string_32_slots;
 
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<4> >		btmultimap_int_4_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<5> >		btmultimap_int_5_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<6> >		btmultimap_int_6_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<7> >		btmultimap_int_7_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<8> >		btmultimap_int_8_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<9> >		btmultimap_int_9_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<10> >		btmultimap_int_10_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<11> >		btmultimap_int_11_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<12> >		btmultimap_int_12_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<13> >		btmultimap_int_13_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<14> >		btmultimap_int_14_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<15> >		btmultimap_int_15_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<16> >		btmultimap_int_16_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<32> >		btmultimap_int_32_slots;
+
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<4> >		btmultimap_string_4_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<5> >		btmultimap_string_5_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<6> >		btmultimap_string_6_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<7> >		btmultimap_string_7_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<8> >		btmultimap_string_8_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<9> >		btmultimap_string_9_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<10> >		btmultimap_string_10_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<11> >		btmultimap_string_11_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<12> >		btmultimap_string_12_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<13> >		btmultimap_string_13_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<14> >		btmultimap_string_14_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<15> >		btmultimap_string_15_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16> >		btmultimap_string_16_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32> >		btmultimap_string_32_slots;
+
     /// Selects the active tree: type == 0 -> integer, type == 1 -> string.
     int		selected_type;
 
@@ -182,6 +212,96 @@ public:
 		return operation.opString(btmap_string_32_slots);
 	    }
 	}
+	else if (isIntegerType() && isMultimap())
+	{
+	    if (selected_slots == 4) {
+		return operation.opIntegerMulti(btmultimap_int_4_slots);
+	    }
+	    else if (selected_slots == 5) {
+		return operation.opIntegerMulti(btmultimap_int_5_slots);
+	    }
+	    else if (selected_slots == 6) {
+		return operation.opIntegerMulti(btmultimap_int_6_slots);
+	    }
+	    else if (selected_slots == 7) {
+		return operation.opIntegerMulti(btmultimap_int_7_slots);
+	    }
+	    else if (selected_slots == 8) {
+		return operation.opIntegerMulti(btmultimap_int_8_slots);
+	    }
+	    else if (selected_slots == 9) {
+		return operation.opIntegerMulti(btmultimap_int_9_slots);
+	    }
+	    else if (selected_slots == 10) {
+		return operation.opIntegerMulti(btmultimap_int_10_slots);
+	    }
+	    else if (selected_slots == 11) {
+		return operation.opIntegerMulti(btmultimap_int_11_slots);
+	    }
+	    else if (selected_slots == 12) {
+		return operation.opIntegerMulti(btmultimap_int_12_slots);
+	    }
+	    else if (selected_slots == 13) {
+		return operation.opIntegerMulti(btmultimap_int_13_slots);
+	    }
+	    else if (selected_slots == 14) {
+		return operation.opIntegerMulti(btmultimap_int_14_slots);
+	    }
+	    else if (selected_slots == 15) {
+		return operation.opIntegerMulti(btmultimap_int_15_slots);
+	    }
+	    else if (selected_slots == 16) {
+		return operation.opIntegerMulti(btmultimap_int_16_slots);
+	    }
+	    else if (selected_slots == 32) {
+		return operation.opIntegerMulti(btmultimap_int_32_slots);
+	    }
+	}
+	else if (isStringType() && isMultimap())
+	{
+	    if (selected_slots == 4) {
+		return operation.opStringMulti(btmultimap_string_4_slots);
+	    }
+	    else if (selected_slots == 5) {
+		return operation.opStringMulti(btmultimap_string_5_slots);
+	    }
+	    else if (selected_slots == 6) {
+		return operation.opStringMulti(btmultimap_string_6_slots);
+	    }
+	    else if (selected_slots == 7) {
+		return operation.opStringMulti(btmultimap_string_7_slots);
+	    }
+	    else if (selected_slots == 8) {
+		return operation.opStringMulti(btmultimap_string_8_slots);
+	    }
+	    else if (selected_slots == 9) {
+		return operation.opStringMulti(btmultimap_string_9_slots);
+	    }
+	    else if (selected_slots == 10) {
+		return operation.opStringMulti(btmultimap_string_10_slots);
+	    }
+	    else if (selected_slots == 11) {
+		return operation.opStringMulti(btmultimap_string_11_slots);
+	    }
+	    else if (selected_slots == 12) {
+		return operation.opStringMulti(btmultimap_string_12_slots);
+	    }
+	    else if (selected_slots == 13) {
+		return operation.opStringMulti(btmultimap_string_13_slots);
+	    }
+	    else if (selected_slots == 14) {
+		return operation.opStringMulti(btmultimap_string_14_slots);
+	    }
+	    else if (selected_slots == 15) {
+		return operation.opStringMulti(btmultimap_string_15_slots);
+	    }
+	    else if (selected_slots == 16) {
+		return operation.opStringMulti(btmultimap_string_16_slots);
+	    }
+	    else if (selected_slots == 32) {
+		return operation.opStringMulti(btmultimap_string_32_slots);
+	    }
+	}
 
 	throw(wxT("Program Error: could not find selected B+ tree"));
     }
@@ -238,6 +358,22 @@ public:
     }
 };
 
+template <typename InnerOp>
+struct BTreeOp_SameSingleMulti : public InnerOp
+{
+    template <class BTreeType>
+    inline typename InnerOp::result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return InnerOp::opInteger(bt);
+    }
+
+    template <class BTreeType>
+    inline typename InnerOp::result_type opStringMulti(BTreeType &bt) const
+    {
+	return InnerOp::opString(bt);
+    }
+};
+
 class WMain : public WMain_wxg
 {
 public:
@@ -249,6 +385,7 @@ public:
 
     void	OnChoiceDataType(wxCommandEvent &ce);
     void	OnChoiceNodeSlots(wxCommandEvent &ce);
+    void	OnCheckboxDuplicates(wxCommandEvent &ce);
 
     void	OnButtonInsert(wxCommandEvent &ce);
     void	OnButtonErase(wxCommandEvent &ce);

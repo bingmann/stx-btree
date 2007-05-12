@@ -35,6 +35,7 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
         wxT("32")
     };
     choice_NodeSlots = new wxChoice(this, ID_CHOICE_NODESLOTS, wxDefaultPosition, wxDefaultSize, 14, choice_NodeSlots_choices, 0);
+    checkbox_Duplicates = new wxCheckBox(this, ID_CHECKBOX_DUPLICATES, wxT("Duplicate Keys"));
     textctrl_Key = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
     textctrl_Data = new wxTextCtrl(this, wxID_ANY, wxEmptyString);
     button_Insert = new wxButton(this, ID_BUTTON_INSERT, wxT("Insert"));
@@ -76,13 +77,15 @@ void WMain_wxg::do_layout()
     wxStaticBoxSizer* sizer_8 = new wxStaticBoxSizer(sizer_8_staticbox, wxVERTICAL);
     wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(3, 2, 0, 0);
     wxStaticBoxSizer* sizer_3 = new wxStaticBoxSizer(sizer_3_staticbox, wxVERTICAL);
-    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(4, 2, 0, 0);
+    wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(3, 2, 0, 0);
     wxStaticText* label_1 = new wxStaticText(this, wxID_ANY, wxT("Data Type"));
     grid_sizer_1->Add(label_1, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_1->Add(choice_DataType, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
     wxStaticText* label_3 = new wxStaticText(this, wxID_ANY, wxT("Node Slots"));
     grid_sizer_1->Add(label_3, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_1->Add(choice_NodeSlots, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_1->Add(2, 2, 0, wxADJUST_MINSIZE, 0);
+    grid_sizer_1->Add(checkbox_Duplicates, 0, wxALL, 4);
     grid_sizer_1->AddGrowableCol(0);
     grid_sizer_1->AddGrowableCol(1);
     sizer_3->Add(grid_sizer_1, 1, wxEXPAND, 0);

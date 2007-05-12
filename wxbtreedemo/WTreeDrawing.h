@@ -40,7 +40,13 @@ public:
 	wxSize opInteger(BTreeType &bt);
 
 	template <class BTreeType>
+	wxSize opIntegerMulti(BTreeType &bt);
+
+	template <class BTreeType>
 	wxSize opString(BTreeType &bt);
+
+	template <class BTreeType>
+	wxSize opStringMulti(BTreeType &bt);
     };
 
     class WMain* 	wmain;

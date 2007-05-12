@@ -48,6 +48,24 @@ struct BTreeOp_Insert
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {	
+	long key, data;
+
+	if (!inputkey.ToLong(&key)) {
+	    return wxT("Could not interpret key string as integer.");
+	}
+	if (!inputdata.ToLong(&data)) {
+	    return wxT("Could not interpret data string as integer.");
+	}
+
+	typename BTreeType::iterator iter = bt.insert2(key, data);
+
+	treebundle.setMark1(iter);
+	return wxT("Insert succeeded.");
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {
 	std::pair<typename BTreeType::iterator, bool> inres = bt.insert2(inputkey, inputdata);
@@ -59,6 +77,15 @@ struct BTreeOp_Insert
 	    treebundle.setMark1(inres.first);
 	    return wxT("Insert succeeded.");
 	}
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	typename BTreeType::iterator iter = bt.insert2(inputkey, inputdata);
+
+	treebundle.setMark1(iter);
+	return wxT("Insert succeeded.");
     }
 };
 
@@ -96,12 +123,24 @@ struct BTreeOp_Erase
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	if ( !bt.erase(inputkey) )
 	    return wxT("Erase returned false: key does not exist.");
 	else
 	    return wxT("Erase succeeded.");
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -163,6 +202,17 @@ struct BTreeOp_InsertRandomInteger
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {	
+	for(unsigned int i = 0; i < num; i++)
+	{
+	    bt.insert2(rand() % 1000, rand() % 1000);
+	}
+
+	return wxString::Format(wxT("Inserted %d random integers."), num);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	int count = 0;
@@ -178,6 +228,21 @@ struct BTreeOp_InsertRandomInteger
 
 	return wxString::Format(wxT("Inserted %d random integer strings."), count);
     }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {	
+	for(unsigned int i = 0; i < num; i++)
+	{
+	    wxString key, val;
+	    key << rand() % 1000;
+	    val << rand() % 1000;
+
+	    bt.insert2(key, val);
+	}
+
+	return wxString::Format(wxT("Inserted %d random integer strings."), num);
+    }
 };
 
 struct BTreeOp_InsertRandomString
@@ -191,6 +256,12 @@ struct BTreeOp_InsertRandomString
     inline result_type opInteger(BTreeType &bt) const
     {
 	return wxT("Cannot insert strings into integer tree");
+    }
+
+    template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
     }
 
     template <class BTreeType>
@@ -214,8 +285,27 @@ struct BTreeOp_InsertRandomString
 
 	return wxString::Format(wxT("Inserted %d random strings."), count);
     }
-};
 
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	static const char letters[27] = "abcdefghijklmnopqrstuvwxyz";
+
+	for(unsigned int i = 0; i < num; ++i)
+	{
+	    wxString key, val;
+	    for(unsigned int l = 0; l < len; ++l)
+	    {
+		key += letters[rand() % 26];
+		val += letters[rand() % 26];
+	    }
+
+	    bt.insert2(key, val);
+	}
+
+	return wxString::Format(wxT("Inserted %d random strings."), num);
+    }
+};
 
 void WMain::OnMenuInsertRandom(wxCommandEvent &ce)
 {
@@ -325,6 +415,12 @@ struct BTreeOp_FindKey
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {
 	typename BTreeType::const_iterator bti = bt.find(inputkey);
@@ -339,6 +435,12 @@ struct BTreeOp_FindKey
 	    treebundle.setMark1(bti);
 	    return wxT("Find Key succeeded.");
 	}
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -384,6 +486,12 @@ struct BTreeOp_EqualRange
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {
 	std::pair< typename BTreeType::const_iterator,  typename BTreeType::const_iterator >
@@ -400,6 +508,12 @@ struct BTreeOp_EqualRange
 	    treebundle.setMark2(btip.second);
 	    return wxT("Equal Range succeeded.");
 	}
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -425,10 +539,22 @@ struct BTreeOp_Clear
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	bt.clear();
 	return wxT("Tree cleared.");
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -457,6 +583,12 @@ struct BTreeOp_GetDump
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	std::ostringstream oss;
@@ -465,6 +597,12 @@ struct BTreeOp_GetDump
 	std::string os = oss.str();
 
 	return wxString(os.data(), wxConvISO8859_1, os.size());
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -503,6 +641,12 @@ struct BTreeOp_GetVector
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	for(typename BTreeType::const_iterator ci = bt.begin(); ci != bt.end(); ++ci)
@@ -510,6 +654,12 @@ struct BTreeOp_GetVector
 	    outvector.push_back(*ci);
 	}
 	bt.clear();
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -537,6 +687,12 @@ struct BTreeOp_PutVector
     }
 
     template <class BTreeType>
+    inline result_type opIntegerMulti(BTreeType &bt) const
+    {
+	return opInteger(bt);
+    }
+
+    template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
     {	
 	bt.clear();
@@ -547,6 +703,12 @@ struct BTreeOp_PutVector
 	}
 
 	return bt.size();
+    }
+
+    template <class BTreeType>
+    inline result_type opStringMulti(BTreeType &bt) const
+    {
+	return opString(bt);
     }
 };
 
@@ -600,10 +762,32 @@ void WMain::OnChoiceNodeSlots(wxCommandEvent &)
     UpdateTextDump();
 }
 
+void WMain::OnCheckboxDuplicates(wxCommandEvent &)
+{
+    bool seldup = checkbox_Duplicates->GetValue();
+
+    if (treebundle.selected_multimap == seldup) return;
+
+    std::vector< std::pair<wxString,wxString> >	datavector;
+
+    BTreeOp_GetVector op1 = { datavector };
+    treebundle.run<BTreeOp_GetVector>(op1);
+
+    treebundle.selected_multimap = seldup;
+
+    BTreeOp_PutVector op2 = { datavector };
+    int btsize = treebundle.run<BTreeOp_PutVector>(op2);
+
+    textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
+
+    UpdateTextDump();
+}
+
 BEGIN_EVENT_TABLE(WMain, wxDialog)
 
     EVT_CHOICE	(ID_CHOICE_DATATYPE,		WMain::OnChoiceDataType)
     EVT_CHOICE	(ID_CHOICE_NODESLOTS,		WMain::OnChoiceNodeSlots)
+    EVT_CHECKBOX(ID_CHECKBOX_DUPLICATES,	WMain::OnCheckboxDuplicates)
 
     EVT_MENU_RANGE (500, 520,			WMain::OnMenuInsertRandom)
 
