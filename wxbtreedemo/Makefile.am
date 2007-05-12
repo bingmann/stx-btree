@@ -18,4 +18,6 @@ resources.o: resources.rc
 LDADD += resources.o
 endif
 
+EXTRA_DIST = progicon.ico progicon.xpm resources.rc wxBTreeDemo.wxg
+
 endif

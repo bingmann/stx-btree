@@ -11,6 +11,11 @@
 WMain::WMain()
     : WMain_wxg(NULL, -1, wxT(""))
 {
+    {
+	#include "progicon.xpm"
+	SetIcon(wxIcon(progicon));
+    }
+
     window_TreeDrawing->SetWMain(this);
 
     treebundle.selected_type = 0;
