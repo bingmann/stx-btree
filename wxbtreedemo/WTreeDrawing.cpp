@@ -9,11 +9,7 @@ WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
     : wxScrolledWindow(parent, id),
       wmain(NULL)
 {
-
-}
-
-WTreeDrawing::~WTreeDrawing()
-{
+    SetSize(300, 300);
 }
 
 void WTreeDrawing::SetWMain(WMain *wm)
@@ -26,16 +22,22 @@ void WTreeDrawing::OnDraw(wxDC &dc)
     DrawBTree(dc);
 }
 
-wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const class WMain::btree_type::btree_impl::node* node)
+void WTreeDrawing::OnSize(wxSizeEvent &se)
 {
-    typedef WMain::btree_type::btree_impl btree_impl;
+    Refresh();
+}
+
+template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const class BTreeType::btree_impl::node* node)
+{
+    typedef class BTreeType::btree_impl btree_impl;
 
     const int textpadding = 3;
     const int nodepadding = 10;
 
     if (node->isleafnode())
     {
-	const btree_impl::leaf_node *leafnode = static_cast<const btree_impl::leaf_node*>(node);
+	const typename btree_impl::leaf_node *leafnode = static_cast<const typename btree_impl::leaf_node*>(node);
 
 	int textx = 0, texty = 0;
 	int maxh = 0;
@@ -58,6 +60,18 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
 
 	    if (offsetx >= 0)
 	    {
+		if (tb.isMark1(leafnode, slot))
+		{
+		    dc.SetBrush(wxColor(128, 179, 255));
+		}
+		else if (tb.isMark2(leafnode, slot))
+		{
+		    dc.SetBrush(wxColor(128, 255, 128));
+		}
+		else {
+		    dc.SetBrush(*wxWHITE);
+		}
+
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
 				 maxw + 2*textpadding, textkeyh + 2*textpadding);
 
@@ -81,7 +95,7 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
     }
     else
     {
-	const btree_impl::inner_node *innernode = static_cast<const btree_impl::inner_node*>(node);
+	const typename btree_impl::inner_node *innernode = static_cast<const typename btree_impl::inner_node*>(node);
 
 	const int childnum = (innernode->slotuse + 1);
 	// find the maximium width and height of all children
@@ -90,7 +104,7 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
 	std::vector<int> childw;
 	for (unsigned int slot = 0; slot <= innernode->slotuse; ++slot)
 	{
-	    wxSize cs = DrawBTreeNode(dc, -1, -1, innernode->childid[slot]);
+	    wxSize cs = draw_node<BTreeType>(-1, -1, innernode->childid[slot]);
 	    childmaxw = std::max(childmaxw, cs.GetWidth());
 	    childmaxh = std::max(childmaxh, cs.GetHeight());
 	    childw.push_back(cs.GetWidth());
@@ -137,6 +151,8 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
 
 	    if (offsetx >= 0)
 	    {
+		dc.SetBrush(*wxWHITE);
+
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
 				 textkeyw + 2*textpadding, textkeyh + 2*textpadding);
 		dc.DrawText(textkey,
@@ -150,15 +166,14 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
 		    dc.DrawRectangle(offsetx + childx, offsety + childy,
 				     childmaxw, childmaxh);
 
-		    DrawBTreeNode(dc, offsetx + childx, offsety + childy, innernode->childid[slot]);
+		    draw_node<BTreeType>(offsetx + childx, offsety + childy, innernode->childid[slot]);
 		}
 		else
 		{
 		    // draw centered inner node
-		    DrawBTreeNode(dc,
-				  offsetx + childx + std::max(0, (childmaxw - childw[slot]) / 2),
-				  offsety + childy,
-				  innernode->childid[slot]);
+		    draw_node<BTreeType>(offsetx + childx + std::max(0, (childmaxw - childw[slot]) / 2),
+					 offsety + childy,
+					 innernode->childid[slot]);
 		}
 
 		// calculate spline from key anchor to middle of child's box
@@ -198,18 +213,18 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
 	    if (innernode->level == 1)
 	    {
 		// draw leaf node with border to see free slots
+		dc.SetBrush(*wxWHITE);
 		dc.DrawRectangle(offsetx + childx, offsety + childy,
 				 childmaxw, childmaxh);
 
-		DrawBTreeNode(dc, offsetx + childx, offsety + childy, innernode->childid[innernode->slotuse]);
+		draw_node<BTreeType>(offsetx + childx, offsety + childy, innernode->childid[innernode->slotuse]);
 	    }
 	    else
 	    {
 		// draw centered inner node
-		DrawBTreeNode(dc,
-			      offsetx + childx + std::max(0, (childmaxw - childw[innernode->slotuse]) / 2),
-			      offsety + childy,
-			      innernode->childid[innernode->slotuse]);
+		draw_node<BTreeType>(offsetx + childx + std::max(0, (childmaxw - childw[innernode->slotuse]) / 2),
+				     offsety + childy,
+				     innernode->childid[innernode->slotuse]);
 	    }
 
 	    // calculate spline from key anchor to middle of child's box
@@ -227,36 +242,68 @@ wxSize WTreeDrawing::DrawBTreeNode(wxDC &dc, int offsetx, int offsety, const cla
     }
 }
 
-void WTreeDrawing::DrawBTree(wxDC &dc)
+template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 {
-    typedef WMain::btree_type btree_type;
-    if (!wmain) return;
-
-    const btree_type& bt = wmain->btree_int_4slots;
-
     dc.SetFont(*wxNORMAL_FONT);
     dc.SetPen(*wxBLACK_PEN);
 
     if (bt.tree.root)
     {
+	// trees with less than 3 levels are drawns larger
 	if (bt.tree.root->level >= 2) {
 	    dc.SetFont(*wxSMALL_FONT);
 	}
 
-	wxSize ts = DrawBTreeNode(dc, 0, 0, bt.tree.root);
+	wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.root);
 
-	if (ts != oldTreeSize)
+	if (ts.GetWidth() < w.GetSize().GetWidth())
 	{
+	    // center small trees on the current view area
+	    ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, 0, bt.tree.root);
+	}
+	else
+	{
+	    ts = draw_node<BTreeType>(0, 0, bt.tree.root);
+	}
+
+	if (ts != w.oldTreeSize)
+	{
+	    // set scroll bar exents
 	    int scrx, scry;
-	    GetViewStart(&scrx, &scry);
-	    SetScrollbars(10, 10, ts.GetWidth() / 10, ts.GetHeight() / 10, scrx, scry);
-	    oldTreeSize = ts;
-	    Refresh();
+	    w.GetViewStart(&scrx, &scry);
+	    w.SetScrollbars(10, 10, ts.GetWidth() / 10, ts.GetHeight() / 10, scrx, scry);
+	    w.oldTreeSize = ts;
 	}
     }
+    else
+    {
+	w.SetScrollbars(10, 10, 0, 0);
+    }
+}
+
+template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::opInteger(BTreeType &bt)
+{
+    draw_tree(bt);
+}
+
+template <class BTreeType>
+wxSize WTreeDrawing::BTreeOp_Draw::opString(BTreeType &bt)
+{
+    draw_tree(bt);
+}
+
+void WTreeDrawing::DrawBTree(wxDC &dc)
+{
+    if (!wmain) return;
+    
+    BTreeOp_Draw drawop(*this, dc, wmain->treebundle);
+    wmain->treebundle.run<BTreeOp_Draw>(drawop);
 }
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
+    EVT_SIZE	(WTreeDrawing::OnSize)
 
 END_EVENT_TABLE()

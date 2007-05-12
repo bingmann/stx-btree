@@ -409,6 +409,11 @@ public:
 	/// operator->
 	mutable value_type		temp_value;
 
+	// The macro BTREE_FRIENDS can be used by outside class to access the B+
+	// tree internals. This was added for wxBTreeDemo to be able to draw the
+	// tree.
+	BTREE_FRIENDS
+
     public:
 	// *** Methods
 
@@ -583,6 +588,11 @@ public:
 	/// Evil! A temporary value_type to STL-correctly deliver operator* and
 	/// operator->
 	mutable value_type		temp_value;
+
+	// The macro BTREE_FRIENDS can be used by outside class to access the B+
+	// tree internals. This was added for wxBTreeDemo to be able to draw the
+	// tree.
+	BTREE_FRIENDS
 
     public:
 	// *** Methods
@@ -998,7 +1008,7 @@ public:
     /// slot in the last leaf of the B+ tree.
     inline iterator end()
     {
-	return iterator(tailleaf, tailleaf->slotuse);
+	return iterator(tailleaf, tailleaf ? tailleaf->slotuse : 0);
     }
 
     /// Constructs a read-only constant iterator that points to the first slot
@@ -1012,7 +1022,7 @@ public:
     /// invalid slot in the last leaf of the B+ tree.
     inline const_iterator end() const
     {
-	return const_iterator(tailleaf, tailleaf->slotuse);
+	return const_iterator(tailleaf, tailleaf ? tailleaf->slotuse : 0);
     }
 
     /// Constructs a read/data-write reverse iterator that points to the first

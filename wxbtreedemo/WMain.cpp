@@ -3,6 +3,7 @@
 #include <iostream>
 #include <sstream>
 #include <map>
+#include <vector>
 
 #include "WMain.h"
 #include "WTreeDrawing.h"
@@ -11,43 +12,106 @@ WMain::WMain()
     : WMain_wxg(NULL, -1, wxT(""))
 {
     window_TreeDrawing->SetWMain(this);
+
+    treebundle.selected_type = 0;
+    treebundle.selected_slots = 4;
+    treebundle.clearMarks();
 }
+
+struct BTreeOp_Insert
+{
+    BTreeBundle&	treebundle;
+    wxString		inputkey, inputdata;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	long key, data;
+
+	if (!inputkey.ToLong(&key)) {
+	    return wxT("Could not interpret key string as integer.");
+	}
+	if (!inputdata.ToLong(&data)) {
+	    return wxT("Could not interpret data string as integer.");
+	}
+
+	std::pair<typename BTreeType::iterator, bool> inres = bt.insert2(key, data);
+	if (!inres.second)
+	    return wxT("Insert returned false: key already exists.");
+	else
+	{
+	    treebundle.setMark1(inres.first);
+	    return wxT("Insert succeeded.");
+	}
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {
+	std::pair<typename BTreeType::iterator, bool> inres = bt.insert2(inputkey, inputdata);
+
+	if (!inres.second)
+	    return wxT("Insert returned false: key already exists.");
+	else
+	{
+	    treebundle.setMark1(inres.first);
+	    return wxT("Insert succeeded.");
+	}
+    }
+};
 
 void WMain::OnButtonInsert(wxCommandEvent &)
 {
-    wxString inputkey = textctrl_Key->GetValue();
-    wxString inputdata = textctrl_Data->GetValue();
+    BTreeOp_Insert op = { treebundle };
+    op.inputkey = textctrl_Key->GetValue();
+    op.inputdata = textctrl_Data->GetValue();
 
-    long key, data;
-    if (!inputkey.ToLong(&key)) {
-	textctrl_OpResult->SetValue(wxT("Could not interpret key string as integer."));
-	return;
-    }
-    if (!inputdata.ToLong(&data)) {
-	textctrl_OpResult->SetValue(wxT("Could not interpret data string as integer."));
-	return;
-    }
-
-    if (!btree_int_4slots.insert2(key, data).second) {
-	textctrl_OpResult->SetValue(wxT("Insert returned false: key already exists."));
-    }
+    wxString result = treebundle.run<BTreeOp_Insert>(op);
+    textctrl_OpResult->SetValue(result);
 
     UpdateTextDump();
 }
 
+struct BTreeOp_Erase
+{
+    wxString	inputkey;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	long key;
+
+	if (!inputkey.ToLong(&key)) {
+	    return wxT("Could not interpret key string as integer.");
+	}
+
+	if (!bt.erase(key))
+	    return wxT("Erase returned false: key does not exist.");
+	else
+	    return wxT("Erase succeeded.");
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	if ( !bt.erase(inputkey) )
+	    return wxT("Erase returned false: key does not exist.");
+	else
+	    return wxT("Erase succeeded.");
+    }
+};
+
 void WMain::OnButtonErase(wxCommandEvent &)
 {
-    wxString inputkey = textctrl_Key->GetValue();
+    BTreeOp_Erase op;
+    op.inputkey = textctrl_Key->GetValue();
 
-    long key;
-    if (!inputkey.ToLong(&key)) {
-	textctrl_OpResult->SetValue(wxT("Could not interpret key string as integer."));
-	return;
-    }
-
-    if (!btree_int_4slots.erase(key)) {
-	textctrl_OpResult->SetValue(wxT("Erase returned false: key does not exist."));
-    }
+    wxString result = treebundle.run<BTreeOp_Erase>(op);
+    textctrl_OpResult->SetValue(result);
 
     UpdateTextDump();
 }
@@ -60,71 +124,497 @@ void WMain::OnButtonInsertRandom(wxCommandEvent &)
     menu->Append(501,	wxT("Insert 20 Random Integers"));
     menu->Append(502,	wxT("Insert 50 Random Integers"));
     menu->Append(503,	wxT("Insert 100 Random Integers"));
+    menu->Append(504,	wxT("Insert 200 Random Integers"));
+
+    if (treebundle.isStringType())
+    {
+	menu->AppendSeparator();
+	menu->Append(510,	wxT("Insert 10 Random 1 Letter Strings"));
+	menu->Append(511,	wxT("Insert 10 Random 2 Letter Strings"));
+	menu->Append(512,	wxT("Insert 25 Random 2 Letter Strings"));
+	menu->Append(513,	wxT("Insert 50 Random 2 Letter Strings"));
+	menu->Append(514,	wxT("Insert 10 Random 3 Letter Strings"));
+	menu->Append(515,	wxT("Insert 25 Random 3 Letter Strings"));
+	menu->Append(516,	wxT("Insert 50 Random 3 Letter Strings"));
+	menu->Append(517,	wxT("Insert 100 Random 3 Letter Strings"));
+	menu->Append(518,	wxT("Insert 200 Random 3 Letter Strings"));
+    }
 
     PopupMenu(menu);
 }
+
+struct BTreeOp_InsertRandomInteger
+{
+    int		num;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	int count = 0;
+	for(unsigned int i = 0; i < num; i++)
+	{
+	    if (bt.insert2(rand() % 1000, rand() % 1000).second)
+		count++;
+	}
+
+	return wxString::Format(wxT("Inserted %d random integers."), count);
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	int count = 0;
+	for(unsigned int i = 0; i < num; i++)
+	{
+	    wxString key, val;
+	    key << rand() % 1000;
+	    val << rand() % 1000;
+
+	    if (bt.insert2(key, val).second)
+		count++;
+	}
+
+	return wxString::Format(wxT("Inserted %d random integer strings."), count);
+    }
+};
+
+struct BTreeOp_InsertRandomString
+{
+    int		len;
+    int		num;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {
+	return wxT("Cannot insert strings into integer tree");
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {
+	static const char letters[27] = "abcdefghijklmnopqrstuvwxyz";
+
+	int count = 0;
+	for(unsigned int i = 0; i < num; ++i)
+	{
+	    wxString key, val;
+	    for(unsigned int l = 0; l < len; ++l)
+	    {
+		key += letters[rand() % 26];
+		val += letters[rand() % 26];
+	    }
+
+	    if (bt.insert2(key, val).second)
+		count++;
+	}
+
+	return wxString::Format(wxT("Inserted %d random strings."), count);
+    }
+};
+
 
 void WMain::OnMenuInsertRandom(wxCommandEvent &ce)
 {
     srand(time(NULL));
     if (ce.GetId() == 500)
     {
-	for(unsigned int i = 0; i < 10; i++)
-	{
-	    btree_int_4slots.insert2(rand() % 1000, rand() % 1000);
-	}
+	BTreeOp_InsertRandomInteger op = { 10 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomInteger>(op) );
     }
     else if (ce.GetId() == 501)
     {
-	for(unsigned int i = 0; i < 20; i++)
-	{
-	    btree_int_4slots.insert2(rand() % 1000, rand() % 1000);
-	}
+	BTreeOp_InsertRandomInteger op = { 20 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomInteger>(op) );
     }
     else if (ce.GetId() == 502)
     {
-	for(unsigned int i = 0; i < 50; i++)
-	{
-	    btree_int_4slots.insert2(rand() % 1000, rand() % 1000);
-	}
+	BTreeOp_InsertRandomInteger op = { 50 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomInteger>(op) );
     }
     else if (ce.GetId() == 503)
     {
-	for(unsigned int i = 0; i < 100; i++)
-	{
-	    btree_int_4slots.insert2(rand() % 1000, rand() % 1000);
-	}
+	BTreeOp_InsertRandomInteger op = { 100 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomInteger>(op) );
+    }
+    else if (ce.GetId() == 504)
+    {
+	BTreeOp_InsertRandomInteger op = { 200 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomInteger>(op) );
+    }
+
+    else if (ce.GetId() == 510)
+    {
+	BTreeOp_InsertRandomString op = { 1, 10 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 511)
+    {
+	BTreeOp_InsertRandomString op = { 2, 10 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 512)
+    {
+	BTreeOp_InsertRandomString op = { 2, 25 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 513)
+    {
+	BTreeOp_InsertRandomString op = { 2, 50 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 514)
+    {
+	BTreeOp_InsertRandomString op = { 3, 10 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 515)
+    {
+	BTreeOp_InsertRandomString op = { 3, 25 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 516)
+    {
+	BTreeOp_InsertRandomString op = { 3, 50 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 517)
+    {
+	BTreeOp_InsertRandomString op = { 3, 100 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
+    }
+    else if (ce.GetId() == 518)
+    {
+	BTreeOp_InsertRandomString op = { 3, 200 };
+	textctrl_OpResult->SetValue( treebundle.run<BTreeOp_InsertRandomString>(op) );
     }
 
     UpdateTextDump();
 }
 
-void WMain::OnButtonClear(wxCommandEvent &)
+struct BTreeOp_FindKey
 {
-    btree_int_4slots.clear();
+    BTreeBundle&	treebundle;
+    wxString		inputkey;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	long key;
+	if (!inputkey.ToLong(&key)) {
+	    return wxT("Could not interpret key string as integer.");
+	}
+	
+	typename BTreeType::const_iterator bti = bt.find(key);
+
+	if (bti == bt.end())
+	{
+	    treebundle.clearMarks();
+	    return wxT("Find Key failed: key does not exist.");
+	}
+	else
+	{
+	    treebundle.setMark1(bti);
+	    return wxT("Find Key succeeded.");
+	}
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {
+	typename BTreeType::const_iterator bti = bt.find(inputkey);
+
+	if (bti == bt.end())
+	{
+	    treebundle.clearMarks();
+	    return wxT("Find Key failed: key does not exist.");
+	}
+	else
+	{
+	    treebundle.setMark1(bti);
+	    return wxT("Find Key succeeded.");
+	}
+    }
+};
+
+void WMain::OnButtonFindKey(wxCommandEvent &)
+{
+    BTreeOp_FindKey op = { treebundle, textctrl_Key->GetValue() };
+
+    wxString result = treebundle.run<BTreeOp_FindKey>(op);
+    textctrl_OpResult->SetValue(result);
+
     UpdateTextDump();
 }
 
+struct BTreeOp_EqualRange
+{
+    BTreeBundle&	treebundle;
+    wxString		inputkey;
+
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	long key;
+	if (!inputkey.ToLong(&key)) {
+	    return wxT("Could not interpret key string as integer.");
+	}
+	
+	std::pair< typename BTreeType::const_iterator,  typename BTreeType::const_iterator >
+	    btip = bt.equal_range(key);
+
+	if (btip.first == bt.end() && btip.second == bt.end())
+	{
+	    treebundle.clearMarks();
+	    return wxT("Equal Range failed: key is beyond the maximum of the tree.");
+	}
+	else
+	{
+	    treebundle.setMark1(btip.first);
+	    treebundle.setMark2(btip.second);
+	    return wxT("Equal Range succeeded.");
+	}
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {
+	std::pair< typename BTreeType::const_iterator,  typename BTreeType::const_iterator >
+	    btip = bt.equal_range(inputkey);
+
+	if (btip.first == bt.end() && btip.second == bt.end())
+	{
+	    treebundle.clearMarks();
+	    return wxT("Equal Range failed: key is beyond the maximum of the tree.");
+	}
+	else
+	{
+	    treebundle.setMark1(btip.first);
+	    treebundle.setMark2(btip.second);
+	    return wxT("Equal Range succeeded.");
+	}
+    }
+};
+
+void WMain::OnButtonEqualRange(wxCommandEvent &)
+{
+    BTreeOp_EqualRange op = { treebundle, textctrl_Key->GetValue() };
+
+    wxString result = treebundle.run<BTreeOp_EqualRange>(op);
+    textctrl_OpResult->SetValue(result);
+
+    UpdateTextDump();
+}
+
+struct BTreeOp_Clear
+{
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	bt.clear();
+	return wxT("Tree cleared.");
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	bt.clear();
+	return wxT("Tree cleared.");
+    }
+};
+
+void WMain::OnButtonClear(wxCommandEvent &)
+{
+    BTreeOp_Clear op;
+    wxString result = treebundle.run<BTreeOp_Clear>(op);
+    textctrl_OpResult->SetValue(result);
+
+    UpdateTextDump();
+}
+
+struct BTreeOp_GetDump
+{
+    typedef	wxString	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {	
+	std::ostringstream oss;
+
+	bt.print(oss);
+	std::string os = oss.str();
+
+	return wxString(os.data(), wxConvISO8859_1, os.size());
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	std::ostringstream oss;
+
+	bt.print(oss);
+	std::string os = oss.str();
+
+	return wxString(os.data(), wxConvISO8859_1, os.size());
+    }
+};
+
 void WMain::UpdateTextDump()
 {
-    std::ostringstream oss;
-
-    btree_int_4slots.print(oss);
-    std::string os = oss.str();
-
-    textctrl_TextDump->SetValue( wxString(os.data(), wxConvISO8859_1, os.size()) );
+    textctrl_TextDump->SetValue( treebundle.run<BTreeOp_GetDump>( BTreeOp_GetDump() ) );
 
     window_TreeDrawing->Refresh();
 }
 
+void WMain::OnClose(wxCloseEvent &ce)
+{
+    Destroy();
+}
+
+struct BTreeOp_GetVector
+{
+    typedef	std::pair<wxString,wxString> stringpair_type;
+
+    std::vector< std::pair<wxString,wxString> >	&outvector;
+
+    typedef	void	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {
+	for(typename BTreeType::const_iterator ci = bt.begin(); ci != bt.end(); ++ci)
+	{
+	    wxString key, val;
+	    key << ci->first;
+	    val << ci->second;
+
+	    outvector.push_back( stringpair_type(key, val) );
+	}
+	bt.clear();
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	for(typename BTreeType::const_iterator ci = bt.begin(); ci != bt.end(); ++ci)
+	{
+	    outvector.push_back(*ci);
+	}
+	bt.clear();
+    }
+};
+
+struct BTreeOp_PutVector
+{
+    std::vector< std::pair<wxString,wxString> >	&invector;
+
+    typedef	int	result_type;
+
+    template <class BTreeType>
+    inline result_type opInteger(BTreeType &bt) const
+    {
+	bt.clear();
+	for (std::vector< std::pair<wxString,wxString> >::const_iterator ci = invector.begin();
+	     ci != invector.end(); ++ci)
+	{
+	    long key, val;
+	    if (ci->first.ToLong(&key) && ci->second.ToLong(&val))
+	    {
+		bt.insert2(key, val);
+	    }
+	}
+
+	return bt.size();
+    }
+
+    template <class BTreeType>
+    inline result_type opString(BTreeType &bt) const
+    {	
+	bt.clear();
+	for (std::vector< std::pair<wxString,wxString> >::const_iterator ci = invector.begin();
+	     ci != invector.end(); ++ci)
+	{
+	    bt.insert(*ci);
+	}
+
+	return bt.size();
+    }
+};
+
+void WMain::OnChoiceDataType(wxCommandEvent &)
+{
+    int seltype = choice_DataType->GetSelection();
+    if (seltype >= 2) return;
+
+    if (treebundle.selected_type == seltype) return;
+
+    std::vector< std::pair<wxString,wxString> >	datavector;
+
+    BTreeOp_GetVector op1 = { datavector };
+    treebundle.run<BTreeOp_GetVector>(op1);
+
+    treebundle.selected_type = seltype;
+
+    BTreeOp_PutVector op2 = { datavector };
+    int btsize = treebundle.run<BTreeOp_PutVector>(op2);
+
+    textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
+
+    UpdateTextDump();
+}
+
+void WMain::OnChoiceNodeSlots(wxCommandEvent &)
+{
+    static const int choice_NodeSlots_choices[] = {
+	4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 32
+    };
+
+    int selslot = choice_NodeSlots->GetSelection();
+    if (selslot >= sizeof(choice_NodeSlots_choices) / sizeof(choice_NodeSlots_choices[0])) return;
+
+    selslot = choice_NodeSlots_choices[selslot];
+
+    if (treebundle.selected_slots == selslot) return;
+
+    std::vector< std::pair<wxString,wxString> >	datavector;
+
+    BTreeOp_GetVector op1 = { datavector };
+    treebundle.run<BTreeOp_GetVector>(op1);
+
+    treebundle.selected_slots = selslot;
+
+    BTreeOp_PutVector op2 = { datavector };
+    int btsize = treebundle.run<BTreeOp_PutVector>(op2);
+
+    textctrl_OpResult->SetValue(wxString::Format(wxT("Moved %lu data items into new tree"), btsize));
+
+    UpdateTextDump();
+}
+
 BEGIN_EVENT_TABLE(WMain, wxDialog)
 
-    EVT_MENU_RANGE (500, 510,			WMain::OnMenuInsertRandom)
+    EVT_CHOICE	(ID_CHOICE_DATATYPE,		WMain::OnChoiceDataType)
+    EVT_CHOICE	(ID_CHOICE_NODESLOTS,		WMain::OnChoiceNodeSlots)
+
+    EVT_MENU_RANGE (500, 520,			WMain::OnMenuInsertRandom)
 
     EVT_BUTTON	(ID_BUTTON_INSERT,		WMain::OnButtonInsert)
     EVT_BUTTON	(ID_BUTTON_ERASE,		WMain::OnButtonErase)
     EVT_BUTTON	(ID_BUTTON_INSERTRANDOM,	WMain::OnButtonInsertRandom)
-    EVT_BUTTON	(ID_BUTTON_CLEAR,	WMain::OnButtonClear)
+    EVT_BUTTON	(ID_BUTTON_FINDKEY,		WMain::OnButtonFindKey)
+    EVT_BUTTON	(ID_BUTTON_EQUALRANGE,		WMain::OnButtonEqualRange)
+    EVT_BUTTON	(ID_BUTTON_CLEAR,		WMain::OnButtonClear)
+
+    EVT_CLOSE	(WMain::OnClose)
 
 END_EVENT_TABLE();
 
@@ -144,8 +634,8 @@ bool AppBTreeDemo::OnInit()
 
     WMain* wm = new WMain();
     SetTopWindow(wm);
+    SetExitOnFrameDelete(true);
     wm->Show();
 
     return true;
 }
-

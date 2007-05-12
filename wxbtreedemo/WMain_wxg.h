@@ -16,10 +16,14 @@ class WMain_wxg: public wxDialog {
 public:
     // begin wxGlade: WMain_wxg::ids
     enum {
-        ID_BUTTON_INSERT = wxID_HIGHEST + 1000,
-        ID_BUTTON_ERASE = wxID_HIGHEST + 1001,
-        ID_BUTTON_INSERTRANDOM = wxID_HIGHEST + 1002,
-        ID_BUTTON_CLEAR = wxID_HIGHEST + 1003
+        ID_CHOICE_DATATYPE = wxID_HIGHEST + 1000,
+        ID_CHOICE_NODESLOTS = wxID_HIGHEST + 1001,
+        ID_BUTTON_INSERT = wxID_HIGHEST + 1002,
+        ID_BUTTON_ERASE = wxID_HIGHEST + 1003,
+        ID_BUTTON_INSERTRANDOM = wxID_HIGHEST + 1004,
+        ID_BUTTON_FINDKEY = wxID_HIGHEST + 1005,
+        ID_BUTTON_EQUALRANGE = wxID_HIGHEST + 1006,
+        ID_BUTTON_CLEAR = wxID_HIGHEST + 1007
     };
     // end wxGlade
 
@@ -33,17 +37,18 @@ private:
 
 protected:
     // begin wxGlade: WMain_wxg::attributes
-    wxStaticBox* sizer_4_staticbox;
+    wxStaticBox* sizer_9_staticbox;
+    wxStaticBox* sizer_8_staticbox;
     wxStaticBox* sizer_3_staticbox;
-    wxChoice* choice_2;
-    wxChoice* choice_2_copy;
+    wxChoice* choice_DataType;
+    wxChoice* choice_NodeSlots;
     wxTextCtrl* textctrl_Key;
     wxTextCtrl* textctrl_Data;
     wxButton* button_Insert;
     wxButton* button_Erase;
     wxButton* button_InsertRandom;
-    wxButton* button_3;
-    wxButton* button_4;
+    wxButton* button_FindKey;
+    wxButton* button_EqualRange;
     wxButton* button_Clear;
     wxTextCtrl* textctrl_OpResult;
     WTreeDrawing* window_TreeDrawing;
