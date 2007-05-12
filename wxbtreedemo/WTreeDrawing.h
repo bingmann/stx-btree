@@ -14,6 +14,7 @@ public:
 
     /// Used to determine when to update the scroll bars.
     wxSize		oldTreeSize;
+    double		oldscalefactor;
 
     /// Zoom factor changed by the mouse wheel.
     double		scalefactor;

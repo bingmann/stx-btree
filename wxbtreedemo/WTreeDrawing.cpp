@@ -279,12 +279,14 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 	    ts = draw_node<BTreeType>(0, 0, bt.tree.root);
 	}
 
+	if (ts != w.oldTreeSize || w.scalefactor != w.oldscalefactor)
 	{
 	    // set scroll bar exents
 	    int scrx, scry;
 	    w.GetViewStart(&scrx, &scry);
 	    w.SetScrollbars(10, 10, int(ts.GetWidth() / 10 * w.scalefactor), int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
 	    w.oldTreeSize = ts;
+	    w.oldscalefactor = w.scalefactor;
 	}
     }
     else
