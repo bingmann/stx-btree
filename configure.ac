@@ -5,6 +5,7 @@ AC_PREREQ(2.59)
 AC_INIT(stx-btree, 0.7)
 AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
+AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE
 #AM_MAINTAINER_MODE
@@ -86,6 +87,14 @@ if test "$wxWin" != 1; then
 	equivalent variable.
     ])
 fi
+
+# Win32 tools to add icons to the programs
+case "${host}" in
+*-*-cygwin* | *-*-mingw32*)
+    AC_CHECK_TOOL(RESCOMP, windres)
+    ;;
+esac
+AM_CONDITIONAL(GOT_RESCOMP, test x$RESCOMP != x)
 
 # Checks for library functions.
 

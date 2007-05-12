@@ -32,7 +32,10 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
+build_triplet = @build@
+host_triplet = @host@
 @HAVE_WXWIDGETS_TRUE@bin_PROGRAMS = wxBTreeDemo$(EXEEXT)
+@GOT_RESCOMP_TRUE@@HAVE_WXWIDGETS_TRUE@am__append_1 = resources.o
 subdir = wxbtreedemo
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -51,7 +54,7 @@ am__wxBTreeDemo_SOURCES_DIST = WMain.cpp WMain.h WMain_wxg.cpp \
 @HAVE_WXWIDGETS_TRUE@	WTreeDrawing.$(OBJEXT)
 wxBTreeDemo_OBJECTS = $(am_wxBTreeDemo_OBJECTS)
 wxBTreeDemo_LDADD = $(LDADD)
-wxBTreeDemo_DEPENDENCIES =
+@HAVE_WXWIDGETS_TRUE@wxBTreeDemo_DEPENDENCIES = $(am__append_1)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/scripts/depcomp
 am__depfiles_maybe = depfiles
@@ -114,6 +117,7 @@ PACKAGE_STRING = @PACKAGE_STRING@
 PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+RESCOMP = @RESCOMP@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
@@ -139,14 +143,22 @@ am__quote = @am__quote@
 am__tar = @am__tar@
 am__untar = @am__untar@
 bindir = @bindir@
+build = @build@
 build_alias = @build_alias@
+build_cpu = @build_cpu@
+build_os = @build_os@
+build_vendor = @build_vendor@
 builddir = @builddir@
 datadir = @datadir@
 datarootdir = @datarootdir@
 docdir = @docdir@
 dvidir = @dvidir@
 exec_prefix = @exec_prefix@
+host = @host@
 host_alias = @host_alias@
+host_cpu = @host_cpu@
+host_os = @host_os@
+host_vendor = @host_vendor@
 htmldir = @htmldir@
 includedir = @includedir@
 infodir = @infodir@
@@ -174,7 +186,7 @@ top_srcdir = @top_srcdir@
 
 @HAVE_WXWIDGETS_TRUE@AM_CFLAGS = -I/usr/include
 @HAVE_WXWIDGETS_TRUE@AM_CXXFLAGS = -I/usr/include @WX_CXXFLAGS@ -I$(top_srcdir)/include -DBTREE_DEBUG
-@HAVE_WXWIDGETS_TRUE@LDADD = @WX_LIBS@
+@HAVE_WXWIDGETS_TRUE@LDADD = @WX_LIBS@ $(am__append_1)
 all: all-am
 
 .SUFFIXES:
@@ -436,6 +448,9 @@ uninstall-am: uninstall-binPROGRAMS
 	mostlyclean-generic pdf pdf-am ps ps-am tags uninstall \
 	uninstall-am uninstall-binPROGRAMS
 
+
+@GOT_RESCOMP_TRUE@@HAVE_WXWIDGETS_TRUE@resources.o: resources.rc
+@GOT_RESCOMP_TRUE@@HAVE_WXWIDGETS_TRUE@	$(RESCOMP) -I$(srcdir) $(srcdir)/resources.rc resources.o
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -11,4 +11,11 @@ AM_CFLAGS = -I/usr/include
 AM_CXXFLAGS = -I/usr/include @WX_CXXFLAGS@ -I$(top_srcdir)/include -DBTREE_DEBUG
 LDADD = @WX_LIBS@
 
+if GOT_RESCOMP
+resources.o: resources.rc
+	$(RESCOMP) -I$(srcdir) $(srcdir)/resources.rc resources.o
+
+LDADD += resources.o
+endif
+
 endif

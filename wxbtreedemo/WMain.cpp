@@ -781,7 +781,7 @@ void WMain::OnCheckboxDuplicates(wxCommandEvent &)
     UpdateViews();
 }
 
-BEGIN_EVENT_TABLE(WMain, wxDialog)
+BEGIN_EVENT_TABLE(WMain, wxFrame)
 
     EVT_CHOICE	(ID_CHOICE_DATATYPE,		WMain::OnChoiceDataType)
     EVT_CHOICE	(ID_CHOICE_NODESLOTS,		WMain::OnChoiceNodeSlots)
