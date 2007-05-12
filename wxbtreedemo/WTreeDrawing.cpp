@@ -257,16 +257,28 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 template <class BTreeType>
 wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 {
-    dc.SetFont(*wxNORMAL_FONT);
     dc.SetPen(*wxBLACK_PEN);
 
     if (bt.tree.root)
     {
-	// trees with less than 3 levels are drawns larger
-	if (bt.tree.root->level >= 2) {
-	    dc.SetFont(*wxSMALL_FONT);
+	if (bt.tree.root->level <= 1)
+	{
+            // trees with less than 1 or 2 levels are drawns large
+	    dc.SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else if (bt.tree.root->level <= 2)
+	{
+	    dc.SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else if (bt.tree.root->level <= 3)
+	else {
+	    dc.SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else {
+	    dc.SetFont(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 
+	// calculate width of the drawn tree
 	wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.root);
 
 	if (ts.GetWidth() < w.GetSize().GetWidth())
@@ -281,10 +293,12 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 
 	if (ts != w.oldTreeSize || w.scalefactor != w.oldscalefactor)
 	{
-	    // set scroll bar exents
+	    // set scroll bar extents
 	    int scrx, scry;
 	    w.GetViewStart(&scrx, &scry);
-	    w.SetScrollbars(10, 10, int(ts.GetWidth() / 10 * w.scalefactor), int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
+	    w.SetScrollbars(10, 10,
+			    int(ts.GetWidth() / 10 * w.scalefactor),
+			    int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
 	    w.oldTreeSize = ts;
 	    w.oldscalefactor = w.scalefactor;
 	}
