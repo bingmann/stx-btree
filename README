@@ -1,4 +1,4 @@
-                 *** STX B-Tree C++ Template Classes v0.7  ***
+		*** STX B+ Tree C++ Template Classes v0.7  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
 Date: 2007-04-27
@@ -14,7 +14,8 @@ effects better than the standard red-black binary tree. The tree algorithms are
 based on the implementation in Cormen, Leiserson and Rivest's Introduction into
 Algorithms, Jan Jannink's paper and other algorithm resources. The classes
 contain extensive assertion and verification mechanisms to ensure the
-implementation's correctness by testing the tree invariants.
+implementation's correctness by testing the tree invariants. To illustrate the
+B+ tree's structure a wxWidgets demo program is included.
 
 --- Website / API Docs / Bugs / License ---
 
