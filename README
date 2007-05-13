@@ -1,4 +1,4 @@
-		*** STX B+ Tree C++ Template Classes v0.7  ***
+		*** STX B+ Tree C++ Template Classes v0.8  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
 Date: 2007-04-27
@@ -24,7 +24,7 @@ http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation can be found at 
-http://idlebox.net/2007/stx-btree/stx-btree-0.7-doxygen/
+http://idlebox.net/2007/stx-btree/stx-btree-0.8-doxygen/
 
 If bugs should become known they will be posted on the above web page together
 with patches or corrected versions.

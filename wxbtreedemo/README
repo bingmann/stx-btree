@@ -5,12 +5,12 @@ Date: 2007-05-14
 
 --- Summary ---
 
-This demonstration program draws the B+ trees constructed by the STX B+ Tree
-template classes. The demo allows the user to selected different types of B+
-tree instantiations: integer or string keys and different slot numbers. The
-user may insert and erase key/data pairs from the tree and run different search
-operations. The demo program uses the cross-platform wxWidgets toolkit and can
-be compiled on Linux, Windows and MacOSX.
+This demonstration program draws illustrations of the B+ trees constructed by
+the STX B+ Tree template classes. The demo allows the user to selected
+different types of B+ tree instantiations: integer or string keys and different
+slot numbers. The user may insert and erase key/data pairs from the tree and
+run different search operations. The demo program uses the cross-platform
+wxWidgets toolkit and can be compiled on Linux, Windows and MacOSX.
 
 --- Website / License ---
 
