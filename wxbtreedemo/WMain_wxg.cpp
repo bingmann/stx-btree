@@ -37,12 +37,13 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
     checkbox_Duplicates = new wxCheckBox(panel_Main, ID_CHECKBOX_DUPLICATES, wxT("Duplicate Keys"));
     textctrl_Key = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString);
     textctrl_Data = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString);
-    button_Insert = new wxButton(panel_Main, ID_BUTTON_INSERT, wxT("Insert"));
-    button_Erase = new wxButton(panel_Main, ID_BUTTON_ERASE, wxT("Erase"));
-    button_InsertRandom = new wxButton(panel_Main, ID_BUTTON_INSERTRANDOM, wxT("Insert Random"));
-    button_FindKey = new wxButton(panel_Main, ID_BUTTON_FINDKEY, wxT("Find Key"));
-    button_EqualRange = new wxButton(panel_Main, ID_BUTTON_EQUALRANGE, wxT("Equal Range"));
-    button_Clear = new wxButton(panel_Main, ID_BUTTON_CLEAR, wxT("Clear"));
+    button_Insert = new wxButton(panel_Main, ID_BUTTON_INSERT, wxT("Insert"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_Erase = new wxButton(panel_Main, ID_BUTTON_ERASE, wxT("Erase"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_InsertRandom = new wxButton(panel_Main, ID_BUTTON_INSERTRANDOM, wxT("Insert Random"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_FindKey = new wxButton(panel_Main, ID_BUTTON_FINDKEY, wxT("Find Key"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_EqualRange = new wxButton(panel_Main, ID_BUTTON_EQUALRANGE, wxT("Equal Range"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_Clear = new wxButton(panel_Main, ID_BUTTON_CLEAR, wxT("Clear"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
+    button_LoadFile = new wxButton(panel_Main, ID_BUTTON_LOADFILE, wxT("Load File"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT);
     textctrl_OpResult = new wxTextCtrl(panel_Main, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY);
     window_TreeDrawing = new WTreeDrawing(panel_Main, wxID_ANY);
 
@@ -55,9 +56,16 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
 void WMain_wxg::set_properties()
 {
     // begin wxGlade: WMain_wxg::set_properties
-    SetTitle(wxT("B+ Tree Demo"));
+    SetTitle(wxT("STX B+ Tree Demo - http://idlebox.net/"));
     choice_DataType->SetSelection(0);
     choice_NodeSlots->SetSelection(1);
+    button_Insert->SetToolTip(wxT("Insert the key/data pair from the data input fields."));
+    button_Erase->SetToolTip(wxT("Erase key given in the data input fields from tree"));
+    button_InsertRandom->SetToolTip(wxT("Insert some random data into the tree."));
+    button_FindKey->SetToolTip(wxT("Find the key given in data input field within the tree."));
+    button_EqualRange->SetToolTip(wxT("Perform equal_range() search of the input key field."));
+    button_Clear->SetToolTip(wxT("Clear the tree's contents."));
+    button_LoadFile->SetToolTip(wxT("Load key/data pairs from file. Each line in the file contains key <space> data pairs."));
     // end wxGlade
 }
 
@@ -70,7 +78,7 @@ void WMain_wxg::do_layout()
     wxStaticBoxSizer* sizer_10 = new wxStaticBoxSizer(sizer_10_staticbox, wxVERTICAL);
     wxBoxSizer* sizer_2 = new wxBoxSizer(wxVERTICAL);
     wxStaticBoxSizer* sizer_9 = new wxStaticBoxSizer(sizer_9_staticbox, wxVERTICAL);
-    wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(1, 6, 0, 0);
+    wxFlexGridSizer* grid_sizer_3 = new wxFlexGridSizer(1, 7, 0, 0);
     wxBoxSizer* sizer_7 = new wxBoxSizer(wxHORIZONTAL);
     wxStaticBoxSizer* sizer_8 = new wxStaticBoxSizer(sizer_8_staticbox, wxVERTICAL);
     wxFlexGridSizer* grid_sizer_2 = new wxFlexGridSizer(3, 2, 0, 0);
@@ -78,10 +86,10 @@ void WMain_wxg::do_layout()
     wxFlexGridSizer* grid_sizer_1 = new wxFlexGridSizer(3, 2, 0, 0);
     wxStaticText* label_1 = new wxStaticText(panel_Main, wxID_ANY, wxT("Data Type"));
     grid_sizer_1->Add(label_1, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_1->Add(choice_DataType, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_1->Add(choice_DataType, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 4);
     wxStaticText* label_3 = new wxStaticText(panel_Main, wxID_ANY, wxT("Node Slots"));
     grid_sizer_1->Add(label_3, 0, wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_1->Add(choice_NodeSlots, 0, wxALL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_1->Add(choice_NodeSlots, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxSHAPED, 4);
     grid_sizer_1->Add(2, 2, 0, wxADJUST_MINSIZE, 0);
     grid_sizer_1->Add(checkbox_Duplicates, 0, wxALL, 4);
     grid_sizer_1->AddGrowableCol(0);
@@ -106,6 +114,7 @@ void WMain_wxg::do_layout()
     grid_sizer_3->Add(button_FindKey, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_3->Add(button_EqualRange, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_3->Add(button_Clear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_LoadFile, 0, wxALL, 4);
     grid_sizer_3->AddGrowableCol(0);
     grid_sizer_3->AddGrowableCol(1);
     grid_sizer_3->AddGrowableCol(2);

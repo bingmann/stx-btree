@@ -261,9 +261,10 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 
     if (bt.tree.root)
     {
+	// draw tree data items in different font sizes depending on the depth
+	// of the tree
 	if (bt.tree.root->level <= 1)
 	{
-            // trees with less than 1 or 2 levels are drawns large
 	    dc.SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 	else if (bt.tree.root->level <= 2)
@@ -271,7 +272,7 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 	    dc.SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 	else if (bt.tree.root->level <= 3)
-	else {
+	{
 	    dc.SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 	else {
@@ -338,7 +339,7 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
     if (!wmain) return;
     
     BTreeOp_Draw drawop(*this, dc, wmain->treebundle);
-    wmain->treebundle.run<BTreeOp_Draw>(drawop);
+    wmain->treebundle.run(drawop);
 }
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)

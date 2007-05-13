@@ -7,7 +7,7 @@
 
 #include "WTreeDrawing.h"
 
-struct BTreeBundle;
+class BTreeBundle;
 
 #define BTREE_FRIENDS	friend struct ::WTreeDrawing::BTreeOp_Draw; \
                         friend struct ::BTreeBundle;
@@ -369,11 +369,16 @@ public:
 
     class BTreeBundle	treebundle;
 
-    void	OnClose(wxCloseEvent &ce);
+    /// Refresh view(s) of the B+ tree after it changes
+    void	UpdateViews();
+
+    // *** Choices to selected the activated B+ tree instance
 
     void	OnChoiceDataType(wxCommandEvent &ce);
     void	OnChoiceNodeSlots(wxCommandEvent &ce);
     void	OnCheckboxDuplicates(wxCommandEvent &ce);
+
+    // *** Operation buttons to change the tree's contents
 
     void	OnButtonInsert(wxCommandEvent &ce);
     void	OnButtonErase(wxCommandEvent &ce);
@@ -381,10 +386,9 @@ public:
     void	OnButtonFindKey(wxCommandEvent &ce);
     void	OnButtonEqualRange(wxCommandEvent &ce);
     void	OnButtonClear(wxCommandEvent &ce);
+    void	OnButtonLoadFile(wxCommandEvent &ce);
 
     void	OnMenuInsertRandom(wxCommandEvent &ce);
-
-    void	UpdateViews();
 
     DECLARE_EVENT_TABLE();
 };

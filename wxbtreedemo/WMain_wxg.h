@@ -22,7 +22,8 @@ public:
         ID_BUTTON_INSERTRANDOM = wxID_HIGHEST + 1005,
         ID_BUTTON_FINDKEY = wxID_HIGHEST + 1006,
         ID_BUTTON_EQUALRANGE = wxID_HIGHEST + 1007,
-        ID_BUTTON_CLEAR = wxID_HIGHEST + 1008
+        ID_BUTTON_CLEAR = wxID_HIGHEST + 1008,
+        ID_BUTTON_LOADFILE = wxID_HIGHEST + 1009
     };
     // end wxGlade
 
@@ -51,6 +52,7 @@ protected:
     wxButton* button_FindKey;
     wxButton* button_EqualRange;
     wxButton* button_Clear;
+    wxButton* button_LoadFile;
     wxTextCtrl* textctrl_OpResult;
     WTreeDrawing* window_TreeDrawing;
     wxPanel* panel_Main;
