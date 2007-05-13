@@ -134,7 +134,7 @@ folding the key and data arrays.
 \section sec6 Test Suite
 
 The B+ tree distribution contains an extensive test suite using
-cppunit. According to gcov 89.23% of the btree.h implementation is covered.
+cppunit. According to gcov 88.3% of the btree.h implementation is covered.
 
 \section sec7 STL Incompatibilities
 
