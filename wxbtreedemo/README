@@ -17,8 +17,8 @@ wxWidgets toolkit and can be compiled on Linux, Windows and MacOSX.
 The current demo source and some compiled binaries can be downloaded from
 http://idlebox.net/2007/stx-btree/
 
-The demo's source code is released under the GNU Lesser General Public License
-v2 (GPL) which can be found in the file COPYING.
+The demo's source code is released under the GNU General Public License v2
+(GPL) which can be found in the file COPYING.
 
 --- Program Usage ---
 

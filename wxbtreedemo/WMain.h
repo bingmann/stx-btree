@@ -28,8 +28,12 @@
 
 class BTreeBundle;
 
-#define BTREE_FRIENDS	friend struct ::WTreeDrawing::BTreeOp_Draw; \
-                        friend struct ::BTreeBundle;
+// Very difficult definition of the template friend drawing functions to
+// include in the B+ tree classes.
+#define BTREE_FRIENDS	\
+    friend class ::BTreeBundle;						\
+    template<class BTreeType> friend wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &);	\
+    template<class BTreeType> friend wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int, int, const class BTreeType::btree_impl::node*); \
 
 #include <stx/btree_map.h>
 #include <stx/btree_multimap.h>
