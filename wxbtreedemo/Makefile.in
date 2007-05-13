@@ -37,7 +37,8 @@ host_triplet = @host@
 @HAVE_WXWIDGETS_TRUE@bin_PROGRAMS = wxBTreeDemo$(EXEEXT)
 @GOT_RESCOMP_TRUE@@HAVE_WXWIDGETS_TRUE@am__append_1 = resources.o
 subdir = wxbtreedemo
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	AUTHORS COPYING
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -48,7 +49,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 binPROGRAMS_INSTALL = $(INSTALL_PROGRAM)
 PROGRAMS = $(bin_PROGRAMS)
 am__wxBTreeDemo_SOURCES_DIST = WMain.cpp WMain.h WMain_wxg.cpp \
-	WTreeDrawing.h WTreeDrawing.cpp
+	WMain_wxg.h WTreeDrawing.h WTreeDrawing.cpp
 @HAVE_WXWIDGETS_TRUE@am_wxBTreeDemo_OBJECTS = WMain.$(OBJEXT) \
 @HAVE_WXWIDGETS_TRUE@	WMain_wxg.$(OBJEXT) \
 @HAVE_WXWIDGETS_TRUE@	WTreeDrawing.$(OBJEXT)
@@ -107,6 +108,7 @@ LDFLAGS = @LDFLAGS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LTLIBOBJS = @LTLIBOBJS@
+MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKDIR_P = @MKDIR_P@
 OBJEXT = @OBJEXT@
@@ -181,17 +183,21 @@ sysconfdir = @sysconfdir@
 target_alias = @target_alias@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@HAVE_WXWIDGETS_TRUE@wxBTreeDemo_SOURCES = WMain.cpp WMain.h WMain_wxg.cpp \
+@HAVE_WXWIDGETS_TRUE@wxBTreeDemo_SOURCES = WMain.cpp WMain.h \
+@HAVE_WXWIDGETS_TRUE@	WMain_wxg.cpp WMain_wxg.h \
 @HAVE_WXWIDGETS_TRUE@	WTreeDrawing.h WTreeDrawing.cpp
 
 @HAVE_WXWIDGETS_TRUE@AM_CFLAGS = -I/usr/include
 @HAVE_WXWIDGETS_TRUE@AM_CXXFLAGS = -I/usr/include @WX_CXXFLAGS@ -I$(top_srcdir)/include -DBTREE_DEBUG
 @HAVE_WXWIDGETS_TRUE@LDADD = @WX_LIBS@ $(am__append_1)
+@HAVE_WXWIDGETS_TRUE@EXTRA_DIST = progicon.ico progicon.xpm progicon.xcf \
+@HAVE_WXWIDGETS_TRUE@	resources.rc wxBTreeDemo.wxg
+
 all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .cpp .o .obj
-$(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
+$(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
@@ -216,9 +222,9 @@ Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 $(top_builddir)/config.status: $(top_srcdir)/configure $(CONFIG_STATUS_DEPENDENCIES)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 
-$(top_srcdir)/configure:  $(am__configure_deps)
+$(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
-$(ACLOCAL_M4):  $(am__aclocal_m4_deps)
+$(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 install-binPROGRAMS: $(bin_PROGRAMS)
 	@$(NORMAL_INSTALL)

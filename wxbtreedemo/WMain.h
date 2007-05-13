@@ -1,5 +1,24 @@
 // $Id$
 
+/*
+ * STX B+ Tree Demo Program v0.8
+ * Copyright (C) 2007 Timo Bingmann
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 #ifndef _WMain_H_
 #define _WMain_H_
 
@@ -7,10 +26,14 @@
 
 #include "WTreeDrawing.h"
 
-struct BTreeBundle;
+class BTreeBundle;
 
-#define BTREE_FRIENDS	friend struct ::WTreeDrawing::BTreeOp_Draw; \
-                        friend struct ::BTreeBundle;
+// Very difficult definition of the template friend drawing functions to
+// include in the B+ tree classes.
+#define BTREE_FRIENDS	\
+    friend class ::BTreeBundle;						\
+    template<class BTreeType> friend wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &);	\
+    template<class BTreeType> friend wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int, int, const class BTreeType::btree_impl::node*); \
 
 #include <stx/btree_map.h>
 #include <stx/btree_multimap.h>
@@ -369,11 +392,16 @@ public:
 
     class BTreeBundle	treebundle;
 
-    void	OnClose(wxCloseEvent &ce);
+    /// Refresh view(s) of the B+ tree after it changes
+    void	UpdateViews();
+
+    // *** Choices to selected the activated B+ tree instance
 
     void	OnChoiceDataType(wxCommandEvent &ce);
     void	OnChoiceNodeSlots(wxCommandEvent &ce);
     void	OnCheckboxDuplicates(wxCommandEvent &ce);
+
+    // *** Operation buttons to change the tree's contents
 
     void	OnButtonInsert(wxCommandEvent &ce);
     void	OnButtonErase(wxCommandEvent &ce);
@@ -381,10 +409,9 @@ public:
     void	OnButtonFindKey(wxCommandEvent &ce);
     void	OnButtonEqualRange(wxCommandEvent &ce);
     void	OnButtonClear(wxCommandEvent &ce);
+    void	OnButtonLoadFile(wxCommandEvent &ce);
 
     void	OnMenuInsertRandom(wxCommandEvent &ce);
-
-    void	UpdateViews();
 
     DECLARE_EVENT_TABLE();
 };

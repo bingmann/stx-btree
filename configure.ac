@@ -2,13 +2,13 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(stx-btree, 0.7)
+AC_INIT(stx-btree, 0.8)
 AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
 AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE
-#AM_MAINTAINER_MODE
+AM_MAINTAINER_MODE
 
 if test "$CFLAGS" == ""; then
     CFLAGS="-g"

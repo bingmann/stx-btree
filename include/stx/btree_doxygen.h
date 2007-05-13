@@ -5,7 +5,7 @@
  */
 
 /*
- * STX B+ Tree Template Classes v0.7
+ * STX B+ Tree Template Classes v0.8
  * Copyright (C) 2007 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
@@ -26,7 +26,7 @@
 /** \mainpage STX B+ Tree Template Classes README
 
 \author Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-\date 2007-04-27
+\date 2007-05-13
 
 \section sec1 Summary
 
@@ -40,7 +40,8 @@ standard red-black binary tree. The tree algorithms are based on the
 implementation in Cormen, Leiserson and Rivest's Introduction into Algorithms,
 Jan Jannink's paper and other algorithm resources. The classes contain
 extensive assertion and verification mechanisms to ensure the implementation's
-correctness by testing the tree invariants.
+correctness by testing the tree invariants. To illustrate the B+ tree's
+structure a wxWidgets demo program is included in the source package.
 
 \section sec2 Website / API Docs / Bugs / License
 
@@ -49,8 +50,12 @@ http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation can be found at 
-http://idlebox.net/2007/stx-btree/stx-btree-0.7-doxygen/
+http://idlebox.net/2007/stx-btree/stx-btree-0.8-doxygen/
 (if you are not reading it right now).
+
+The wxWidgets B+ tree demo program is located in the directory
+wxbtreedemo. Compiled binary versions can be found on the package web page
+mentioned above.
 
 If bugs should become known they will be posted on the above web page together
 with patches or corrected versions.
@@ -129,7 +134,7 @@ folding the key and data arrays.
 \section sec6 Test Suite
 
 The B+ tree distribution contains an extensive test suite using
-cppunit. According to gcov 89.23% of the btree.h implementation is covered.
+cppunit. According to gcov 88.3% of the btree.h implementation is covered.
 
 \section sec7 STL Incompatibilities
 

@@ -1,5 +1,24 @@
 // $Id$
 
+/*
+ * STX B+ Tree Demo Program v0.8
+ * Copyright (C) 2007 Timo Bingmann
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 #ifndef _WTreeDrawing_H_
 #define _WTreeDrawing_H_
 
@@ -14,13 +33,19 @@ public:
 
     /// Used to determine when to update the scroll bars.
     wxSize		oldTreeSize;
+    double		oldscalefactor;
 
     /// Zoom factor changed by the mouse wheel.
     double		scalefactor;
 
-    virtual void	OnDraw(wxDC& dc);
+    /// Set if this windows has focus and draw a faint frame around it.
+    bool		hasfocus;
+
+    void		OnPaint(wxPaintEvent &pe);
     void		OnSize(wxSizeEvent &se);
     void		OnMouseWheel(wxMouseEvent &me);
+    void		OnSetFocus(wxFocusEvent &fe);
+    void		OnKillFocus(wxFocusEvent &fe);
 
     void		DrawBTree(wxDC &dc);
 

@@ -1,4 +1,7 @@
-v0.8:
-	Fixed segfault in print() because of non-existing root.
-	Fixed segfault in end() when the tree is totally empty.
-	Added BTREE_FRIENDS macro so that wxBTreeDemo can access private members.
+2007-05-12	Timo Bingmann
+	* btree.h: Fixed segfault in print() because of non-existing root.
+		   Fixed segfault in end() when the tree is totally empty.
+		   Added BTREE_FRIENDS macro so that wxBTreeDemo can
+		   access private members.
+		   Changing print function to output to a user-given
+		   std::ostream

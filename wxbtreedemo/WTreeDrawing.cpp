@@ -1,5 +1,24 @@
 // $Id$
 
+/*
+ * STX B+ Tree Demo Program v0.8
+ * Copyright (C) 2007 Timo Bingmann
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation; either version 2 of the License, or (at your option)
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
+ * Place, Suite 330, Boston, MA 02111-1307 USA
+ */
+
 #include "WTreeDrawing.h"
 #include "WMain.h"
 
@@ -9,9 +28,11 @@ WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
     : wxScrolledWindow(parent, id),
       wmain(NULL)
 {
+    SetWindowStyle(wxWANTS_CHARS);
     SetSize(300, 300);
 
     scalefactor = 1.0;
+    hasfocus = false;
 }
 
 void WTreeDrawing::SetWMain(WMain *wm)
@@ -19,8 +40,11 @@ void WTreeDrawing::SetWMain(WMain *wm)
     wmain = wm;
 }
 
-void WTreeDrawing::OnDraw(wxDC &dc)
+void WTreeDrawing::OnPaint(wxPaintEvent &)
 {
+    wxPaintDC dc(this);
+
+    DoPrepareDC(dc);
     dc.SetUserScale(scalefactor, scalefactor);
 
     DrawBTree(dc);
@@ -28,6 +52,18 @@ void WTreeDrawing::OnDraw(wxDC &dc)
 
 void WTreeDrawing::OnSize(wxSizeEvent &se)
 {
+    Refresh();
+}
+
+void WTreeDrawing::OnSetFocus(wxFocusEvent &fe)
+{
+    hasfocus = true;
+    Refresh();
+}
+
+void WTreeDrawing::OnKillFocus(wxFocusEvent &fe)
+{
+    hasfocus = false;
     Refresh();
 }
 
@@ -42,6 +78,11 @@ template <class BTreeType>
 wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const class BTreeType::btree_impl::node* node)
 {
     typedef class BTreeType::btree_impl btree_impl;
+
+    static const wxColor colorMark1 = wxColor(128, 179, 255);
+    static const wxColor colorMark2 = wxColor(128, 255, 128);
+    static const wxColor colorUnfocused = *wxWHITE;
+    static const wxColor colorFocused = wxColor(255, 255, 253);
 
     const int textpadding = 3;
     const int nodepadding = 10;
@@ -73,15 +114,20 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 	    {
 		if (tb.isMark1(leafnode, slot))
 		{
-		    dc.SetBrush(wxColor(128, 179, 255));
+		    dc.SetBrush(colorMark1);
 		}
 		else if (tb.isMark2(leafnode, slot))
 		{
-		    dc.SetBrush(wxColor(128, 255, 128));
+		    dc.SetBrush(colorMark2);
 		}
 		else
 		{
-		    dc.SetBrush(*wxWHITE);
+		    if (w.hasfocus) {
+			dc.SetBrush(colorFocused);
+		    }
+		    else {
+			dc.SetBrush(colorUnfocused);
+		    }
 		}
 
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
@@ -163,7 +209,12 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 
 	    if (offsetx >= 0)
 	    {
-		dc.SetBrush(*wxWHITE);
+		if (w.hasfocus) {
+		    dc.SetBrush(colorFocused);
+		}
+		else {
+		    dc.SetBrush(colorUnfocused);
+		}
 
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
 				 textkeyw + 2*textpadding, textkeyh + 2*textpadding);
@@ -225,7 +276,13 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 	    if (innernode->level == 1)
 	    {
 		// draw leaf node with border to see free slots
-		dc.SetBrush(*wxWHITE);
+		if (w.hasfocus) {
+		    dc.SetBrush(colorFocused);
+		}
+		else {
+		    dc.SetBrush(colorUnfocused);
+		}
+
 		dc.DrawRectangle(offsetx + childx, offsety + childy,
 				 childmaxw, childmaxh);
 
@@ -257,34 +314,53 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 template <class BTreeType>
 wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 {
-    dc.SetFont(*wxNORMAL_FONT);
     dc.SetPen(*wxBLACK_PEN);
 
     if (bt.tree.root)
     {
-	// trees with less than 3 levels are drawns larger
-	if (bt.tree.root->level >= 2) {
-	    dc.SetFont(*wxSMALL_FONT);
+	// draw tree data items in different font sizes depending on the depth
+	// of the tree
+	if (bt.tree.root->level <= 1)
+	{
+	    dc.SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else if (bt.tree.root->level <= 2)
+	{
+	    dc.SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else if (bt.tree.root->level <= 3)
+	{
+	    dc.SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
+	}
+	else {
+	    dc.SetFont(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 
+	const int offsety = 4;
+
+	// calculate width of the drawn tree
 	wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.root);
 
 	if (ts.GetWidth() < w.GetSize().GetWidth())
 	{
 	    // center small trees on the current view area
-	    ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, 0, bt.tree.root);
+	    ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, offsety, bt.tree.root);
 	}
 	else
 	{
-	    ts = draw_node<BTreeType>(0, 0, bt.tree.root);
+	    ts = draw_node<BTreeType>(0, offsety, bt.tree.root);
 	}
 
+	if (ts != w.oldTreeSize || w.scalefactor != w.oldscalefactor)
 	{
-	    // set scroll bar exents
+	    // set scroll bar extents
 	    int scrx, scry;
 	    w.GetViewStart(&scrx, &scry);
-	    w.SetScrollbars(10, 10, int(ts.GetWidth() / 10 * w.scalefactor), int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
+	    w.SetScrollbars(10, 10,
+			    int(ts.GetWidth() / 10 * w.scalefactor),
+			    int(ts.GetHeight() / 10 * w.scalefactor), scrx, scry);
 	    w.oldTreeSize = ts;
+	    w.oldscalefactor = w.scalefactor;
 	}
     }
     else
@@ -322,13 +398,16 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
     if (!wmain) return;
     
     BTreeOp_Draw drawop(*this, dc, wmain->treebundle);
-    wmain->treebundle.run<BTreeOp_Draw>(drawop);
+    wmain->treebundle.run(drawop);
 }
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
+    EVT_PAINT		(WTreeDrawing::OnPaint)
     EVT_SIZE		(WTreeDrawing::OnSize)
-
     EVT_MOUSEWHEEL	(WTreeDrawing::OnMouseWheel)
+
+    EVT_SET_FOCUS	(WTreeDrawing::OnSetFocus)
+    EVT_KILL_FOCUS	(WTreeDrawing::OnKillFocus)
 
 END_EVENT_TABLE()
