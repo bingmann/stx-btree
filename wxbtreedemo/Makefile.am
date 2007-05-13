@@ -4,7 +4,8 @@ if HAVE_WXWIDGETS
 
 bin_PROGRAMS = wxBTreeDemo
 
-wxBTreeDemo_SOURCES = WMain.cpp WMain.h WMain_wxg.cpp \
+wxBTreeDemo_SOURCES = WMain.cpp WMain.h \
+	WMain_wxg.cpp WMain_wxg.h \
 	WTreeDrawing.h WTreeDrawing.cpp
 
 AM_CFLAGS = -I/usr/include
@@ -18,6 +19,7 @@ resources.o: resources.rc
 LDADD += resources.o
 endif
 
-EXTRA_DIST = progicon.ico progicon.xpm resources.rc wxBTreeDemo.wxg
+EXTRA_DIST = progicon.ico progicon.xpm progicon.xcf \
+	resources.rc wxBTreeDemo.wxg
 
 endif
