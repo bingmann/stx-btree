@@ -650,7 +650,11 @@ void WMain::OnButtonLoadFile(wxCommandEvent &)
 			 wxT("Select text file containing key/data pairs."),
 			 wxT(""), wxT(""),
 			 wxT("Text files (*.txt)|*.txt|CSV files (*.csv)|*.csv|All files (*.*)|*.*"),
+#if wxCHECK_VERSION(2,8,0)
+			 wxFD_OPEN | wxFD_FILE_MUST_EXIST);
+#else
 			 wxOPEN | wxFILE_MUST_EXIST);
+#endif
 
     if (filedlg.ShowModal() != wxID_OK) return;
 

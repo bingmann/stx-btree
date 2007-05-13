@@ -9,9 +9,11 @@ WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
     : wxScrolledWindow(parent, id),
       wmain(NULL)
 {
+    SetWindowStyle(wxWANTS_CHARS);
     SetSize(300, 300);
 
     scalefactor = 1.0;
+    hasfocus = false;
 }
 
 void WTreeDrawing::SetWMain(WMain *wm)
@@ -19,8 +21,19 @@ void WTreeDrawing::SetWMain(WMain *wm)
     wmain = wm;
 }
 
-void WTreeDrawing::OnDraw(wxDC &dc)
+void WTreeDrawing::OnPaint(wxPaintEvent &)
 {
+    wxPaintDC dc(this);
+
+    if (hasfocus)
+    {
+	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
+	dc.SetBrush(*wxTRANSPARENT_BRUSH);
+	wxSize ws = GetSize();
+	dc.DrawRectangle(0, 0, ws.GetWidth(), ws.GetHeight());
+    }
+
+    DoPrepareDC(dc);
     dc.SetUserScale(scalefactor, scalefactor);
 
     DrawBTree(dc);
@@ -28,6 +41,18 @@ void WTreeDrawing::OnDraw(wxDC &dc)
 
 void WTreeDrawing::OnSize(wxSizeEvent &se)
 {
+    Refresh();
+}
+
+void WTreeDrawing::OnSetFocus(wxFocusEvent &fe)
+{
+    hasfocus = true;
+    Refresh();
+}
+
+void WTreeDrawing::OnKillFocus(wxFocusEvent &fe)
+{
+    hasfocus = false;
     Refresh();
 }
 
@@ -279,17 +304,19 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 	    dc.SetFont(wxFont(8, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
 	}
 
+	const int offsety = 4;
+
 	// calculate width of the drawn tree
 	wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.root);
 
 	if (ts.GetWidth() < w.GetSize().GetWidth())
 	{
 	    // center small trees on the current view area
-	    ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, 0, bt.tree.root);
+	    ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, offsety, bt.tree.root);
 	}
 	else
 	{
-	    ts = draw_node<BTreeType>(0, 0, bt.tree.root);
+	    ts = draw_node<BTreeType>(0, offsety, bt.tree.root);
 	}
 
 	if (ts != w.oldTreeSize || w.scalefactor != w.oldscalefactor)
@@ -344,8 +371,11 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
+    EVT_PAINT		(WTreeDrawing::OnPaint)
     EVT_SIZE		(WTreeDrawing::OnSize)
-
     EVT_MOUSEWHEEL	(WTreeDrawing::OnMouseWheel)
+
+    EVT_SET_FOCUS	(WTreeDrawing::OnSetFocus)
+    EVT_KILL_FOCUS	(WTreeDrawing::OnKillFocus)
 
 END_EVENT_TABLE()

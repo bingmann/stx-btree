@@ -19,9 +19,14 @@ public:
     /// Zoom factor changed by the mouse wheel.
     double		scalefactor;
 
-    virtual void	OnDraw(wxDC& dc);
+    /// Set if this windows has focus and draw a faint frame around it.
+    bool		hasfocus;
+
+    void		OnPaint(wxPaintEvent &pe);
     void		OnSize(wxSizeEvent &se);
     void		OnMouseWheel(wxMouseEvent &me);
+    void		OnSetFocus(wxFocusEvent &fe);
+    void		OnKillFocus(wxFocusEvent &fe);
 
     void		DrawBTree(wxDC &dc);
 

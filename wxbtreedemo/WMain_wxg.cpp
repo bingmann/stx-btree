@@ -108,12 +108,12 @@ void WMain_wxg::do_layout()
     sizer_8->Add(1, 1, 1, wxADJUST_MINSIZE, 0);
     sizer_7->Add(sizer_8, 1, wxRIGHT|wxTOP|wxBOTTOM|wxEXPAND, 6);
     sizer_2->Add(sizer_7, 0, wxEXPAND, 0);
-    grid_sizer_3->Add(button_Insert, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_3->Add(button_Erase, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_3->Add(button_InsertRandom, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_3->Add(button_FindKey, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_3->Add(button_EqualRange, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
-    grid_sizer_3->Add(button_Clear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_Insert, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_Erase, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_InsertRandom, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_FindKey, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_EqualRange, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
+    grid_sizer_3->Add(button_Clear, 0, wxLEFT|wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 4);
     grid_sizer_3->Add(button_LoadFile, 0, wxALL, 4);
     grid_sizer_3->AddGrowableCol(0);
     grid_sizer_3->AddGrowableCol(1);
@@ -125,7 +125,7 @@ void WMain_wxg::do_layout()
     sizer_9->Add(textctrl_OpResult, 0, wxALL|wxEXPAND, 4);
     sizer_2->Add(sizer_9, 0, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 6);
     sizer_1->Add(sizer_2, 0, wxEXPAND, 0);
-    sizer_10->Add(window_TreeDrawing, 1, wxALL|wxEXPAND, 6);
+    sizer_10->Add(window_TreeDrawing, 1, wxALL|wxEXPAND, 2);
     sizer_1->Add(sizer_10, 1, wxLEFT|wxRIGHT|wxBOTTOM|wxEXPAND, 6);
     panel_Main->SetSizer(sizer_1);
     sizer_4->Add(panel_Main, 1, wxEXPAND, 0);
