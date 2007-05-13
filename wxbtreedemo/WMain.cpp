@@ -119,7 +119,8 @@ void WMain::OnButtonInsert(wxCommandEvent &)
 
 struct BTreeOp_Erase
 {
-    wxString	inputkey;
+    BTreeBundle&	treebundle;
+    wxString		inputkey;
 
     typedef	wxString	result_type;
 
@@ -135,7 +136,10 @@ struct BTreeOp_Erase
 	if (!bt.erase(key))
 	    return wxT("Erase returned false: key does not exist.");
 	else
+	{
+	    treebundle.clearMarks();
 	    return wxT("Erase succeeded.");
+	}
     }
 
     template <class BTreeType>
@@ -150,7 +154,10 @@ struct BTreeOp_Erase
 	if ( !bt.erase(inputkey) )
 	    return wxT("Erase returned false: key does not exist.");
 	else
+	{
+	    treebundle.clearMarks();
 	    return wxT("Erase succeeded.");
+	}
     }
 
     template <class BTreeType>
@@ -162,7 +169,7 @@ struct BTreeOp_Erase
 
 void WMain::OnButtonErase(wxCommandEvent &)
 {
-    BTreeOp_Erase op;
+    BTreeOp_Erase op = { treebundle };
     op.inputkey = textctrl_Key->GetValue();
 
     wxString result = treebundle.run(op);
@@ -177,7 +184,7 @@ void WMain::OnButtonInsertRandom(wxCommandEvent &)
 {
     wxMenu* menu = new wxMenu;
     
-    menu->Append(500,	wxT("Insert 10 Random Integer Pair Pair"));
+    menu->Append(500,	wxT("Insert 10 Random Integer Pairs"));
     menu->Append(501,	wxT("Insert 20 Random Integer Pairs"));
     menu->Append(502,	wxT("Insert 50 Random Integer Pairs"));
     menu->Append(503,	wxT("Insert 100 Random Integer Pairs"));

@@ -25,14 +25,6 @@ void WTreeDrawing::OnPaint(wxPaintEvent &)
 {
     wxPaintDC dc(this);
 
-    if (hasfocus)
-    {
-	dc.SetPen(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNSHADOW));
-	dc.SetBrush(*wxTRANSPARENT_BRUSH);
-	wxSize ws = GetSize();
-	dc.DrawRectangle(0, 0, ws.GetWidth(), ws.GetHeight());
-    }
-
     DoPrepareDC(dc);
     dc.SetUserScale(scalefactor, scalefactor);
 
@@ -68,6 +60,11 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 {
     typedef class BTreeType::btree_impl btree_impl;
 
+    static const wxColor colorMark1 = wxColor(128, 179, 255);
+    static const wxColor colorMark2 = wxColor(128, 255, 128);
+    static const wxColor colorUnfocused = *wxWHITE;
+    static const wxColor colorFocused = wxColor(255, 255, 253);
+
     const int textpadding = 3;
     const int nodepadding = 10;
 
@@ -98,15 +95,20 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 	    {
 		if (tb.isMark1(leafnode, slot))
 		{
-		    dc.SetBrush(wxColor(128, 179, 255));
+		    dc.SetBrush(colorMark1);
 		}
 		else if (tb.isMark2(leafnode, slot))
 		{
-		    dc.SetBrush(wxColor(128, 255, 128));
+		    dc.SetBrush(colorMark2);
 		}
 		else
 		{
-		    dc.SetBrush(*wxWHITE);
+		    if (w.hasfocus) {
+			dc.SetBrush(colorFocused);
+		    }
+		    else {
+			dc.SetBrush(colorUnfocused);
+		    }
 		}
 
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
@@ -188,7 +190,12 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 
 	    if (offsetx >= 0)
 	    {
-		dc.SetBrush(*wxWHITE);
+		if (w.hasfocus) {
+		    dc.SetBrush(colorFocused);
+		}
+		else {
+		    dc.SetBrush(colorUnfocused);
+		}
 
 		dc.DrawRectangle(offsetx + textx, offsety + texty,
 				 textkeyw + 2*textpadding, textkeyh + 2*textpadding);
@@ -250,7 +257,13 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 	    if (innernode->level == 1)
 	    {
 		// draw leaf node with border to see free slots
-		dc.SetBrush(*wxWHITE);
+		if (w.hasfocus) {
+		    dc.SetBrush(colorFocused);
+		}
+		else {
+		    dc.SetBrush(colorUnfocused);
+		}
+
 		dc.DrawRectangle(offsetx + childx, offsety + childy,
 				 childmaxw, childmaxh);
 
