@@ -1589,8 +1589,9 @@ private:
 	// increment itemcount if the item was inserted
 	if (r.second) ++stats.itemcount;
 
-	if (debug)
-	    print(std::cout);
+#ifdef BTREE_DEBUG
+	if (debug) print(std::cout);
+#endif
 
 	if (selfverify) {
 	    verify();
@@ -1635,11 +1636,13 @@ private:
 
 		    BTREE_PRINT("btree::insert_descend done split_inner: putslot: " << slot << " putkey: " << newkey << " upkey: " << *splitkey << std::endl);
 
+#ifdef BTREE_DEBUG
 		    if (debug)
 		    {
 			print_node(std::cout, inner);
 			print_node(std::cout, *splitnode);
 		    }
+#endif
 
 		    // check if insert slot is in the split sibling node
 		    BTREE_PRINT("btree::insert_descend switch: " << slot << " > " << inner->slotuse+1 << std::endl);
@@ -1897,7 +1900,9 @@ public:
 	if (!result.has(btree_not_found))
 	    --stats.itemcount;
 
+#ifdef BTREE_DEBUG
 	if (debug) print(std::cout);
+#endif
 	if (selfverify) verify();
 
 	return !result.has(btree_not_found);
@@ -2573,29 +2578,6 @@ private:
 	    }
 	}
     }
-
-#else
-public:
-    // *** Dummy Debug Printing Functions
-
-    /// Print out the B+ tree structure with keys onto the given ostream. This
-    /// function requires that the header is compiled with BTREE_DEBUG and that
-    /// key_type is printable via std::ostream.
-    void print(std::ostream&) const
-    {
-    }
-
-    /// Print out only the leaves via the double linked list.
-    void print_leaves(std::ostream&) const
-    {
-    }
-
-private:
-
-    /// Recursively descend down the tree and print out nodes.
-    static void print_node(std::ostream &, const node*, unsigned int =0, bool =false)
-    {
-    }
 #endif
 
 public:
@@ -2859,7 +2841,9 @@ public:
 	    stats.itemcount = fileheader.itemcount;
 	}
 
+#ifdef BTREE_DEBUG
 	if (debug) print(std::cout);
+#endif
 	if (selfverify) verify();
 
 	return true;
