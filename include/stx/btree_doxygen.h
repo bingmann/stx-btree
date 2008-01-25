@@ -49,7 +49,7 @@ The current source package can be downloaded from
 http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
-doxygen html documentation can be found at 
+doxygen html documentation can be found at
 http://idlebox.net/2007/stx-btree/stx-btree-0.8-doxygen/
 (if you are not reading it right now).
 
@@ -201,23 +201,23 @@ struct btree_default_map_traits
     // If true, the tree will self verify it's invariants after each insert()
     // or erase(). The header must have been compiled with BTREE_DEBUG
     // defined.
-    static const bool	selfverify = false;
+    static const bool   selfverify = false;
 
     // If true, the tree will print out debug information and a tree dump
     // during insert() or erase() operation. The header must have been
     // compiled with BTREE_DEBUG defined and key_type must be std::ostream
     // printable.
-    static const bool	debug = false;
+    static const bool   debug = false;
 
     // Number of slots in each leaf of the tree. Estimated so that each node
     // has a size of about 256 bytes.
-    static const int 	leafslots =
-                             MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
+    static const int    leafslots =
+			     MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
 
     // Number of slots in each inner node of the tree. Estimated so that each
     // node has a size of about 256 bytes.
-    static const int	innerslots =
-                             MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
+    static const int    innerslots =
+			     MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 \endcode
 

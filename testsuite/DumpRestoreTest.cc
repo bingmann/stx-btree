@@ -38,11 +38,11 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_dump_restore_3200()
@@ -65,11 +65,11 @@ protected:
 
 	    std::ostringstream os;
 	    bt.dump(os);
-	
+
 	    dumpstr = os.str();
 	}
 
-        // std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
+	// std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
 	CPPUNIT_ASSERT( dumpstr.size() == 47772 );
 
 	// cannot check the string with a hash function, because it contains

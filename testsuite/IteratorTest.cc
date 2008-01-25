@@ -38,11 +38,11 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_iterator1()
@@ -61,7 +61,7 @@ protected:
 	CPPUNIT_ASSERT( vector.size() == 3200 );
 
 	// test construction and insert(iter, iter) function
-        btree_type bt(vector.begin(), vector.end());
+	btree_type bt(vector.begin(), vector.end());
 
 	CPPUNIT_ASSERT( bt.size() == 3200 );
 

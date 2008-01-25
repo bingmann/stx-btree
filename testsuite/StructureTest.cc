@@ -69,18 +69,18 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_insert_erase()
     {
 	typedef stx::btree_multiset<struct testdata, struct testcomp, struct traits_nodebug> btree_type;
 
-        btree_type bt( testcomp(42) );
+	btree_type bt( testcomp(42) );
 
 	srand(34234235);
 	for(unsigned int i = 0; i < 320; i++)

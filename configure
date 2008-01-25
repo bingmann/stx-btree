@@ -726,6 +726,7 @@ WX_CXXFLAGS_ONLY
 WX_LIBS
 WX_LIBS_STATIC
 WX_VERSION
+WX_RESCOMP
 HAVE_WXWIDGETS_TRUE
 HAVE_WXWIDGETS_FALSE
 RESCOMP
@@ -5410,6 +5411,22 @@ echo "${ECHO_T}yes" >&6; }
         fi
       fi
 
+            wx_has_rescomp=""
+      if test $wx_config_major_version -gt 2; then
+        wx_has_rescomp=yes
+      else
+        if test $wx_config_major_version -eq 2; then
+           if test $wx_config_minor_version -ge 7; then
+              wx_has_rescomp=yes
+           fi
+        fi
+      fi
+      if test "x$wx_has_rescomp" = x ; then
+                  WX_RESCOMP=
+      else
+         WX_RESCOMP=`$WX_CONFIG_WITH_ARGS --rescomp`
+      fi
+
       if test "x$wx_has_cppflags" = x ; then
                   WX_CFLAGS=`$WX_CONFIG_WITH_ARGS --cflags`
          WX_CPPFLAGS=$WX_CFLAGS
@@ -5443,6 +5460,7 @@ echo "${ECHO_T}no (version $WX_VERSION is not new enough)" >&6; }
        WX_CXXFLAGS=""
        WX_LIBS=""
        WX_LIBS_STATIC=""
+       WX_RESCOMP=""
        :
 
     fi
@@ -5453,9 +5471,12 @@ echo "${ECHO_T}no (version $WX_VERSION is not new enough)" >&6; }
     WX_CXXFLAGS=""
     WX_LIBS=""
     WX_LIBS_STATIC=""
+    WX_RESCOMP=""
+
     :
 
   fi
+
 
 
 
@@ -6474,6 +6495,7 @@ WX_CXXFLAGS_ONLY!$WX_CXXFLAGS_ONLY$ac_delim
 WX_LIBS!$WX_LIBS$ac_delim
 WX_LIBS_STATIC!$WX_LIBS_STATIC$ac_delim
 WX_VERSION!$WX_VERSION$ac_delim
+WX_RESCOMP!$WX_RESCOMP$ac_delim
 HAVE_WXWIDGETS_TRUE!$HAVE_WXWIDGETS_TRUE$ac_delim
 HAVE_WXWIDGETS_FALSE!$HAVE_WXWIDGETS_FALSE$ac_delim
 RESCOMP!$RESCOMP$ac_delim
@@ -6483,7 +6505,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 23; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 24; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

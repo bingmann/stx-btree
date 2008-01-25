@@ -57,14 +57,14 @@ public:
 
     /// First template parameter: The key type of the btree. This is stored in
     /// inner nodes and leaves
-    typedef _Key			key_type;
+    typedef _Key                        key_type;
 
     /// Second template parameter: Key comparison function object
-    typedef _Compare			key_compare;
+    typedef _Compare                    key_compare;
 
     /// Third template parameter: Traits object used to define more parameters
     /// of the B+ tree
-    typedef _Traits			traits;
+    typedef _Traits                     traits;
 
     // The macro BTREE_FRIENDS can be used by outside class to access the B+
     // tree internals. This was added for wxBTreeDemo to be able to draw the
@@ -83,80 +83,80 @@ public:
     // *** Constructed Types
 
     /// The empty data_type
-    typedef struct empty_struct		data_type;
+    typedef struct empty_struct         data_type;
 
     /// Construct the set value_type: the key_type.
-    typedef key_type			value_type;
+    typedef key_type                    value_type;
 
     /// Typedef of our own type
-    typedef btree_multiset<key_type, key_compare, traits>	self;
+    typedef btree_multiset<key_type, key_compare, traits>       self;
 
     /// Implementation type of the btree_base
     typedef stx::btree<key_type, data_type, value_type, key_compare, traits, true> btree_impl;
 
     /// Function class comparing two value_type keys.
-    typedef typename btree_impl::value_compare	value_compare;
+    typedef typename btree_impl::value_compare  value_compare;
 
     /// Size type used to count keys
-    typedef typename btree_impl::size_type	size_type;
+    typedef typename btree_impl::size_type      size_type;
 
     /// Small structure containing statistics about the tree
-    typedef typename btree_impl::tree_stats	tree_stats;
+    typedef typename btree_impl::tree_stats     tree_stats;
 
 public:
     // *** Static Constant Options and Values of the B+ Tree
 
     /// Base B+ tree parameter: The number of key/data slots in each leaf
-    static const unsigned short		leafslotmax =  btree_impl::leafslotmax;
+    static const unsigned short         leafslotmax =  btree_impl::leafslotmax;
 
     /// Base B+ tree parameter: The number of key slots in each inner node,
     /// this can differ from slots in each leaf.
-    static const unsigned short		innerslotmax =  btree_impl::innerslotmax;
+    static const unsigned short         innerslotmax =  btree_impl::innerslotmax;
 
     /// Computed B+ tree parameter: The minimum number of key slots used in a
     /// leaf. If fewer slots are used, the leaf will be merged or slots shifted
     /// from it's siblings.
-    static const unsigned short 	minleafslots = btree_impl::minleafslots;
+    static const unsigned short         minleafslots = btree_impl::minleafslots;
 
     /// Computed B+ tree parameter: The minimum number of key slots used
     /// in an inner node. If fewer slots are used, the inner node will be
     /// merged or slots shifted from it's siblings.
-    static const unsigned short 	mininnerslots = btree_impl::mininnerslots;
+    static const unsigned short         mininnerslots = btree_impl::mininnerslots;
 
     /// Debug parameter: Enables expensive and thorough checking of the B+ tree
     /// invariants after each insert/erase operation.
-    static const bool 			selfverify = btree_impl::selfverify;
+    static const bool                   selfverify = btree_impl::selfverify;
 
     /// Debug parameter: Prints out lots of debug information about how the
     /// algorithms change the tree. Requires the header file to be compiled
     /// with BTREE_DEBUG and the key type must be std::ostream printable.
-    static const bool 			debug = btree_impl::debug;
+    static const bool                   debug = btree_impl::debug;
 
     /// Operational parameter: Allow duplicate keys in the btree.
-    static const bool			allow_duplicates = btree_impl::allow_duplicates;
+    static const bool                   allow_duplicates = btree_impl::allow_duplicates;
 
 public:
     // *** Iterators and Reverse Iterators
 
     /// STL-like iterator object for B+ tree items. The iterator points to a
     /// specific slot number in a leaf.
-    typedef typename btree_impl::iterator		iterator;
+    typedef typename btree_impl::iterator               iterator;
 
     /// STL-like iterator object for B+ tree items. The iterator points to a
     /// specific slot number in a leaf.
-    typedef typename btree_impl::const_iterator		const_iterator;
+    typedef typename btree_impl::const_iterator         const_iterator;
 
     /// create mutable reverse iterator by using STL magic
-    typedef typename btree_impl::reverse_iterator 	reverse_iterator;
+    typedef typename btree_impl::reverse_iterator       reverse_iterator;
 
     /// create constant reverse iterator by using STL magic
-    typedef typename btree_impl::const_reverse_iterator	const_reverse_iterator;
+    typedef typename btree_impl::const_reverse_iterator const_reverse_iterator;
 
 private:
     // *** Tree Implementation Object
 
     /// The contained implementation object
-    btree_impl	tree;
+    btree_impl  tree;
 
 public:
     // *** Constructors and Destructor
@@ -301,7 +301,7 @@ public:
     {
 	return tree.empty();
     }
-    
+
     /// Returns the largest possible size of the B+ Tree. This is just a
     /// function required by the STL standard, the B+ Tree can hold more items.
     inline size_type max_size() const
@@ -340,7 +340,7 @@ public:
     }
 
     /// Tries to locate a key in the B+ tree and returns the number of
-    /// identical key entries found.    
+    /// identical key entries found.
     size_type count(const key_type &key) const
     {
 	return tree.count(key);
@@ -446,7 +446,7 @@ public:
 	: tree(other.tree)
     {
     }
-    
+
 public:
     // *** Public Insertion Functions
 
@@ -456,7 +456,7 @@ public:
     {
 	return tree.insert2(x, data_type()).first;
     }
-    
+
     /// Attempt to insert a key into the B+ tree. The iterator hint is
     /// currently ignored by the B+ tree insertion routine.
     inline iterator insert(iterator hint, const key_type &x)

@@ -396,18 +396,18 @@ wxSize WTreeDrawing::BTreeOp_Draw::opStringMulti(BTreeType &bt)
 void WTreeDrawing::DrawBTree(wxDC &dc)
 {
     if (!wmain) return;
-    
+
     BTreeOp_Draw drawop(*this, dc, wmain->treebundle);
     wmain->treebundle.run(drawop);
 }
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
-    EVT_PAINT		(WTreeDrawing::OnPaint)
-    EVT_SIZE		(WTreeDrawing::OnSize)
-    EVT_MOUSEWHEEL	(WTreeDrawing::OnMouseWheel)
+    EVT_PAINT           (WTreeDrawing::OnPaint)
+    EVT_SIZE            (WTreeDrawing::OnSize)
+    EVT_MOUSEWHEEL      (WTreeDrawing::OnMouseWheel)
 
-    EVT_SET_FOCUS	(WTreeDrawing::OnSetFocus)
-    EVT_KILL_FOCUS	(WTreeDrawing::OnKillFocus)
+    EVT_SET_FOCUS       (WTreeDrawing::OnSetFocus)
+    EVT_KILL_FOCUS      (WTreeDrawing::OnKillFocus)
 
 END_EVENT_TABLE()

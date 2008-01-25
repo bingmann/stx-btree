@@ -35,11 +35,11 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_relations()
@@ -59,9 +59,9 @@ protected:
 	}
 
 	CPPUNIT_ASSERT( bt1 == bt2 );
-	
+
 	bt1.insert(499);
-        bt2.insert(500);
+	bt2.insert(500);
 
 	CPPUNIT_ASSERT( bt1 != bt2 );
 	CPPUNIT_ASSERT( bt1 < bt2 );

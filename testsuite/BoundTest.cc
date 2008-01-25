@@ -37,11 +37,11 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_multi(const unsigned int insnum, const int modulo)
@@ -104,7 +104,7 @@ protected:
 	{
 	    multiset_type::const_iterator si = set.lower_bound(k);
 	    btree_type::const_iterator bi = bt.lower_bound(k);
-	
+
 	    if ( bi == bt.end() )
 		CPPUNIT_ASSERT( si == set.end() );
 	    else if ( si == set.end() )

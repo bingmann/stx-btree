@@ -39,11 +39,11 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool	selfverify = true;
-	static const bool	debug = false;
+	static const bool       selfverify = true;
+	static const bool       debug = false;
 
-	static const int 	leafslots = 8;
-	static const int	innerslots = 8;
+	static const int        leafslots = 8;
+	static const int        innerslots = 8;
     };
 
     void test_insert_erase_32()
@@ -98,15 +98,15 @@ protected:
     {
 	stx::btree_map<uint64_t, uint8_t> bt;
 
-        for(uint64_t i = 0; i < 100000; ++i)
+	for(uint64_t i = 0; i < 100000; ++i)
 	{
-            uint64_t key = i % 999;
+	    uint64_t key = i % 999;
 
-            if (bt.find(key) == bt.end())
+	    if (bt.find(key) == bt.end())
 	    {
-                bt.insert( std::make_pair(key, key % 100) );
-            }
-        }
+		bt.insert( std::make_pair(key, key % 100) );
+	    }
+	}
     }
 };
 

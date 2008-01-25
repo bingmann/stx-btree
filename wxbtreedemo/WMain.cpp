@@ -53,14 +53,14 @@ void WMain::UpdateViews()
 
 struct BTreeOp_Insert
 {
-    BTreeBundle&	treebundle;
-    wxString		inputkey, inputdata;
+    BTreeBundle&        treebundle;
+    wxString            inputkey, inputdata;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	long key, data;
 
 	if (!inputkey.ToLong(&key)) {
@@ -82,7 +82,7 @@ struct BTreeOp_Insert
 
     template <class BTreeType>
     inline result_type opIntegerMulti(BTreeType &bt) const
-    {	
+    {
 	long key, data;
 
 	if (!inputkey.ToLong(&key)) {
@@ -138,14 +138,14 @@ void WMain::OnButtonInsert(wxCommandEvent &)
 
 struct BTreeOp_Erase
 {
-    BTreeBundle&	treebundle;
-    wxString		inputkey;
+    BTreeBundle&        treebundle;
+    wxString            inputkey;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	long key;
 
 	if (!inputkey.ToLong(&key)) {
@@ -169,7 +169,7 @@ struct BTreeOp_Erase
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	if ( !bt.erase(inputkey) )
 	    return wxT("Erase returned false: key does not exist.");
 	else
@@ -202,25 +202,25 @@ void WMain::OnButtonErase(wxCommandEvent &)
 void WMain::OnButtonInsertRandom(wxCommandEvent &)
 {
     wxMenu* menu = new wxMenu;
-    
-    menu->Append(500,	wxT("Insert 10 Random Integer Pairs"));
-    menu->Append(501,	wxT("Insert 20 Random Integer Pairs"));
-    menu->Append(502,	wxT("Insert 50 Random Integer Pairs"));
-    menu->Append(503,	wxT("Insert 100 Random Integer Pairs"));
-    menu->Append(504,	wxT("Insert 200 Random Integer Pairs"));
+
+    menu->Append(500,   wxT("Insert 10 Random Integer Pairs"));
+    menu->Append(501,   wxT("Insert 20 Random Integer Pairs"));
+    menu->Append(502,   wxT("Insert 50 Random Integer Pairs"));
+    menu->Append(503,   wxT("Insert 100 Random Integer Pairs"));
+    menu->Append(504,   wxT("Insert 200 Random Integer Pairs"));
 
     if (treebundle.isStringType())
     {
 	menu->AppendSeparator();
-	menu->Append(510,	wxT("Insert 10 Random 1 Letter String Pairs"));
-	menu->Append(511,	wxT("Insert 10 Random 2 Letter String Pairs"));
-	menu->Append(512,	wxT("Insert 25 Random 2 Letter String Pairs"));
-	menu->Append(513,	wxT("Insert 50 Random 2 Letter String Pairs"));
-	menu->Append(514,	wxT("Insert 10 Random 3 Letter String Pairs"));
-	menu->Append(515,	wxT("Insert 25 Random 3 Letter String Pairs"));
-	menu->Append(516,	wxT("Insert 50 Random 3 Letter String Pairs"));
-	menu->Append(517,	wxT("Insert 100 Random 3 Letter String Pairs"));
-	menu->Append(518,	wxT("Insert 200 Random 3 Letter String Pairs"));
+	menu->Append(510,       wxT("Insert 10 Random 1 Letter String Pairs"));
+	menu->Append(511,       wxT("Insert 10 Random 2 Letter String Pairs"));
+	menu->Append(512,       wxT("Insert 25 Random 2 Letter String Pairs"));
+	menu->Append(513,       wxT("Insert 50 Random 2 Letter String Pairs"));
+	menu->Append(514,       wxT("Insert 10 Random 3 Letter String Pairs"));
+	menu->Append(515,       wxT("Insert 25 Random 3 Letter String Pairs"));
+	menu->Append(516,       wxT("Insert 50 Random 3 Letter String Pairs"));
+	menu->Append(517,       wxT("Insert 100 Random 3 Letter String Pairs"));
+	menu->Append(518,       wxT("Insert 200 Random 3 Letter String Pairs"));
     }
 
     PopupMenu(menu);
@@ -228,13 +228,13 @@ void WMain::OnButtonInsertRandom(wxCommandEvent &)
 
 struct BTreeOp_InsertRandomInteger
 {
-    int		num;
+    int         num;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	int count = 0;
 	for(unsigned int i = 0; i < num; i++)
 	{
@@ -247,7 +247,7 @@ struct BTreeOp_InsertRandomInteger
 
     template <class BTreeType>
     inline result_type opIntegerMulti(BTreeType &bt) const
-    {	
+    {
 	for(unsigned int i = 0; i < num; i++)
 	{
 	    bt.insert2(rand() % 1000, rand() % 1000);
@@ -258,7 +258,7 @@ struct BTreeOp_InsertRandomInteger
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	int count = 0;
 	for(unsigned int i = 0; i < num; i++)
 	{
@@ -275,7 +275,7 @@ struct BTreeOp_InsertRandomInteger
 
     template <class BTreeType>
     inline result_type opStringMulti(BTreeType &bt) const
-    {	
+    {
 	for(unsigned int i = 0; i < num; i++)
 	{
 	    wxString key, val;
@@ -291,10 +291,10 @@ struct BTreeOp_InsertRandomInteger
 
 struct BTreeOp_InsertRandomString
 {
-    int		len;
-    int		num;
+    int         len;
+    int         num;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
@@ -433,19 +433,19 @@ void WMain::OnMenuInsertRandom(wxCommandEvent &ce)
 
 struct BTreeOp_FindKey
 {
-    BTreeBundle&	treebundle;
-    wxString		inputkey;
+    BTreeBundle&        treebundle;
+    wxString            inputkey;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	long key;
 	if (!inputkey.ToLong(&key)) {
 	    return wxT("Could not interpret key string as integer.");
 	}
-	
+
 	typename BTreeType::const_iterator bti = bt.find(key);
 
 	if (bti == bt.end())
@@ -504,19 +504,19 @@ void WMain::OnButtonFindKey(wxCommandEvent &)
 
 struct BTreeOp_EqualRange
 {
-    BTreeBundle&	treebundle;
-    wxString		inputkey;
+    BTreeBundle&        treebundle;
+    wxString            inputkey;
 
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	long key;
 	if (!inputkey.ToLong(&key)) {
 	    return wxT("Could not interpret key string as integer.");
 	}
-	
+
 	std::pair< typename BTreeType::const_iterator,  typename BTreeType::const_iterator >
 	    btip = bt.equal_range(key);
 
@@ -579,11 +579,11 @@ void WMain::OnButtonEqualRange(wxCommandEvent &)
 
 struct BTreeOp_Clear
 {
-    typedef	wxString	result_type;
+    typedef     wxString        result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
-    {	
+    {
 	bt.clear();
 	return wxT("Tree cleared.");
     }
@@ -596,7 +596,7 @@ struct BTreeOp_Clear
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	bt.clear();
 	return wxT("Tree cleared.");
     }
@@ -621,9 +621,9 @@ void WMain::OnButtonClear(wxCommandEvent &)
 
 struct BTreeOp_LoadFile
 {
-    std::vector< std::pair<wxString,wxString> >	&invector;
+    std::vector< std::pair<wxString,wxString> > &invector;
 
-    typedef	int	result_type;
+    typedef     int     result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
@@ -651,7 +651,7 @@ struct BTreeOp_LoadFile
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	unsigned int btsizebefore = bt.size();
 
 	for (std::vector< std::pair<wxString,wxString> >::const_iterator ci = invector.begin();
@@ -687,7 +687,7 @@ void WMain::OnButtonLoadFile(wxCommandEvent &)
     wxTextFile text(filedlg.GetPath());
     if (!text.Open()) return;
 
-    std::vector< std::pair<wxString,wxString> >	datavector;
+    std::vector< std::pair<wxString,wxString> > datavector;
 
     for (wxString line = text.GetFirstLine(); !text.Eof(); line = text.GetNextLine())
     {
@@ -713,11 +713,11 @@ void WMain::OnButtonLoadFile(wxCommandEvent &)
 
 struct BTreeOp_GetVector
 {
-    typedef	std::pair<wxString,wxString> stringpair_type;
+    typedef     std::pair<wxString,wxString> stringpair_type;
 
-    std::vector< std::pair<wxString,wxString> >	&outvector;
+    std::vector< std::pair<wxString,wxString> > &outvector;
 
-    typedef	void	result_type;
+    typedef     void    result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
@@ -741,7 +741,7 @@ struct BTreeOp_GetVector
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	for(typename BTreeType::const_iterator ci = bt.begin(); ci != bt.end(); ++ci)
 	{
 	    outvector.push_back(*ci);
@@ -758,9 +758,9 @@ struct BTreeOp_GetVector
 
 struct BTreeOp_PutVector
 {
-    std::vector< std::pair<wxString,wxString> >	&invector;
+    std::vector< std::pair<wxString,wxString> > &invector;
 
-    typedef	int	result_type;
+    typedef     int     result_type;
 
     template <class BTreeType>
     inline result_type opInteger(BTreeType &bt) const
@@ -787,7 +787,7 @@ struct BTreeOp_PutVector
 
     template <class BTreeType>
     inline result_type opString(BTreeType &bt) const
-    {	
+    {
 	bt.clear();
 	for (std::vector< std::pair<wxString,wxString> >::const_iterator ci = invector.begin();
 	     ci != invector.end(); ++ci)
@@ -812,7 +812,7 @@ void WMain::OnChoiceDataType(wxCommandEvent &)
 
     if (treebundle.selected_type == seltype) return;
 
-    std::vector< std::pair<wxString,wxString> >	datavector;
+    std::vector< std::pair<wxString,wxString> > datavector;
 
     BTreeOp_GetVector op1 = { datavector };
     treebundle.run(op1);
@@ -840,7 +840,7 @@ void WMain::OnChoiceNodeSlots(wxCommandEvent &)
 
     if (treebundle.selected_slots == selslot) return;
 
-    std::vector< std::pair<wxString,wxString> >	datavector;
+    std::vector< std::pair<wxString,wxString> > datavector;
 
     BTreeOp_GetVector op1 = { datavector };
     treebundle.run(op1);
@@ -861,7 +861,7 @@ void WMain::OnCheckboxDuplicates(wxCommandEvent &)
 
     if (treebundle.selected_multimap == seldup) return;
 
-    std::vector< std::pair<wxString,wxString> >	datavector;
+    std::vector< std::pair<wxString,wxString> > datavector;
 
     BTreeOp_GetVector op1 = { datavector };
     treebundle.run(op1);
@@ -878,19 +878,19 @@ void WMain::OnCheckboxDuplicates(wxCommandEvent &)
 
 BEGIN_EVENT_TABLE(WMain, wxFrame)
 
-    EVT_CHOICE	(ID_CHOICE_DATATYPE,		WMain::OnChoiceDataType)
-    EVT_CHOICE	(ID_CHOICE_NODESLOTS,		WMain::OnChoiceNodeSlots)
-    EVT_CHECKBOX(ID_CHECKBOX_DUPLICATES,	WMain::OnCheckboxDuplicates)
+    EVT_CHOICE  (ID_CHOICE_DATATYPE,            WMain::OnChoiceDataType)
+    EVT_CHOICE  (ID_CHOICE_NODESLOTS,           WMain::OnChoiceNodeSlots)
+    EVT_CHECKBOX(ID_CHECKBOX_DUPLICATES,        WMain::OnCheckboxDuplicates)
 
-    EVT_MENU_RANGE (500, 520,			WMain::OnMenuInsertRandom)
+    EVT_MENU_RANGE (500, 520,                   WMain::OnMenuInsertRandom)
 
-    EVT_BUTTON	(ID_BUTTON_INSERT,		WMain::OnButtonInsert)
-    EVT_BUTTON	(ID_BUTTON_ERASE,		WMain::OnButtonErase)
-    EVT_BUTTON	(ID_BUTTON_INSERTRANDOM,	WMain::OnButtonInsertRandom)
-    EVT_BUTTON	(ID_BUTTON_FINDKEY,		WMain::OnButtonFindKey)
-    EVT_BUTTON	(ID_BUTTON_EQUALRANGE,		WMain::OnButtonEqualRange)
-    EVT_BUTTON	(ID_BUTTON_CLEAR,		WMain::OnButtonClear)
-    EVT_BUTTON	(ID_BUTTON_LOADFILE,		WMain::OnButtonLoadFile)
+    EVT_BUTTON  (ID_BUTTON_INSERT,              WMain::OnButtonInsert)
+    EVT_BUTTON  (ID_BUTTON_ERASE,               WMain::OnButtonErase)
+    EVT_BUTTON  (ID_BUTTON_INSERTRANDOM,        WMain::OnButtonInsertRandom)
+    EVT_BUTTON  (ID_BUTTON_FINDKEY,             WMain::OnButtonFindKey)
+    EVT_BUTTON  (ID_BUTTON_EQUALRANGE,          WMain::OnButtonEqualRange)
+    EVT_BUTTON  (ID_BUTTON_CLEAR,               WMain::OnButtonClear)
+    EVT_BUTTON  (ID_BUTTON_LOADFILE,            WMain::OnButtonLoadFile)
 
 END_EVENT_TABLE();
 
@@ -899,7 +899,7 @@ END_EVENT_TABLE();
 class AppBTreeDemo : public wxApp
 {
 public:
-    bool 		OnInit();
+    bool                OnInit();
 };
 
 IMPLEMENT_APP(AppBTreeDemo)

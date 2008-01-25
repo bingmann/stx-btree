@@ -63,11 +63,11 @@ inline double timestamp()
 template <int _innerslots, int _leafslots>
 struct btree_traits_speed
 {
-    static const bool	selfverify = false;
-    static const bool	debug = false;
+    static const bool   selfverify = false;
+    static const bool   debug = false;
 
-    static const int 	leafslots = _innerslots;
-    static const int	innerslots = _leafslots;
+    static const int    leafslots = _innerslots;
+    static const int    innerslots = _leafslots;
 };
 
 /// Test the multiset red-black tree from STL
@@ -176,7 +176,7 @@ int main()
     for(unsigned int insertnum = mininsertnum; insertnum <= maxinsertnum; insertnum *= 2)
     {
 	std::cout << insertnum << " " << std::flush;
-	
+
 	testrunner_loop<test_set>(insertnum);
 
 	btree_range<min_nodeslots, max_nodeslots>()(insertnum);
