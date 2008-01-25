@@ -22,7 +22,9 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <stdlib.h>
+#include <stdint.h>
 
+#include <stx/btree_map.h>
 #include <stx/btree_multiset.h>
 
 class SimpleTest : public CPPUNIT_NS::TestFixture
@@ -30,6 +32,7 @@ class SimpleTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST_SUITE( SimpleTest );
     CPPUNIT_TEST(test_insert_erase_32);
     CPPUNIT_TEST(test_insert_erase_32_descending);
+    CPPUNIT_TEST(test_insert_ascending_100000_uint64);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -89,6 +92,21 @@ protected:
 	    CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
 	    CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
 	}
+    }
+
+    void test_insert_ascending_100000_uint64()
+    {
+	stx::btree_map<uint64_t, uint8_t> bt;
+
+        for(uint64_t i = 0; i < 100000; ++i)
+	{
+            uint64_t key = i % 999;
+
+            if (bt.find(key) == bt.end())
+	    {
+                bt.insert( std::make_pair(key, key % 100) );
+            }
+        }
     }
 };
 

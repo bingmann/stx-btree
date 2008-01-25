@@ -1200,7 +1200,7 @@ public:
 	const leaf_node *leaf = static_cast<const leaf_node*>(n);
 
 	int slot = find_lower(leaf, key);
-	return key_equal(key, leaf->slotkey[slot]);
+	return (slot < leaf->slotuse && key_equal(key, leaf->slotkey[slot]));
     }
 
     /// Tries to locate a key in the B+ tree and returns an iterator to the
@@ -1221,7 +1221,8 @@ public:
 	leaf_node *leaf = static_cast<leaf_node*>(n);
 
 	int slot = find_lower(leaf, key);
-	return key_equal(key, leaf->slotkey[slot]) ? iterator(leaf, slot) : end();
+	return (slot < leaf->slotuse && key_equal(key, leaf->slotkey[slot]))
+	    ? iterator(leaf, slot) : end();
     }
 
     /// Tries to locate a key in the B+ tree and returns an constant iterator
@@ -1242,7 +1243,8 @@ public:
 	const leaf_node *leaf = static_cast<const leaf_node*>(n);
 
 	int slot = find_lower(leaf, key);
-	return key_equal(key, leaf->slotkey[slot]) ? const_iterator(leaf, slot) : end();
+	return (slot < leaf->slotuse && key_equal(key, leaf->slotkey[slot]))
+	    ? const_iterator(leaf, slot) : end();
     }
 
     /// Tries to locate a key in the B+ tree and returns the number of
@@ -1265,7 +1267,7 @@ public:
 	int slot = find_lower(leaf, key);
 	size_type num = 0;
 
-	while (leaf && key_equal(key, leaf->slotkey[slot]))
+	while (leaf && slot < leaf->slotuse && key_equal(key, leaf->slotkey[slot]))
 	{
 	    ++num;
 	    if (++slot >= leaf->slotuse)
@@ -1959,7 +1961,7 @@ private:
 
 	    int slot = find_lower(leaf, key);
 
-	    if (!key_equal(key, leaf->slotkey[slot]))
+	    if (slot >= leaf->slotuse || !key_equal(key, leaf->slotkey[slot]))
 	    {
 		BTREE_PRINT("Could not find key " << key << " to erase." << std::endl);
 
