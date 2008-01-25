@@ -1,3 +1,12 @@
+2008-01-25	Timo Bingmann
+	* btree.h: Fixed a valgrind-detected bug based on a new test case
+	received via email. During the find() function find_lower() is
+	called and returns the slot number with the smallest or equal
+	key. However if the queried key is larger than all keys in a leaf
+	node or in the whole tree, find_lower() returns a slot number past
+	the last valid key slot. Comparison of this invalid slot with the
+	queried key then yields an uninitialized memory error in valgrind.
+
 2007-05-12	Timo Bingmann
 	* btree.h: Fixed segfault in print() because of non-existing root.
 		   Fixed segfault in end() when the tree is totally empty.

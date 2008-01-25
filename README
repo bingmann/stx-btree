@@ -1,7 +1,7 @@
-		*** STX B+ Tree C++ Template Classes v0.8  ***
+	       *** STX B+ Tree C++ Template Classes v0.8.1  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-Date: 2007-05-13
+Date: 2008-01-25
 
 --- Summary ---
 
@@ -25,7 +25,7 @@ http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation can be found at 
-http://idlebox.net/2007/stx-btree/stx-btree-0.8-doxygen/
+http://idlebox.net/2007/stx-btree/stx-btree-0.8.1-doxygen/
 
 The wxWidgets B+ tree demo program is located in the directory
 wxbtreedemo. Compiled binary versions can be found on the package web page.

@@ -1,8 +1,8 @@
 // $Id$
 
 /*
- * STX B+ Tree Template Classes v0.8
- * Copyright (C) 2007 Timo Bingmann
+ * STX B+ Tree Template Classes v0.8.1
+ * Copyright (C) 2008 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -98,15 +98,17 @@ protected:
     {
 	stx::btree_map<uint64_t, uint8_t> bt;
 
-	for(uint64_t i = 0; i < 100000; ++i)
+	for(uint64_t i = 10; i < 100000; ++i)
 	{
-	    uint64_t key = i % 999;
+	    uint64_t key = i % 1000;
 
 	    if (bt.find(key) == bt.end())
 	    {
 		bt.insert( std::make_pair(key, key % 100) );
 	    }
 	}
+
+	CPPUNIT_ASSERT( bt.size() == 1000 );
     }
 };
 
