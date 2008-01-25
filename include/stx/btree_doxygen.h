@@ -26,7 +26,7 @@
 /** \mainpage STX B+ Tree Template Classes README
 
 \author Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-\date 2007-05-13
+\date 2008-01-25
 
 \section sec1 Summary
 
