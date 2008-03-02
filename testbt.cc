@@ -13,6 +13,8 @@
 #include <stx/btree_multimap.h>
 #include <stx/btree_multiset.h>
 
+#include <stx/btree_disk.h>
+
 #include <assert.h>
 
 double timestamp()
@@ -58,8 +60,11 @@ typedef stx::btree_multimap<unsigned int, unsigned int> btree_type;
 
 template class stx::btree_multimap<unsigned int, unsigned int>;
 
-//template class stx::btree<struct testx, int>;
 template class std::map<struct testx, int, testcomp>;
+
+
+typedef stx::btree_disk<int, int> btree_disk_type;
+template class stx::btree_disk<int, int>;
 
 int main()
 {
@@ -67,26 +72,52 @@ int main()
 
     double ts1 = timestamp();
 
-#if 0
+    int innum = 3200;
+    int ratio = 100000;
 
-    btree_type bt;
+#if 1
+    btree_disk_type::btree_disk_page_manager btpm;
+    btpm.pagefile.open("test.db", 0);
 
-    std::ifstream dumpof("dump.bt");
+    btree_disk_type bt(btpm);
 
-    assert( bt.restore(dumpof) );
-
-    for(btree_type::iterator bi = bt.begin(); bi != bt.end(); ++bi)
+    if (0)
     {
-	std::cout << bi.key() << " ";
+	srand(34234235);
+	for(int i = 0; i < innum; i++)
+	{
+	    unsigned int k = rand() % ratio;
+	    unsigned int v = 234;
+
+	    bt.insert2(k, v);
+	}
     }
-    std::cout << "\n";
+
+    bt.verify();
+
+    if (1)
+    {
+	for(btree_disk_type::iterator bi = bt.begin(); bi != bt.end(); ++bi)
+	{
+	    std::cout << bi.key() << " ";
+	}
+	std::cout << "\n";
+    }
+
+    if (1)
+    {
+	srand(34234235);
+	for(int i = 0; i < innum; i++)
+	{
+	    unsigned int k = rand() % ratio;
+
+	    assert( bt.exists(k) );
+	}
+    }
 
 #elif 1
 
     btree_type bt;
-
-    int innum = 3200;
-    int ratio = 100000;
 
     typedef std::multiset<testx, testcomp> multiset_type;
     multiset_type set;
@@ -105,6 +136,7 @@ int main()
 	//assert(bt.size() == set.size());
     }
 
+#if 0
     for(btree_type::iterator bi = bt.begin(); bi != bt.end(); ++bi)
     {
 	std::cout << bi.key() << " ";
@@ -122,6 +154,7 @@ int main()
     std::ofstream dumpof("dump.bt");
 
     bt.dump(dumpof);
+#endif
 
     if (0)
     {
@@ -195,9 +228,9 @@ int main()
     assert( map.empty() );
 
 /*
-    srand(34234235);
-    for(int i = 0; i < 1000000; i++)
-	map[rand()] = rand();
+  srand(34234235);
+  for(int i = 0; i < 1000000; i++)
+  map[rand()] = rand();
 */
 #endif
 
