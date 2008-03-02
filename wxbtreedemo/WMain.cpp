@@ -30,7 +30,7 @@
 #include <wx/tokenzr.h>
 
 WMain::WMain()
-    : WMain_wxg(NULL, -1, wxT(""))
+    : WMain_wxg(NULL, -1, wxT("STX B+ Tree Demo - http://idlebox.net/"))
 {
     {
 	#include "progicon.xpm"
@@ -38,6 +38,7 @@ WMain::WMain()
     }
 
     window_TreeDrawing->SetWMain(this);
+    SetTitle(wxT("STX B+ Tree Demo - http://idlebox.net/"));
 
     treebundle.selected_type = 0;
     treebundle.selected_slots = 4;
