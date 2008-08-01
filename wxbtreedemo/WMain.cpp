@@ -907,7 +907,7 @@ IMPLEMENT_APP(AppBTreeDemo)
 
 bool AppBTreeDemo::OnInit()
 {
-    wxInitAllImageHandlers();
+    wxImage::AddHandler(new wxXPMHandler());
 
     WMain* wm = new WMain();
     SetTopWindow(wm);
