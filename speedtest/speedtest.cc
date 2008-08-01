@@ -78,24 +78,24 @@ void test_set(unsigned int insertnum)
 
     srand(randseed);
     for(unsigned int i = 0; i < insertnum; i++)
-	set.insert( rand() );
+        set.insert( rand() );
 
     assert( set.size() == insertnum );
 
     if (with_find)
     {
-	srand(randseed);
-	for(unsigned int i = 0; i < insertnum; i++)
-	    set.find(rand());
+        srand(randseed);
+        for(unsigned int i = 0; i < insertnum; i++)
+            set.find(rand());
     }
 
     if (with_erase)
     {
-	srand(randseed);
-	for(unsigned int i = 0; i < insertnum; i++)
-	    set.erase( set.find(rand()) );
+        srand(randseed);
+        for(unsigned int i = 0; i < insertnum; i++)
+            set.erase( set.find(rand()) );
 
-	assert( set.empty() );
+        assert( set.empty() );
     }
 }
 
@@ -104,30 +104,30 @@ template <int _slots>
 void test_btree(unsigned int insertnum)
 {
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
-	struct btree_traits_speed<_slots, _slots> > btree_type;
+        struct btree_traits_speed<_slots, _slots> > btree_type;
 
     btree_type bt;
 
     srand(randseed);
     for(unsigned int i = 0; i < insertnum; i++)
-	bt.insert(rand());
+        bt.insert(rand());
 
     assert( bt.size() == insertnum );
 
     if (with_find)
     {
-	srand(randseed);
-	for(unsigned int i = 0; i < insertnum; i++)
-	    bt.exists(rand());
+        srand(randseed);
+        for(unsigned int i = 0; i < insertnum; i++)
+            bt.exists(rand());
     }
 
     if (with_erase)
     {
-	srand(randseed);
-	for(unsigned int i = 0; i < insertnum; i++)
-	    bt.erase_one(rand());
+        srand(randseed);
+        for(unsigned int i = 0; i < insertnum; i++)
+            bt.erase_one(rand());
 
-	assert(bt.empty());
+        assert(bt.empty());
     }
 }
 
@@ -141,8 +141,8 @@ void testrunner_loop(unsigned int insertnum)
 
     for(unsigned int totaltests = 0; totaltests <= repeatinsertuntil; totaltests += insertnum)
     {
-	func(insertnum);
-	++runs;
+        func(insertnum);
+        ++runs;
     }
 
     double ts2 = timestamp();
@@ -157,8 +157,8 @@ struct btree_range
 {
     inline void operator()(unsigned int insertnum)
     {
-	testrunner_loop< test_btree<Low> >(insertnum);
-	btree_range<Low+1, High>()(insertnum);
+        testrunner_loop< test_btree<Low> >(insertnum);
+        btree_range<Low+1, High>()(insertnum);
     }
 };
 
@@ -166,7 +166,7 @@ template<int Low>
 struct btree_range<Low, Low>
 {
     inline void operator()(unsigned int insertnum) {
-	testrunner_loop< test_btree<Low> >(insertnum);
+        testrunner_loop< test_btree<Low> >(insertnum);
     }
 };
 
@@ -175,12 +175,12 @@ int main()
 {
     for(unsigned int insertnum = mininsertnum; insertnum <= maxinsertnum; insertnum *= 2)
     {
-	std::cout << insertnum << " " << std::flush;
+        std::cout << insertnum << " " << std::flush;
 
-	testrunner_loop<test_set>(insertnum);
+        testrunner_loop<test_set>(insertnum);
 
-	btree_range<min_nodeslots, max_nodeslots>()(insertnum);
+        btree_range<min_nodeslots, max_nodeslots>()(insertnum);
 
-	std::cout << "\n" << std::flush;
+        std::cout << "\n" << std::flush;
     }
 }

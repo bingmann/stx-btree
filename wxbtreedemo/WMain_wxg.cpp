@@ -135,4 +135,3 @@ void WMain_wxg::do_layout()
     Centre();
     // end wxGlade
 }
-

@@ -52,34 +52,34 @@ public:
     /// Tree operation to draw the nodes on this canvas.
     struct BTreeOp_Draw
     {
-	BTreeOp_Draw(WTreeDrawing &_w, wxDC &_dc, const class BTreeBundle &_tb)
-	    : w(_w), dc(_dc), tb(_tb)
-	{
-	}
+        BTreeOp_Draw(WTreeDrawing &_w, wxDC &_dc, const class BTreeBundle &_tb)
+            : w(_w), dc(_dc), tb(_tb)
+        {
+        }
 
-	WTreeDrawing &w;
-	wxDC &dc;
-	const BTreeBundle &tb;
+        WTreeDrawing &w;
+        wxDC &dc;
+        const BTreeBundle &tb;
 
-	typedef wxSize  result_type;
+        typedef wxSize  result_type;
 
-	template <class BTreeType>
-	wxSize draw_node(int offsetx, int offsety, const class BTreeType::btree_impl::node* node);
+        template <class BTreeType>
+        wxSize draw_node(int offsetx, int offsety, const class BTreeType::btree_impl::node* node);
 
-	template <class BTreeType>
-	wxSize draw_tree(BTreeType &bt);
+        template <class BTreeType>
+        wxSize draw_tree(BTreeType &bt);
 
-	template <class BTreeType>
-	wxSize opInteger(BTreeType &bt);
+        template <class BTreeType>
+        wxSize opInteger(BTreeType &bt);
 
-	template <class BTreeType>
-	wxSize opIntegerMulti(BTreeType &bt);
+        template <class BTreeType>
+        wxSize opIntegerMulti(BTreeType &bt);
 
-	template <class BTreeType>
-	wxSize opString(BTreeType &bt);
+        template <class BTreeType>
+        wxSize opString(BTreeType &bt);
 
-	template <class BTreeType>
-	wxSize opStringMulti(BTreeType &bt);
+        template <class BTreeType>
+        wxSize opStringMulti(BTreeType &bt);
     };
 
     class WMain*        wmain;
