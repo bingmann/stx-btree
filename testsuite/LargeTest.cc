@@ -40,180 +40,180 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool       selfverify = true;
-	static const bool       debug = false;
+        static const bool       selfverify = true;
+        static const bool       debug = false;
 
-	static const int        leafslots = 8;
-	static const int        innerslots = 8;
+        static const int        leafslots = 8;
+        static const int        innerslots = 8;
     };
 
     void test_multi(const unsigned int insnum, const unsigned int modulo)
     {
-	typedef stx::btree_multiset<unsigned int,
-	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<unsigned int,
+            std::less<unsigned int>, struct traits_nodebug> btree_type;
 
-	btree_type bt;
+        btree_type bt;
 
-	typedef std::multiset<unsigned int> multiset_type;
-	multiset_type set;
+        typedef std::multiset<unsigned int> multiset_type;
+        multiset_type set;
 
-	// *** insert
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = rand() % modulo;
+        // *** insert
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = rand() % modulo;
 
-	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	    bt.insert(k);
-	    set.insert(k);
-	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            CPPUNIT_ASSERT( bt.size() == set.size() );
+            bt.insert(k);
+            set.insert(k);
+            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
 
-	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	}
+            CPPUNIT_ASSERT( bt.size() == set.size() );
+        }
 
-	CPPUNIT_ASSERT( bt.size() == insnum );
+        CPPUNIT_ASSERT( bt.size() == insnum );
 
-	// *** iterate
-	btree_type::iterator bi = bt.begin();
-	multiset_type::const_iterator si = set.begin();
-	for(; bi != bt.end() && si != set.end(); ++bi, ++si)
-	{
-	    CPPUNIT_ASSERT( *si == bi.key() );
-	}
-	CPPUNIT_ASSERT( bi == bt.end() );
-	CPPUNIT_ASSERT( si == set.end() );
+        // *** iterate
+        btree_type::iterator bi = bt.begin();
+        multiset_type::const_iterator si = set.begin();
+        for(; bi != bt.end() && si != set.end(); ++bi, ++si)
+        {
+            CPPUNIT_ASSERT( *si == bi.key() );
+        }
+        CPPUNIT_ASSERT( bi == bt.end() );
+        CPPUNIT_ASSERT( si == set.end() );
 
-	// *** existance
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = rand() % modulo;
+        // *** existance
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = rand() % modulo;
 
-	    CPPUNIT_ASSERT( bt.exists(k) );
-	}
+            CPPUNIT_ASSERT( bt.exists(k) );
+        }
 
-	// *** counting
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = rand() % modulo;
+        // *** counting
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = rand() % modulo;
 
-	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
-	}
+            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+        }
 
-	// *** deletion
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = rand() % modulo;
+        // *** deletion
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = rand() % modulo;
 
-	    if (set.find(k) != set.end())
-	    {
-		CPPUNIT_ASSERT( bt.size() == set.size() );
+            if (set.find(k) != set.end())
+            {
+                CPPUNIT_ASSERT( bt.size() == set.size() );
 
-		CPPUNIT_ASSERT( bt.exists(k) );
-		CPPUNIT_ASSERT( bt.erase_one(k) );
-		set.erase( set.find(k) );
+                CPPUNIT_ASSERT( bt.exists(k) );
+                CPPUNIT_ASSERT( bt.erase_one(k) );
+                set.erase( set.find(k) );
 
-		CPPUNIT_ASSERT( bt.size() == set.size() );
-	    }
-	}
+                CPPUNIT_ASSERT( bt.size() == set.size() );
+            }
+        }
 
-	CPPUNIT_ASSERT( bt.empty() );
-	CPPUNIT_ASSERT( set.empty() );
+        CPPUNIT_ASSERT( bt.empty() );
+        CPPUNIT_ASSERT( set.empty() );
     }
 
     void test_3200_10()
     {
-	test_multi(3200, 10);
+        test_multi(3200, 10);
     }
 
     void test_320_1000()
     {
-	test_multi(320, 1000);
+        test_multi(320, 1000);
     }
 
     void test_320_10000()
     {
-	test_multi(320, 10000);
+        test_multi(320, 10000);
     }
 
     void test_sequence()
     {
-	typedef stx::btree_multiset<unsigned int,
-	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<unsigned int,
+            std::less<unsigned int>, struct traits_nodebug> btree_type;
 
-	btree_type bt;
+        btree_type bt;
 
-	const unsigned int insnum = 10000;
+        const unsigned int insnum = 10000;
 
-	typedef std::multiset<unsigned int> multiset_type;
-	multiset_type set;
+        typedef std::multiset<unsigned int> multiset_type;
+        multiset_type set;
 
-	// *** insert
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = i;
+        // *** insert
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = i;
 
-	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	    bt.insert(k);
-	    set.insert(k);
-	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            CPPUNIT_ASSERT( bt.size() == set.size() );
+            bt.insert(k);
+            set.insert(k);
+            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
 
-	    CPPUNIT_ASSERT( bt.size() == set.size() );
-	}
+            CPPUNIT_ASSERT( bt.size() == set.size() );
+        }
 
-	CPPUNIT_ASSERT( bt.size() == insnum );
+        CPPUNIT_ASSERT( bt.size() == insnum );
 
-	// *** iterate
-	btree_type::iterator bi = bt.begin();
-	multiset_type::const_iterator si = set.begin();
-	for(; bi != bt.end() && si != set.end(); ++bi, ++si)
-	{
-	    CPPUNIT_ASSERT( *si == bi.key() );
-	}
-	CPPUNIT_ASSERT( bi == bt.end() );
-	CPPUNIT_ASSERT( si == set.end() );
+        // *** iterate
+        btree_type::iterator bi = bt.begin();
+        multiset_type::const_iterator si = set.begin();
+        for(; bi != bt.end() && si != set.end(); ++bi, ++si)
+        {
+            CPPUNIT_ASSERT( *si == bi.key() );
+        }
+        CPPUNIT_ASSERT( bi == bt.end() );
+        CPPUNIT_ASSERT( si == set.end() );
 
-	// *** existance
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = i;
+        // *** existance
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = i;
 
-	    CPPUNIT_ASSERT( bt.exists(k) );
-	}
+            CPPUNIT_ASSERT( bt.exists(k) );
+        }
 
-	// *** counting
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = i;
+        // *** counting
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = i;
 
-	    CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
-	}
+            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+        }
 
-	// *** deletion
-	srand(34234235);
-	for(unsigned int i = 0; i < insnum; i++)
-	{
-	    unsigned int k = i;
+        // *** deletion
+        srand(34234235);
+        for(unsigned int i = 0; i < insnum; i++)
+        {
+            unsigned int k = i;
 
-	    if (set.find(k) != set.end())
-	    {
-		CPPUNIT_ASSERT( bt.size() == set.size() );
+            if (set.find(k) != set.end())
+            {
+                CPPUNIT_ASSERT( bt.size() == set.size() );
 
-		CPPUNIT_ASSERT( bt.exists(k) );
-		CPPUNIT_ASSERT( bt.erase_one(k) );
-		set.erase( set.find(k) );
+                CPPUNIT_ASSERT( bt.exists(k) );
+                CPPUNIT_ASSERT( bt.erase_one(k) );
+                set.erase( set.find(k) );
 
-		CPPUNIT_ASSERT( bt.size() == set.size() );
-	    }
-	}
+                CPPUNIT_ASSERT( bt.size() == set.size() );
+            }
+        }
 
-	CPPUNIT_ASSERT( bt.empty() );
-	CPPUNIT_ASSERT( set.empty() );
+        CPPUNIT_ASSERT( bt.empty() );
+        CPPUNIT_ASSERT( set.empty() );
     }
 
 };

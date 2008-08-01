@@ -38,45 +38,45 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool       selfverify = true;
-	static const bool       debug = false;
+        static const bool       selfverify = true;
+        static const bool       debug = false;
 
-	static const int        leafslots = 8;
-	static const int        innerslots = 8;
+        static const int        leafslots = 8;
+        static const int        innerslots = 8;
     };
 
     void test_dump_restore_3200()
     {
-	typedef stx::btree_multiset<unsigned int,
-	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<unsigned int,
+            std::less<unsigned int>, struct traits_nodebug> btree_type;
 
-	std::string dumpstr;
+        std::string dumpstr;
 
-	{
-	    btree_type bt;
+        {
+            btree_type bt;
 
-	    srand(34234235);
-	    for(unsigned int i = 0; i < 3200; i++)
-	    {
-		bt.insert(rand() % 100);
-	    }
+            srand(34234235);
+            for(unsigned int i = 0; i < 3200; i++)
+            {
+                bt.insert(rand() % 100);
+            }
 
-	    CPPUNIT_ASSERT(bt.size() == 3200);
+            CPPUNIT_ASSERT(bt.size() == 3200);
 
-	    std::ostringstream os;
-	    bt.dump(os);
+            std::ostringstream os;
+            bt.dump(os);
 
-	    dumpstr = os.str();
-	}
+            dumpstr = os.str();
+        }
 
-	// std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
-	CPPUNIT_ASSERT( dumpstr.size() == 47772 );
+        // std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
+        CPPUNIT_ASSERT( dumpstr.size() == 47772 );
 
-	// cannot check the string with a hash function, because it contains
-	// memory pointers
+        // cannot check the string with a hash function, because it contains
+        // memory pointers
 
-	{ // restore the btree image
-	    btree_type bt2;
+        { // restore the btree image
+            btree_type bt2;
 
 	    std::istringstream iss(dumpstr);
 	    CPPUNIT_ASSERT( bt2.restore(iss) );

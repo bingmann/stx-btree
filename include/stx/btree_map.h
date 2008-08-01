@@ -537,13 +537,13 @@ public:
     /// is printable via std::ostream.
     void print(std::ostream &os) const
     {
-	tree.print(os);
+        tree.print(os);
     }
 
     /// Print out only the leaves via the double linked list.
     void print_leaves(std::ostream &os) const
     {
-	tree.print_leaves(os);
+        tree.print_leaves(os);
     }
 #endif
 
@@ -554,7 +554,7 @@ public:
     /// aborts via BTREE_ASSERT() if something is wrong.
     void verify() const
     {
-	tree.verify();
+        tree.verify();
     }
 
 public:
@@ -565,7 +565,7 @@ public:
     /// integral types and contain no pointers or references.
     void dump(std::ostream &os) const
     {
-	tree.dump(os);
+        tree.dump(os);
     }
 
     /// Restore a binary image of a dumped B+ tree from an istream. The B+ tree
@@ -574,7 +574,7 @@ public:
     /// pointers or references. Returns true if the restore was successful.
     bool restore(std::istream &is)
     {
-	return tree.restore(is);
+        return tree.restore(is);
     }
 };
 

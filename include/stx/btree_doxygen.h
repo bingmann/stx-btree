@@ -212,12 +212,12 @@ struct btree_default_map_traits
     // Number of slots in each leaf of the tree. Estimated so that each node
     // has a size of about 256 bytes.
     static const int    leafslots =
-			     MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
+                             MAX( 8, 256 / (sizeof(_Key) + sizeof(_Data)) );
 
     // Number of slots in each inner node of the tree. Estimated so that each
     // node has a size of about 256 bytes.
     static const int    innerslots =
-			     MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
+                             MAX( 8, 256 / (sizeof(_Key) + sizeof(void*)) );
 };
 \endcode
 

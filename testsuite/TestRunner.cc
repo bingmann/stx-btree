@@ -43,7 +43,7 @@ int main()
 
     // Change the default outputter to a compiler error format outputter
     runner.setOutputter( new CppUnit::TextOutputter( &runner.result(), std::cout ) );
-    
+
     // Run the tests.
     bool wasSucessful = runner.run();
 

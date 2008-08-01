@@ -39,76 +39,76 @@ protected:
 
     struct traits_nodebug
     {
-	static const bool       selfverify = true;
-	static const bool       debug = false;
+        static const bool       selfverify = true;
+        static const bool       debug = false;
 
-	static const int        leafslots = 8;
-	static const int        innerslots = 8;
+        static const int        leafslots = 8;
+        static const int        innerslots = 8;
     };
 
     void test_insert_erase_32()
     {
-	typedef stx::btree_multiset<unsigned int,
-	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<unsigned int,
+            std::less<unsigned int>, struct traits_nodebug> btree_type;
 
-	btree_type bt;
+        btree_type bt;
 
-	srand(34234235);
-	for(unsigned int i = 0; i < 32; i++)
-	{
-	    CPPUNIT_ASSERT(bt.size() == i);
-	    bt.insert(rand() % 100);
-	    CPPUNIT_ASSERT(bt.size() == i + 1);
-	}
+        srand(34234235);
+        for(unsigned int i = 0; i < 32; i++)
+        {
+            CPPUNIT_ASSERT(bt.size() == i);
+            bt.insert(rand() % 100);
+            CPPUNIT_ASSERT(bt.size() == i + 1);
+        }
 
-	srand(34234235);
-	for(unsigned int i = 0; i < 32; i++)
-	{
-	    CPPUNIT_ASSERT(bt.size() == 32 - i);
-	    CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-	    CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
-	}
+        srand(34234235);
+        for(unsigned int i = 0; i < 32; i++)
+        {
+            CPPUNIT_ASSERT(bt.size() == 32 - i);
+            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
+            CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
+        }
     }
 
     void test_insert_erase_32_descending()
     {
-	typedef stx::btree_multiset<unsigned int,
-	    std::greater<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<unsigned int,
+            std::greater<unsigned int>, struct traits_nodebug> btree_type;
 
-	btree_type bt;
+        btree_type bt;
 
-	srand(34234235);
-	for(unsigned int i = 0; i < 32; i++)
-	{
-	    CPPUNIT_ASSERT(bt.size() == i);
-	    bt.insert(rand() % 100);
-	    CPPUNIT_ASSERT(bt.size() == i + 1);
-	}
+        srand(34234235);
+        for(unsigned int i = 0; i < 32; i++)
+        {
+            CPPUNIT_ASSERT(bt.size() == i);
+            bt.insert(rand() % 100);
+            CPPUNIT_ASSERT(bt.size() == i + 1);
+        }
 
-	srand(34234235);
-	for(unsigned int i = 0; i < 32; i++)
-	{
-	    CPPUNIT_ASSERT(bt.size() == 32 - i);
-	    CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-	    CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
-	}
+        srand(34234235);
+        for(unsigned int i = 0; i < 32; i++)
+        {
+            CPPUNIT_ASSERT(bt.size() == 32 - i);
+            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
+            CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
+        }
     }
 
     void test_insert_ascending_100000_uint64()
     {
-	stx::btree_map<uint64_t, uint8_t> bt;
+        stx::btree_map<uint64_t, uint8_t> bt;
 
-	for(uint64_t i = 10; i < 100000; ++i)
-	{
-	    uint64_t key = i % 1000;
+        for(uint64_t i = 10; i < 100000; ++i)
+        {
+            uint64_t key = i % 1000;
 
-	    if (bt.find(key) == bt.end())
-	    {
-		bt.insert( std::make_pair(key, key % 100) );
-	    }
-	}
+            if (bt.find(key) == bt.end())
+            {
+                bt.insert( std::make_pair(key, key % 100) );
+            }
+        }
 
-	CPPUNIT_ASSERT( bt.size() == 1000 );
+        CPPUNIT_ASSERT( bt.size() == 1000 );
     }
 };
 
