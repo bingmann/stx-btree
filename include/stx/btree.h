@@ -1995,8 +1995,15 @@ private:
                 }
                 else
                 {
-                    BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
-                    myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
+		    if (leaf->slotuse >= 1)
+		    {
+			BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
+			myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
+		    }
+		    else
+		    {
+			BTREE_ASSERT(leaf == root);
+		    }
                 }
             }
 
