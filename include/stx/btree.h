@@ -402,7 +402,7 @@ public:
         typename btree::leaf_node*      currnode;
 
         /// Current key/data slot referenced
-        unsigned short  		currslot;
+        unsigned short          currslot;
 
         /// Friendly to the const_iterator, so it may access the two data items directly.
         friend class const_iterator;
@@ -580,19 +580,19 @@ public:
         typedef typename btree::pair_type               pair_type;
 
         /// Reference to the value_type. STL required.
-        typedef const value_type&       		reference;
+        typedef const value_type&               reference;
 
         /// Pointer to the value_type. STL required.
-        typedef const value_type*       		pointer;
+        typedef const value_type*               pointer;
 
         /// STL-magic iterator category
-        typedef std::bidirectional_iterator_tag		iterator_category;
+        typedef std::bidirectional_iterator_tag         iterator_category;
 
         /// STL-magic
-        typedef ptrdiff_t       		difference_type;
+        typedef ptrdiff_t               difference_type;
 
         /// Our own type
-        typedef const_iterator         		self;
+        typedef const_iterator          self;
 
     private:
         // *** Members
@@ -601,7 +601,7 @@ public:
         const typename btree::leaf_node*        currnode;
 
         /// Current key/data slot referenced
-        unsigned short  			currslot;
+        unsigned short                  currslot;
 
         /// Friendly to the reverse_const_iterator, so it may access the two data items directly
         friend class const_reverse_iterator;
@@ -804,8 +804,8 @@ public:
         /// The currently referenced leaf node of the tree
         typename btree::leaf_node*      currnode;
 
-        /// One slot past the current key/data slot referenced. Thus == 0 for the end.
-        unsigned short  		currslot;
+        /// One slot past the current key/data slot referenced.
+        unsigned short          currslot;
 
         /// Friendly to the const_iterator, so it may access the two data items directly
         friend class iterator;
@@ -847,7 +847,7 @@ public:
         /// value are not stored together
         inline reference operator*() const
         {
-	    BTREE_ASSERT(currslot > 0);
+            BTREE_ASSERT(currslot > 0);
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
             return temp_value;
@@ -858,7 +858,7 @@ public:
         /// together.
         inline pointer operator->() const
         {
-	    BTREE_ASSERT(currslot > 0);
+            BTREE_ASSERT(currslot > 0);
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
             return &temp_value;
@@ -985,19 +985,19 @@ public:
         typedef typename btree::pair_type               pair_type;
 
         /// Reference to the value_type. STL required.
-        typedef const value_type&       		reference;
+        typedef const value_type&               reference;
 
         /// Pointer to the value_type. STL required.
-        typedef const value_type*       		pointer;
+        typedef const value_type*               pointer;
 
         /// STL-magic iterator category
-        typedef std::bidirectional_iterator_tag		iterator_category;
+        typedef std::bidirectional_iterator_tag         iterator_category;
 
         /// STL-magic
-        typedef ptrdiff_t       		difference_type;
+        typedef ptrdiff_t               difference_type;
 
         /// Our own type
-        typedef const_reverse_iterator         	self;
+        typedef const_reverse_iterator  self;
 
     private:
         // *** Members
@@ -1005,8 +1005,8 @@ public:
         /// The currently referenced leaf node of the tree
         const typename btree::leaf_node*        currnode;
 
-        /// Current key/data slot referenced
-        unsigned short				currslot;
+        /// One slot past the current key/data slot referenced.
+        unsigned short                          currslot;
 
         /// Friendly to the const_iterator, so it may access the two data items directly.
         friend class reverse_iterator;
@@ -1049,9 +1049,9 @@ public:
         { }
 
         /// Dereference the iterator. Do not use this if possible, use key()
-	/// and data() instead. The B+ tree does not stored key and data
-	/// together.
-	inline reference operator*() const
+        /// and data() instead. The B+ tree does not stored key and data
+        /// together.
+        inline reference operator*() const
         {
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
@@ -1059,9 +1059,9 @@ public:
         }
 
         /// Dereference the iterator. Do not use this if possible, use key()
-	/// and data() instead. The B+ tree does not stored key and data
-	/// together.
-	inline pointer operator->() const
+        /// and data() instead. The B+ tree does not stored key and data
+        /// together.
+        inline pointer operator->() const
         {
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
@@ -2430,15 +2430,15 @@ private:
                 }
                 else
                 {
-		    if (leaf->slotuse >= 1)
-		    {
-			BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
-			myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
-		    }
-		    else
-		    {
-			BTREE_ASSERT(leaf == root);
-		    }
+                    if (leaf->slotuse >= 1)
+                    {
+                        BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
+                        myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
+                    }
+                    else
+                    {
+                        BTREE_ASSERT(leaf == root);
+                    }
                 }
             }
 
