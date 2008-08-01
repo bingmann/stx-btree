@@ -1,3 +1,10 @@
+2008-08-01	Timo Bingmann
+	* btree.h: Fixing up a memory access bug which happens in
+	leaf->slotkey[leaf->slotuse - 1] if leaf-slotuse == 0. This doesnt
+	have any other bad effect, because the case only occurs when leaf
+	== root and thus the btree_update_lastkey message is never really
+	processed. However it still is a bad-memory access.
+
 2008-01-25	Timo Bingmann
 	* btree.h: Fixed a valgrind-detected bug based on a new test case
 	received via email. During the find() function find_lower() is
