@@ -358,6 +358,8 @@ public:
 
     class iterator;
     class const_iterator;
+    class reverse_iterator;
+    class const_reverse_iterator;
 
     /// STL-like iterator object for B+ tree items. The iterator points to a
     /// specific slot number in a leaf.
@@ -378,10 +380,10 @@ public:
         /// The pair type of the btree.
         typedef typename btree::pair_type               pair_type;
 
-        /// Reference to the value_type. Required by the reverse_iterator.
+        /// Reference to the value_type. STL required.
         typedef value_type&             reference;
 
-        /// Pointer to the value_type. Required by the reverse_iterator.
+        /// Pointer to the value_type. STL required.
         typedef value_type*             pointer;
 
         /// STL-magic iterator category
@@ -400,10 +402,16 @@ public:
         typename btree::leaf_node*      currnode;
 
         /// Current key/data slot referenced
-        unsigned short  currslot;
+        unsigned short  		currslot;
 
-        /// Friendly to the const_iterator, so it may access the two data items directly
-        friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>::const_iterator;
+        /// Friendly to the const_iterator, so it may access the two data items directly.
+        friend class const_iterator;
+
+        /// Also friendly to the reverse_iterator, so it may access the two data items directly.
+        friend class reverse_iterator;
+
+        /// Also friendly to the const_reverse_iterator, so it may access the two data items directly.
+        friend class const_reverse_iterator;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
         /// operator->
@@ -417,9 +425,19 @@ public:
     public:
         // *** Methods
 
-        /// Constructor of a mutable iterator
+        /// Default-Constructor of a mutable iterator
+        inline iterator()
+            : currnode(NULL), currslot(0)
+        { }
+
+        /// Initializing-Constructor of a mutable iterator
         inline iterator(typename btree::leaf_node *l, unsigned short s)
             : currnode(l), currslot(s)
+        { }
+
+        /// Copy-constructor from a reverse iterator
+        inline iterator(const reverse_iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
         { }
 
         /// Dereference the iterator, this is not a value_type& because key and
@@ -561,20 +579,20 @@ public:
         /// The pair type of the btree.
         typedef typename btree::pair_type               pair_type;
 
-        /// Reference to the value_type. Required by the reverse_iterator.
-        typedef const value_type&       reference;
+        /// Reference to the value_type. STL required.
+        typedef const value_type&       		reference;
 
-        /// Pointer to the value_type. Required by the reverse_iterator.
-        typedef const value_type*       pointer;
+        /// Pointer to the value_type. STL required.
+        typedef const value_type*       		pointer;
 
         /// STL-magic iterator category
-        typedef std::bidirectional_iterator_tag iterator_category;
+        typedef std::bidirectional_iterator_tag		iterator_category;
 
         /// STL-magic
-        typedef ptrdiff_t       difference_type;
+        typedef ptrdiff_t       		difference_type;
 
         /// Our own type
-        typedef const_iterator          self;
+        typedef const_iterator         		self;
 
     private:
         // *** Members
@@ -583,7 +601,10 @@ public:
         const typename btree::leaf_node*        currnode;
 
         /// Current key/data slot referenced
-        unsigned short  currslot;
+        unsigned short  			currslot;
+
+        /// Friendly to the reverse_const_iterator, so it may access the two data items directly
+        friend class const_reverse_iterator;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
         /// operator->
@@ -597,13 +618,28 @@ public:
     public:
         // *** Methods
 
-        /// Constructor of a const iterator
+        /// Default-Constructor of a const iterator
+        inline const_iterator()
+            : currnode(NULL), currslot(0)
+        { }
+
+        /// Initializing-Constructor of a const iterator
         inline const_iterator(const typename btree::leaf_node *l, unsigned short s)
             : currnode(l), currslot(s)
         { }
 
-        /// Copy-constructor from a mutable const iterator
+        /// Copy-constructor from a mutable iterator
         inline const_iterator(const iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Copy-constructor from a mutable reverse iterator
+        inline const_iterator(const reverse_iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Copy-constructor from a const reverse iterator
+        inline const_iterator(const const_reverse_iterator &it)
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
@@ -728,11 +764,410 @@ public:
         }
     };
 
-    /// create mutable reverse iterator by using STL magic
-    typedef std::reverse_iterator<iterator>       reverse_iterator;
+    /// STL-like mutable reverse iterator object for B+ tree items. The
+    /// iterator points to a specific slot number in a leaf.
+    class reverse_iterator
+    {
+    public:
+        // *** Types
 
-    /// create constant reverse iterator by using STL magic
-    typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
+        /// The key type of the btree. Returned by key().
+        typedef typename btree::key_type                key_type;
+
+        /// The data type of the btree. Returned by data().
+        typedef typename btree::data_type               data_type;
+
+        /// The value type of the btree. Returned by operator*().
+        typedef typename btree::value_type              value_type;
+
+        /// The pair type of the btree.
+        typedef typename btree::pair_type               pair_type;
+
+        /// Reference to the value_type. STL required.
+        typedef value_type&             reference;
+
+        /// Pointer to the value_type. STL required.
+        typedef value_type*             pointer;
+
+        /// STL-magic iterator category
+        typedef std::bidirectional_iterator_tag iterator_category;
+
+        /// STL-magic
+        typedef ptrdiff_t               difference_type;
+
+        /// Our own type
+        typedef reverse_iterator        self;
+
+    private:
+        // *** Members
+
+        /// The currently referenced leaf node of the tree
+        typename btree::leaf_node*      currnode;
+
+        /// One slot past the current key/data slot referenced. Thus == 0 for the end.
+        unsigned short  		currslot;
+
+        /// Friendly to the const_iterator, so it may access the two data items directly
+        friend class iterator;
+
+        /// Also friendly to the const_iterator, so it may access the two data items directly
+        friend class const_iterator;
+
+        /// Also friendly to the const_iterator, so it may access the two data items directly
+        friend class const_reverse_iterator;
+
+        /// Evil! A temporary value_type to STL-correctly deliver operator* and
+        /// operator->
+        mutable value_type              temp_value;
+
+        // The macro BTREE_FRIENDS can be used by outside class to access the B+
+        // tree internals. This was added for wxBTreeDemo to be able to draw the
+        // tree.
+        BTREE_FRIENDS
+
+    public:
+        // *** Methods
+
+        /// Default-Constructor of a reverse iterator
+        inline reverse_iterator()
+            : currnode(NULL), currslot(0)
+        { }
+
+        /// Initializing-Constructor of a mutable reverse iterator
+        inline reverse_iterator(typename btree::leaf_node *l, unsigned short s)
+            : currnode(l), currslot(s)
+        { }
+
+        /// Copy-constructor from a mutable iterator
+        inline reverse_iterator(const iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Dereference the iterator, this is not a value_type& because key and
+        /// value are not stored together
+        inline reference operator*() const
+        {
+	    BTREE_ASSERT(currslot > 0);
+            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
+                                                         currnode->slotdata[currslot - 1]) );
+            return temp_value;
+        }
+
+        /// Dereference the iterator. Do not use this if possible, use key()
+        /// and data() instead. The B+ tree does not stored key and data
+        /// together.
+        inline pointer operator->() const
+        {
+	    BTREE_ASSERT(currslot > 0);
+            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
+                                                         currnode->slotdata[currslot - 1]) );
+            return &temp_value;
+        }
+
+        /// Key of the current slot
+        inline const key_type& key() const
+        {
+            return currnode->slotkey[currslot - 1];
+        }
+
+        /// Writable reference to the current data object
+        inline data_type& data() const
+        {
+            return currnode->slotdata[currslot - 1];
+        }
+
+        /// Prefix++ advance the iterator to the next slot
+        inline self& operator++()
+        {
+            if (currslot > 1) {
+                --currslot;
+            }
+            else if (currnode->prevleaf != NULL) {
+                currnode = currnode->prevleaf;
+                currslot = currnode->slotuse;
+            }
+            else {
+                // this is begin() == rend()
+                currslot = 0;
+            }
+
+            return *this;
+        }
+
+        /// Postfix++ advance the iterator to the next slot
+        inline self operator++(int)
+        {
+            self tmp = *this;   // copy ourselves
+
+            if (currslot > 1) {
+                --currslot;
+            }
+            else if (currnode->prevleaf != NULL) {
+                currnode = currnode->prevleaf;
+                currslot = currnode->slotuse;
+            }
+            else {
+                // this is begin() == rend()
+                currslot = 0;
+            }
+
+            return tmp;
+        }
+
+        /// Prefix-- backstep the iterator to the last slot
+        inline self& operator--()
+        {
+            if (currslot < currnode->slotuse) {
+                ++currslot;
+            }
+            else if (currnode->nextleaf != NULL) {
+                currnode = currnode->nextleaf;
+                currslot = 1;
+            }
+            else {
+                // this is end() == rbegin()
+                currslot = currnode->slotuse;
+            }
+
+            return *this;
+        }
+
+        /// Postfix-- backstep the iterator to the last slot
+        inline self operator--(int)
+        {
+            self tmp = *this;   // copy ourselves
+
+            if (currslot < currnode->slotuse) {
+                ++currslot;
+            }
+            else if (currnode->nextleaf != NULL) {
+                currnode = currnode->nextleaf;
+                currslot = 1;
+            }
+            else {
+                // this is end() == rbegin()
+                currslot = currnode->slotuse;
+            }
+
+            return tmp;
+        }
+
+        /// Equality of iterators
+        inline bool operator==(const self& x) const
+        {
+            return (x.currnode == currnode) && (x.currslot == currslot);
+        }
+
+        /// Inequality of iterators
+        inline bool operator!=(const self& x) const
+        {
+            return (x.currnode != currnode) || (x.currslot != currslot);
+        }
+    };
+
+    /// STL-like read-only reverse iterator object for B+ tree items. The
+    /// iterator points to a specific slot number in a leaf.
+    class const_reverse_iterator
+    {
+    public:
+        // *** Types
+
+        /// The key type of the btree. Returned by key().
+        typedef typename btree::key_type                key_type;
+
+        /// The data type of the btree. Returned by data().
+        typedef typename btree::data_type               data_type;
+
+        /// The value type of the btree. Returned by operator*().
+        typedef typename btree::value_type              value_type;
+
+        /// The pair type of the btree.
+        typedef typename btree::pair_type               pair_type;
+
+        /// Reference to the value_type. STL required.
+        typedef const value_type&       		reference;
+
+        /// Pointer to the value_type. STL required.
+        typedef const value_type*       		pointer;
+
+        /// STL-magic iterator category
+        typedef std::bidirectional_iterator_tag		iterator_category;
+
+        /// STL-magic
+        typedef ptrdiff_t       		difference_type;
+
+        /// Our own type
+        typedef const_reverse_iterator         	self;
+
+    private:
+        // *** Members
+
+        /// The currently referenced leaf node of the tree
+        const typename btree::leaf_node*        currnode;
+
+        /// Current key/data slot referenced
+        unsigned short				currslot;
+
+        /// Friendly to the const_iterator, so it may access the two data items directly.
+        friend class reverse_iterator;
+
+        /// Evil! A temporary value_type to STL-correctly deliver operator* and
+        /// operator->
+        mutable value_type              temp_value;
+
+        // The macro BTREE_FRIENDS can be used by outside class to access the B+
+        // tree internals. This was added for wxBTreeDemo to be able to draw the
+        // tree.
+        BTREE_FRIENDS
+
+    public:
+        // *** Methods
+
+        /// Default-Constructor of a const reverse iterator
+        inline const_reverse_iterator()
+            : currnode(NULL), currslot(0)
+        { }
+
+        /// Initializing-Constructor of a const reverse iterator
+        inline const_reverse_iterator(const typename btree::leaf_node *l, unsigned short s)
+            : currnode(l), currslot(s)
+        { }
+
+        /// Copy-constructor from a mutable iterator
+        inline const_reverse_iterator(const iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Copy-constructor from a const iterator
+        inline const_reverse_iterator(const const_iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Copy-constructor from a mutable reverse iterator
+        inline const_reverse_iterator(const reverse_iterator &it)
+            : currnode(it.currnode), currslot(it.currslot)
+        { }
+
+        /// Dereference the iterator. Do not use this if possible, use key()
+	/// and data() instead. The B+ tree does not stored key and data
+	/// together.
+	inline reference operator*() const
+        {
+            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
+                                                         currnode->slotdata[currslot - 1]) );
+            return temp_value;
+        }
+
+        /// Dereference the iterator. Do not use this if possible, use key()
+	/// and data() instead. The B+ tree does not stored key and data
+	/// together.
+	inline pointer operator->() const
+        {
+            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
+                                                         currnode->slotdata[currslot - 1]) );
+            return &temp_value;
+        }
+
+        /// Key of the current slot
+        inline const key_type& key() const
+        {
+            return currnode->slotkey[currslot - 1];
+        }
+
+        /// Read-only reference to the current data object
+        inline const data_type& data() const
+        {
+            return currnode->slotdata[currslot - 1];
+        }
+
+        /// Prefix++ advance the iterator to the previous slot
+        inline self& operator++()
+        {
+            if (currslot > 1) {
+                --currslot;
+            }
+            else if (currnode->prevleaf != NULL) {
+                currnode = currnode->prevleaf;
+                currslot = currnode->slotuse;
+            }
+            else {
+                // this is begin() == rend()
+                currslot = 0;
+            }
+
+            return *this;
+        }
+
+        /// Postfix++ advance the iterator to the previous slot
+        inline self operator++(int)
+        {
+            self tmp = *this;   // copy ourselves
+
+            if (currslot > 1) {
+                --currslot;
+            }
+            else if (currnode->prevleaf != NULL) {
+                currnode = currnode->prevleaf;
+                currslot = currnode->slotuse;
+            }
+            else {
+                // this is begin() == rend()
+                currslot = 0;
+            }
+
+            return tmp;
+        }
+
+        /// Prefix-- backstep the iterator to the next slot
+        inline self& operator--()
+        {
+            if (currslot < currnode->slotuse) {
+                ++currslot;
+            }
+            else if (currnode->nextleaf != NULL) {
+                currnode = currnode->nextleaf;
+                currslot = 1;
+            }
+            else {
+                // this is end() == rbegin()
+                currslot = currnode->slotuse;
+            }
+
+            return *this;
+        }
+
+        /// Postfix-- backstep the iterator to the next slot
+        inline self operator--(int)
+        {
+            self tmp = *this;   // copy ourselves
+
+            if (currslot < currnode->slotuse) {
+                ++currslot;
+            }
+            else if (currnode->nextleaf != NULL) {
+                currnode = currnode->nextleaf;
+                currslot = 1;
+            }
+            else {
+                // this is end() == rbegin()
+                currslot = currnode->slotuse;
+            }
+
+            return tmp;
+        }
+
+        /// Equality of iterators
+        inline bool operator==(const self& x) const
+        {
+            return (x.currnode == currnode) && (x.currslot == currslot);
+        }
+
+        /// Inequality of iterators
+        inline bool operator!=(const self& x) const
+        {
+            return (x.currnode != currnode) || (x.currslot != currslot);
+        }
+    };
 
 public:
     // *** Small Statistics Structure

@@ -27,11 +27,17 @@
 
 #include <stx/btree_multiset.h>
 #include <stx/btree_multimap.h>
+#include <stx/btree_map.h>
+#include <stx/btree_set.h>
 
 class IteratorTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( IteratorTest );
     CPPUNIT_TEST(test_iterator1);
+    CPPUNIT_TEST(test_iterator2);
+    CPPUNIT_TEST(test_iterator3);
+    CPPUNIT_TEST(test_iterator4);
+    CPPUNIT_TEST(test_iterator5);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -158,17 +164,633 @@ protected:
 	std::reverse(vector.begin(), vector.end());
 
 	btree_type::reverse_iterator ri = bt2.rbegin();
-	for(unsigned int i = 0; i < vector2.size(); ++i)
+	for(unsigned int i = 0; i < vector2.size(); ++i, ++ri)
 	{
 	    CPPUNIT_ASSERT( vector[i].first == vector2[i].first );
 	    CPPUNIT_ASSERT( vector[i].first == ri->first );
-
-	    // there are some undetermined problems with the second value
-	    // std::cout << vector[i].second << " " << vector2[i].second << " " << ri->second << "\n";
-	    ri++;
+	    CPPUNIT_ASSERT( vector[i].second == ri->second );
 	}
 
 	CPPUNIT_ASSERT( ri == bt2.rend() );
+    }
+
+    void test_iterator3()
+    {
+	typedef stx::btree_map<unsigned int, unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+
+	btree_type map;
+
+	unsigned int maxnum = 1000;
+
+        for(unsigned int i = 0; i < maxnum; ++i)
+	{
+            map.insert( std::make_pair(i, i*3) );
+        }
+
+	{ // test iterator prefix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::iterator i = map.begin();
+		i != map.end(); ++i)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test iterator prefix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::iterator i;
+	    for(i = --map.end(); i != map.begin(); --i)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    nownum--;
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_iterator prefix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::const_iterator i = map.begin();
+		i != map.end(); ++i)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_iterator prefix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::const_iterator i;
+	    for(i = --map.end(); i != map.begin(); --i)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    nownum--;
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator prefix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::reverse_iterator i = map.rbegin();
+		i != map.rend(); ++i)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator prefix--
+	    unsigned int nownum = 0;
+
+	    btree_type::reverse_iterator i;
+	    for(i = --map.rend(); i != map.rbegin(); --i)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    nownum++;
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_reverse_iterator prefix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::const_reverse_iterator i = map.rbegin();
+		i != map.rend(); ++i)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_reverse_iterator prefix--
+	    unsigned int nownum = 0;
+
+	    btree_type::const_reverse_iterator i;
+	    for(i = --map.rend(); i != map.rbegin(); --i)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    nownum++;
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	// postfix
+
+	{ // test iterator postfix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::iterator i = map.begin();
+		i != map.end(); i++)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test iterator postfix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::iterator i;
+	    for(i = --map.end(); i != map.begin(); i--)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    nownum--;
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_iterator postfix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::const_iterator i = map.begin();
+		i != map.end(); i++)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_iterator postfix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::const_iterator i;
+	    for(i = --map.end(); i != map.begin(); i--)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    nownum--;
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator postfix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::reverse_iterator i = map.rbegin();
+		i != map.rend(); i++)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator postfix--
+	    unsigned int nownum = 0;
+
+	    btree_type::reverse_iterator i;
+	    for(i = --map.rend(); i != map.rbegin(); i--)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    nownum++;
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_reverse_iterator postfix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::const_reverse_iterator i = map.rbegin();
+		i != map.rend(); i++)
+	    {
+		nownum--;
+
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_reverse_iterator postfix--
+	    unsigned int nownum = 0;
+
+	    btree_type::const_reverse_iterator i;
+	    for(i = --map.rend(); i != map.rbegin(); i--)
+	    {
+		CPPUNIT_ASSERT( nownum == i->first );
+		CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT( nownum == i->first );
+	    CPPUNIT_ASSERT( nownum * 3 == i->second );
+
+	    nownum++;
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+    }
+
+    void test_iterator4()
+    {
+	typedef stx::btree_set<unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+
+	btree_type set;
+
+	unsigned int maxnum = 1000;
+
+        for(unsigned int i = 0; i < maxnum; ++i)
+	{
+            set.insert(i);
+        }
+
+	{ // test iterator prefix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::iterator i = set.begin();
+		i != set.end(); ++i)
+	    {
+		CPPUNIT_ASSERT( nownum == *i );
+		nownum++;
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test iterator prefix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::iterator i;
+	    for(i = --set.end(); i != set.begin(); --i)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT( --nownum == *i );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_iterator prefix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::const_iterator i = set.begin();
+		i != set.end(); ++i)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_iterator prefix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::const_iterator i;
+	    for(i = --set.end(); i != set.begin(); --i)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT( --nownum == *i );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator prefix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::reverse_iterator i = set.rbegin();
+		i != set.rend(); ++i)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator prefix--
+	    unsigned int nownum = 0;
+
+	    btree_type::reverse_iterator i;
+	    for(i = --set.rend(); i != set.rbegin(); --i)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT( nownum++ == *i );
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_reverse_iterator prefix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::const_reverse_iterator i = set.rbegin();
+		i != set.rend(); ++i)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_reverse_iterator prefix--
+	    unsigned int nownum = 0;
+
+	    btree_type::const_reverse_iterator i;
+	    for(i = --set.rend(); i != set.rbegin(); --i)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT( nownum++ == *i );
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	// postfix
+
+	{ // test iterator postfix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::iterator i = set.begin();
+		i != set.end(); i++)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test iterator postfix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::iterator i;
+	    for(i = --set.end(); i != set.begin(); i--)
+	    {
+
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT( --nownum == *i );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_iterator postfix++
+	    unsigned int nownum = 0;
+
+	    for(btree_type::const_iterator i = set.begin();
+		i != set.end(); i++)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_iterator postfix--
+	    unsigned int nownum = maxnum;
+
+	    btree_type::const_iterator i;
+	    for(i = --set.end(); i != set.begin(); i--)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT( --nownum == *i );
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator postfix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::reverse_iterator i = set.rbegin();
+		i != set.rend(); i++)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test reverse_iterator postfix--
+	    unsigned int nownum = 0;
+
+	    btree_type::reverse_iterator i;
+	    for(i = --set.rend(); i != set.rbegin(); i--)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT( nownum++ == *i );
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+
+	{ // test const_reverse_iterator postfix++
+	    unsigned int nownum = maxnum;
+
+	    for(btree_type::const_reverse_iterator i = set.rbegin();
+		i != set.rend(); i++)
+	    {
+		CPPUNIT_ASSERT( --nownum == *i );
+	    }
+
+	    CPPUNIT_ASSERT(nownum == 0);
+	}
+
+	{ // test const_reverse_iterator postfix--
+	    unsigned int nownum = 0;
+
+	    btree_type::const_reverse_iterator i;
+	    for(i = --set.rend(); i != set.rbegin(); i--)
+	    {
+		CPPUNIT_ASSERT( nownum++ == *i );
+	    }
+
+	    CPPUNIT_ASSERT( nownum++ == *i );
+
+	    CPPUNIT_ASSERT(nownum == maxnum);
+	}
+    }
+
+    void test_iterator5()
+    {
+	typedef stx::btree_set<unsigned int,
+	    std::less<unsigned int>, struct traits_nodebug> btree_type;
+
+	btree_type set;
+
+	unsigned int maxnum = 100;
+
+        for(unsigned int i = 0; i < maxnum; ++i)
+	{
+            set.insert(i);
+        }
+
+	{
+	    btree_type::iterator it;
+
+	    it = set.begin();
+	    it--;
+	    CPPUNIT_ASSERT( it == set.begin() );
+
+	    it = set.begin();
+	    --it;
+	    CPPUNIT_ASSERT( it == set.begin() );
+
+	    it = set.end();
+	    it++;
+	    CPPUNIT_ASSERT( it == set.end() );
+
+	    it = set.end();
+	    ++it;
+	    CPPUNIT_ASSERT( it == set.end() );
+	}
+
+	{
+	    btree_type::const_iterator it;
+
+	    it = set.begin();
+	    it--;
+	    CPPUNIT_ASSERT( it == set.begin() );
+
+	    it = set.begin();
+	    --it;
+	    CPPUNIT_ASSERT( it == set.begin() );
+
+	    it = set.end();
+	    it++;
+	    CPPUNIT_ASSERT( it == set.end() );
+
+	    it = set.end();
+	    ++it;
+	    CPPUNIT_ASSERT( it == set.end() );
+	}
+		    
+	{
+	    btree_type::reverse_iterator it;
+
+	    it = set.rbegin();
+	    it--;
+	    CPPUNIT_ASSERT( it == set.rbegin() );
+
+	    it = set.rbegin();
+	    --it;
+	    CPPUNIT_ASSERT( it == set.rbegin() );
+
+	    it = set.rend();
+	    it++;
+	    CPPUNIT_ASSERT( it == set.rend() );
+
+	    it = set.rend();
+	    ++it;
+	    CPPUNIT_ASSERT( it == set.rend() );
+	}
+
+	{
+	    btree_type::const_reverse_iterator it;
+
+	    it = set.rbegin();
+	    it--;
+	    CPPUNIT_ASSERT( it == set.rbegin() );
+
+	    it = set.rbegin();
+	    --it;
+	    CPPUNIT_ASSERT( it == set.rbegin() );
+
+	    it = set.rend();
+	    it++;
+	    CPPUNIT_ASSERT( it == set.rend() );
+
+	    it = set.rend();
+	    ++it;
+	    CPPUNIT_ASSERT( it == set.rend() );
+	}
     }
 };
 

@@ -1,4 +1,11 @@
 2008-08-01	Timo Bingmann
+	* btree.h: Completely reworked reverse_iterator classes. Now they
+	are real implementations and do not use STL magic. Both
+	reverse_iterator and const_reverse_iterator should work as
+	expected now. Added two large test cases for iterators. Also
+	enabling public Default-Constructor on iterators.
+	
+2008-08-01	Timo Bingmann
 	* btree.h: Fixing up a memory access bug which happens in
 	leaf->slotkey[leaf->slotuse - 1] if leaf-slotuse == 0. This doesnt
 	have any other bad effect, because the case only occurs when leaf

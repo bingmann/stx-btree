@@ -31,7 +31,7 @@ run-gcov: clean-gcov
 	-$(MAKE) check
 	lcov --directory . --capture --output-file coverage/all.info
 	lcov -e coverage/all.info "/tdata/*" -o coverage/testsuite.info
-	genhtml -o coverage --num-spaces 8 coverage/testsuite.info --title "STX B+ Tree Testsuite" --prefix `pwd`
+	genhtml -o coverage --num-spaces 8 coverage/testsuite.info --title "STX B+ Tree Testsuite" --prefix `pwd` --legend
 
 clean-gcov:
 	find -name "*.gcda" | xargs rm || true
