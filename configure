@@ -1328,6 +1328,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-maintainer-mode  enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
+  --enable-optimize       Build with full optimization [default=no]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
   --enable-gcov           enable test coverage with gcov [default=no]
@@ -2376,6 +2377,27 @@ fi
   MAINT=$MAINTAINER_MODE_TRUE
 
 
+
+# enable full optimization by configure switch
+
+# Check whether --enable-optimize was given.
+if test "${enable_optimize+set}" = set; then
+  enableval=$enable_optimize;  case "${enableval}" in
+          yes)
+                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer -DNDEBUG";
+                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer -DNDEBUG";
+          ;;
+          no) ;;
+          *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-optimize" >&5
+echo "$as_me: error: bad value ${enableval} for --enable-optimize" >&2;}
+   { (exit 1); exit 1; }; } ;;
+          esac
+else
+   optimize=false
+fi
+
+
+# set debug info flag if no optimization flags are set.
 
 if test "$CFLAGS" == ""; then
     CFLAGS="-g"

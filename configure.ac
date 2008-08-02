@@ -10,6 +10,23 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
+# enable full optimization by configure switch
+
+AC_ARG_ENABLE(optimize,
+	AS_HELP_STRING([--enable-optimize],
+		       [Build with full optimization @<:@default=no@:>@]),
+        [ case "${enableval}" in
+          yes)
+                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
+          ;;
+          no) ;;
+          *) AC_MSG_ERROR(bad value ${enableval} for --enable-optimize) ;;
+          esac ],
+        [ optimize=false ])
+
+# set debug info flag if no optimization flags are set.
+
 if test "$CFLAGS" == ""; then
     CFLAGS="-g"
 fi
