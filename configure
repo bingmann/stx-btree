@@ -2384,8 +2384,8 @@ fi
 if test "${enable_optimize+set}" = set; then
   enableval=$enable_optimize;  case "${enableval}" in
           yes)
-                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer -DNDEBUG";
-                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer -DNDEBUG";
+                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
           ;;
           no) ;;
           *) { { echo "$as_me:$LINENO: error: bad value ${enableval} for --enable-optimize" >&5
