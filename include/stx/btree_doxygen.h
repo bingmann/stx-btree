@@ -257,8 +257,8 @@ The results are be displayed below using gnuplot. All tests were run on a
 Pentium4 3.2 GHz with 1 GB RAM. A high-resolution PDF plot of the following
 images can be found in the package at speedtest/speedtest.pdf
 
-\image html speedtest-plot-000001.png
-\image html speedtest-plot-000002.png
+\image html speedtest-plot-1.png
+\image html speedtest-plot-2.png
 
 The first two plots above show the absolute time measured for inserting \a n
 items into six different tree variants. For small \a n (the first plot) the
@@ -272,9 +272,9 @@ insertion time is now in microseconds. The plot shows that the red-black tree
 reaches some limitation at about \a n = 16,000 items. Beyond this item count
 the B+ tree (with 32 slots) performs much better than the STL multiset.
 
-\image html speedtest-plot-000003.png
+\image html speedtest-plot-3.png
 
-\image html speedtest-plot-000004.png
+\image html speedtest-plot-4.png
 
 The last plots goal is to find the best node size for the B+ tree. It displays
 the total measured time of the insertion test depending on the number of slots
@@ -290,9 +290,9 @@ insertion time was measured. Instead a whole insert/find/delete cycle was
 performed and measured. The results are in general accordance to those of only
 insertion.
 
-\image html speedtest-plot-000005.png
-\image html speedtest-plot-000006.png
-\image html speedtest-plot-000007.png
-\image html speedtest-plot-000008.png
+\image html speedtest-plot-5.png
+\image html speedtest-plot-6.png
+\image html speedtest-plot-7.png
+\image html speedtest-plot-8.png
 
 */
