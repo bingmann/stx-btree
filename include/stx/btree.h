@@ -1505,7 +1505,7 @@ private:
 
         while(lo < hi)
         {
-            int mid = (lo + hi) / 2;
+            int mid = (lo + hi) >> 1;
 
             if (key_lessequal(key, n->slotkey[mid])) {
                 hi = mid - 1;
@@ -1552,7 +1552,7 @@ private:
 
         while(lo < hi)
         {
-            int mid = (lo + hi) / 2;
+            int mid = (lo + hi) >> 1;
 
             if (key_less(key, n->slotkey[mid])) {
                 hi = mid - 1;
@@ -2187,7 +2187,7 @@ private:
     {
         BTREE_ASSERT(leaf->isfull());
 
-        unsigned int mid = leaf->slotuse / 2;
+        unsigned int mid = (leaf->slotuse >> 1);
 
         BTREE_PRINT("btree::split_leaf_node on " << leaf << std::endl);
 
@@ -2227,7 +2227,7 @@ private:
     {
         BTREE_ASSERT(inner->isfull());
 
-        unsigned int mid = inner->slotuse / 2;
+        unsigned int mid = (inner->slotuse >> 1);
 
         BTREE_PRINT("btree::split_inner: mid " << mid << " addslot " << addslot << std::endl);
 
@@ -2740,7 +2740,7 @@ private:
         BTREE_ASSERT(left->slotuse < right->slotuse);
         BTREE_ASSERT(parent->childid[parentslot] == left);
 
-        unsigned int shiftnum = (right->slotuse - left->slotuse) / 2;
+        unsigned int shiftnum = (right->slotuse - left->slotuse) >> 1;
 
         BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << "." << std::endl);
 
@@ -2784,7 +2784,7 @@ private:
         BTREE_ASSERT(left->slotuse < right->slotuse);
         BTREE_ASSERT(parent->childid[parentslot] == left);
 
-        unsigned int shiftnum = (right->slotuse - left->slotuse) / 2;
+        unsigned int shiftnum = (right->slotuse - left->slotuse) >> 1;
 
         BTREE_PRINT("Shifting (inner) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << "." << std::endl);
 
@@ -2847,7 +2847,7 @@ private:
 
         BTREE_ASSERT(left->slotuse > right->slotuse);
 
-        unsigned int shiftnum = (left->slotuse - right->slotuse) / 2;
+        unsigned int shiftnum = (left->slotuse - right->slotuse) >> 1;
 
         BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << "." << std::endl);
 
@@ -2898,7 +2898,7 @@ private:
         BTREE_ASSERT(left->slotuse > right->slotuse);
         BTREE_ASSERT(parent->childid[parentslot] == left);
 
-        unsigned int shiftnum = (left->slotuse - right->slotuse) / 2;
+        unsigned int shiftnum = (left->slotuse - right->slotuse) >> 1;
 
         BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << "." << std::endl);
 
