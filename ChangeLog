@@ -1,3 +1,9 @@
+2008-08-13	Timo Bingmann
+	* btree.h: Replacing many / 2 integer divisions with >> 1 as
+	suggested by received e-mails. This may or may not improve
+	speed. I personally doubt it, because modern compilers should
+	optimize these simple instructions.
+
 2008-08-01	Timo Bingmann
 	* btree.h: Completely reworked reverse_iterator classes. Now they
 	are real implementations and do not use STL magic. Both
