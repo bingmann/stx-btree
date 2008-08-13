@@ -1,5 +1,7 @@
 // $Id: resources.rc 7 2006-10-07 17:06:23Z tb $
 
+#include <windows.h>
+
 1	ICON	DISCARDABLE	"progicon.ico"
 
 1	RT_MANIFEST             "manifest.xml"
