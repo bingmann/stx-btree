@@ -192,7 +192,7 @@ top_srcdir = @top_srcdir@
 @HAVE_WXWIDGETS_TRUE@AM_CXXFLAGS = -I/usr/include @WX_CXXFLAGS@ -I$(top_srcdir)/include -DBTREE_DEBUG
 @HAVE_WXWIDGETS_TRUE@LDADD = @WX_LIBS@ $(am__append_1)
 @HAVE_WXWIDGETS_TRUE@EXTRA_DIST = progicon.ico progicon.xpm progicon.xcf \
-@HAVE_WXWIDGETS_TRUE@	resources.rc wxBTreeDemo.wxg
+@HAVE_WXWIDGETS_TRUE@	resources.rc wxBTreeDemo.wxg manifest.xml
 
 all: all-am
 

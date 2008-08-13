@@ -20,6 +20,6 @@ LDADD += resources.o
 endif
 
 EXTRA_DIST = progicon.ico progicon.xpm progicon.xcf \
-	resources.rc wxBTreeDemo.wxg
+	resources.rc wxBTreeDemo.wxg manifest.xml
 
 endif
