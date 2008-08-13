@@ -116,6 +116,7 @@ AM_CONDITIONAL(GOT_RESCOMP, test x$RESCOMP != x)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
+		 include/Makefile
 		 testsuite/Makefile
 		 speedtest/Makefile
                  wxbtreedemo/Makefile])
