@@ -5,7 +5,7 @@
  */
 
 /*
- * STX B+ Tree Template Classes v0.8.1
+ * STX B+ Tree Template Classes v0.8.2
  * Copyright (C) 2008 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
@@ -50,7 +50,7 @@ http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation can be found at
-http://idlebox.net/2007/stx-btree/stx-btree-0.8.1-doxygen/
+http://idlebox.net/2007/stx-btree/stx-btree-0.8.2-doxygen/
 (if you are not reading it right now).
 
 The wxWidgets B+ tree demo program is located in the directory

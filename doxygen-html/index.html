@@ -19,14 +19,14 @@
 <div class="contents">
 <h1>STX B+ Tree Template Classes README</h1>
 <p>
-<h3 align="center">0.8.1 </h3><dl class="author" compact><dt><b>Author:</b></dt><dd>Timo Bingmann (Mail: tb a-with-circle idlebox dot net) </dd></dl>
+<h3 align="center">0.8.2 </h3><dl class="author" compact><dt><b>Author:</b></dt><dd>Timo Bingmann (Mail: tb a-with-circle idlebox dot net) </dd></dl>
 <dl class="date" compact><dt><b>Date:</b></dt><dd>2008-01-25</dd></dl>
 <h2><a class="anchor" name="sec1">
 Summary</a></h2>
 The STX B+ Tree package is a set of C++ template classes implementing a B+ tree key/data container in main memory. The classes are designed as drop-in replacements of the STL containers <code>set</code>, <code>map</code>, <code>multiset</code> and <code>multimap</code> and follow their interfaces very closely. By packing multiple value pairs into each node of the tree the B+ tree reduces heap fragmentation and utilizes cache-line effects better than the standard red-black binary tree. The tree algorithms are based on the implementation in Cormen, Leiserson and Rivest's Introduction into Algorithms, Jan Jannink's paper and other algorithm resources. The classes contain extensive assertion and verification mechanisms to ensure the implementation's correctness by testing the tree invariants. To illustrate the B+ tree's structure a wxWidgets demo program is included in the source package.<h2><a class="anchor" name="sec2">
 Website / API Docs / Bugs / License</a></h2>
 The current source package can be downloaded from <a href="http://idlebox.net/2007/stx-btree/">http://idlebox.net/2007/stx-btree/</a><p>
-The include files are extensively documented using doxygen. The compiled doxygen html documentation can be found at <a href="http://idlebox.net/2007/stx-btree/stx-btree-0.8.1-doxygen/">http://idlebox.net/2007/stx-btree/stx-btree-0.8.1-doxygen/</a> (if you are not reading it right now).<p>
+The include files are extensively documented using doxygen. The compiled doxygen html documentation can be found at <a href="http://idlebox.net/2007/stx-btree/stx-btree-0.8.2-doxygen/">http://idlebox.net/2007/stx-btree/stx-btree-0.8.2-doxygen/</a> (if you are not reading it right now).<p>
 The wxWidgets B+ tree demo program is located in the directory wxbtreedemo. Compiled binary versions can be found on the package web page mentioned above.<p>
 If bugs should become known they will be posted on the above web page together with patches or corrected versions.<p>
 The complete source code is released under the GNU Lesser General Public License v2.1 (LGPL) which can be found in the file COPYING.<h2><a class="anchor" name="sec3">
@@ -104,7 +104,7 @@ All tree template classes take a template parameter structure which holds import
 </pre></div><h2><a class="anchor" name="sec10">
 Speed Tests</a></h2>
 See the extra page <a class="el" href="speedtest.html">Speed Test Results</a>. </div>
-<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 13 07:57:48 2008 for STX B+ Tree Template Classes by&nbsp;
+<hr size="1"><address style="text-align: right;"><small>Generated on Wed Aug 13 08:04:29 2008 for STX B+ Tree Template Classes by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.5.5 </small></address>
 </body>
