@@ -1,5 +1,5 @@
 /* XPM */
-static char * progicon[] = {
+static const char * progicon[] = {
 "32 32 2 1",
 " 	c None",
 ".	c #000000",
