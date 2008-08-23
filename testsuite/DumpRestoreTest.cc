@@ -69,8 +69,9 @@ protected:
             dumpstr = os.str();
         }
 
-        // std::cerr << "dumpstr: size = " << dumpstr.size() << "\n";
-        CPPUNIT_ASSERT( dumpstr.size() == 47772 );
+	// Also cannot check the length, because it depends on the rand()
+	// algorithm in stdlib.
+	// CPPUNIT_ASSERT( dumpstr.size() == 47772 );
 
         // cannot check the string with a hash function, because it contains
         // memory pointers

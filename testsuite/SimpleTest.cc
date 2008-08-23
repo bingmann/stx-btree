@@ -22,7 +22,6 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <stdlib.h>
-#include <stdint.h>
 
 #include <stx/btree_map.h>
 #include <stx/btree_multiset.h>
@@ -93,6 +92,9 @@ protected:
             CPPUNIT_ASSERT(bt.size() == 32 - i - 1);
         }
     }
+
+    typedef unsigned char uint8_t;
+    typedef unsigned long long uint64_t;
 
     void test_insert_ascending_100000_uint64()
     {
