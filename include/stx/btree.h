@@ -1621,7 +1621,6 @@ public:
     bool exists(const key_type &key) const
     {
         const node *n = root;
-
         if (!n) return false;
 
         while(!n->isleafnode())
@@ -1867,7 +1866,9 @@ public:
             if (other.size() != 0)
             {
                 stats.leaves = stats.innernodes = 0;
-                root = copy_recursive(other.root);
+                if (other.root) {
+                    root = copy_recursive(other.root);
+                }
                 stats = other.stats;
             }
 
@@ -1886,7 +1887,9 @@ public:
         if (size() > 0)
         {
             stats.leaves = stats.innernodes = 0;
-            root = copy_recursive(other.root);
+            if (other.root) {
+                root = copy_recursive(other.root);
+            }
             if (selfverify) verify();
         }
     }
@@ -2001,8 +2004,7 @@ private:
         node *newchild = NULL;
         key_type newkey = key_type();
 
-        if (!root)
-        {
+        if (root == NULL) {
             root = headleaf = tailleaf = allocate_leaf();
         }
 
@@ -2330,6 +2332,8 @@ public:
 
         if (selfverify) verify();
 
+        if (!root) return false;
+
         result_t result = erase_one_descend(key, root, NULL, NULL, NULL, NULL, NULL, 0);
 
         if (!result.has(btree_not_found))
@@ -2446,10 +2450,23 @@ private:
             {
                 // determine what to do about the underflow
 
-                // case : if this empty leaf is the root, there is no way to
-                // correct underflow
+                // case : if this empty leaf is the root, then delete all nodes
+                // and set root to NULL.
                 if (leftleaf == NULL && rightleaf == NULL)
                 {
+                    BTREE_ASSERT(leaf == root);
+                    BTREE_ASSERT(leaf->slotuse == 0);
+
+                    free_node(root);
+
+                    root = leaf = NULL;
+                    headleaf = tailleaf = NULL;
+
+                    // will be decremented soon by insert_start()
+                    BTREE_ASSERT(stats.itemcount == 1);
+                    BTREE_ASSERT(stats.leaves == 0);
+                    BTREE_ASSERT(stats.innernodes == 0);
+
                     return btree_ok;
                 }
                 // case : if both left and right leaves would underflow in case of
@@ -3039,9 +3056,9 @@ public:
             assert( vstats.itemcount == stats.itemcount );
             assert( vstats.leaves == stats.leaves );
             assert( vstats.innernodes == stats.innernodes );
-        }
 
-        verify_leaflinks();
+            verify_leaflinks();
+        }
     }
 
 private:
@@ -3055,7 +3072,7 @@ private:
         {
             const leaf_node *leaf = static_cast<const leaf_node*>(n);
 
-            assert(leaf == root || !leaf->isunderflow());
+            assert( (leaf == root && leaf->slotuse > 0) || !leaf->isunderflow() );
 
             for(unsigned short slot = 0; slot < leaf->slotuse - 1; ++slot)
             {
@@ -3249,8 +3266,9 @@ public:
 
         os.write(reinterpret_cast<char*>(&header), sizeof(header));
 
-        if (root)
+        if (root) {
             dump_node(os, root);
+        }
     }
 
     /// Restore a binary image of a dumped B+ tree from an istream. The B+ tree

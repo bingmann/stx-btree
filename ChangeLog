@@ -1,3 +1,9 @@
+2008-09-03	Timo Bingmann
+	* btree.h: Fixing crash when running verify() on an empty btree
+	object. Now the root node is freed when the last item is
+	removed. Also fixing crash when attempting to copy an empty btree
+	or when trying to remove a non-existing item from an empty btree.
+
 2008-08-13	Timo Bingmann
 	* btree.h: Replacing many / 2 integer divisions with >> 1 as
 	suggested by received e-mails. This may or may not improve
