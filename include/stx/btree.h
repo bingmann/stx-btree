@@ -867,12 +867,14 @@ public:
         /// Key of the current slot
         inline const key_type& key() const
         {
+            BTREE_ASSERT(currslot > 0);
             return currnode->slotkey[currslot - 1];
         }
 
         /// Writable reference to the current data object
         inline data_type& data() const
         {
+            BTREE_ASSERT(currslot > 0);
             return currnode->slotdata[currslot - 1];
         }
 
@@ -1053,6 +1055,7 @@ public:
         /// together.
         inline reference operator*() const
         {
+            BTREE_ASSERT(currslot > 0);
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
             return temp_value;
@@ -1063,6 +1066,7 @@ public:
         /// together.
         inline pointer operator->() const
         {
+            BTREE_ASSERT(currslot > 0);
             temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
                                                          currnode->slotdata[currslot - 1]) );
             return &temp_value;
@@ -1071,12 +1075,14 @@ public:
         /// Key of the current slot
         inline const key_type& key() const
         {
+            BTREE_ASSERT(currslot > 0);
             return currnode->slotkey[currslot - 1];
         }
 
         /// Read-only reference to the current data object
         inline const data_type& data() const
         {
+            BTREE_ASSERT(currslot > 0);
             return currnode->slotdata[currslot - 1];
         }
 
@@ -3072,7 +3078,8 @@ private:
         {
             const leaf_node *leaf = static_cast<const leaf_node*>(n);
 
-            assert( (leaf == root && leaf->slotuse > 0) || !leaf->isunderflow() );
+            assert( leaf == root || !leaf->isunderflow() );
+            assert( leaf->slotuse > 0 );
 
             for(unsigned short slot = 0; slot < leaf->slotuse - 1; ++slot)
             {
@@ -3090,7 +3097,8 @@ private:
             const inner_node *inner = static_cast<const inner_node*>(n);
             vstats.innernodes++;
 
-            assert(inner == root || !inner->isunderflow());
+            assert( inner == root || !inner->isunderflow() );
+            assert( inner->slotuse > 0 );
 
             for(unsigned short slot = 0; slot < inner->slotuse - 1; ++slot)
             {
@@ -3159,6 +3167,7 @@ private:
         while(n)
         {
             assert(n->level == 0);
+            assert(n->slotuse > 0);
 
             for(unsigned short slot = 0; slot < n->slotuse - 1; ++slot)
             {
