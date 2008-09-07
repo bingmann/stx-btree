@@ -1,7 +1,7 @@
 	       *** STX B+ Tree C++ Template Classes v0.8.2  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-Date: 2008-01-25
+Date: 2008-09-07
 
 --- Summary ---
 
@@ -15,8 +15,7 @@ based on the implementation in Cormen, Leiserson and Rivest's Introduction into
 Algorithms, Jan Jannink's paper and other algorithm resources. The classes
 contain extensive assertion and verification mechanisms to ensure the
 implementation's correctness by testing the tree invariants. To illustrate the
-B+ tree's structure a wxWidgets demo program is included in the source
-package.
+B+ tree's structure a wxWidgets demo program is included in the source package.
 
 --- Website / API Docs / Bugs / License ---
 
@@ -25,7 +24,8 @@ http://idlebox.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation is included in the source package. It can also be
-viewed online at http://idlebox.net/2007/stx-btree/stx-btree-0.8.2-doxygen/
+viewed online at
+http://idlebox.net/2007/stx-btree/stx-btree-0.8.2/doxygen-html/
 
 The wxWidgets B+ tree demo program is located in the directory
 wxbtreedemo. Compiled binary versions can be found on the package web page.
@@ -78,12 +78,12 @@ The insertion function splits the nodes on recursion unroll. Erase is largely
 based on Jannink's ideas. See http://dbpubs.stanford.edu:8090/pub/1995-19 for
 his paper on "Implementing Deletion in B+-trees".
 
-The two set classes are derived from the base implementation class btree by
-specifying an empty struct as data_type. All functions are adapted to provide
-the base class with empty placeholder objects. Note that it is somewhat
-inefficient to implement a set or multiset using a B+ tree: a plain B tree
-would hold no extra copies of the keys. The main focus was on implementing the
-maps.
+The two set classes (btree_set and btree_multiset) are derived from the base
+implementation class btree by specifying an empty struct as data_type. All
+functions are adapted to provide the base class with empty placeholder
+objects. Note that it is somewhat inefficient to implement a set or multiset
+using a B+ tree: a plain B tree (without +) would hold no extra copies of the
+keys. The main focus was on implementing the maps.
 
 --- Problem with Separated Key/Data Arrays ---
 
@@ -105,7 +105,7 @@ folding the key and data arrays.
 --- Test Suite ---
 
 The B+ tree distribution contains an extensive test suite using
-cppunit. According to gcov 88.3% of the btree.h implementation is covered.
+cppunit. According to gcov 91.9% of the btree.h implementation is covered.
 
 --- STL Incompatibilities ---
 
