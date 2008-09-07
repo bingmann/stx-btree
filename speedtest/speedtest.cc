@@ -28,6 +28,7 @@
 #include <iomanip>
 
 #include <set>
+#include <ext/hash_set>
 #include <stx/btree_multiset.h>
 
 #include <assert.h>
@@ -66,11 +67,37 @@ struct btree_traits_speed
 };
 
 /// Test the multiset red-black tree from STL (only insert)
-struct test_set_insert
+struct Test_Set_Insert
 {
-    void operator()(unsigned int insertnum)
+    typedef std::multiset<unsigned int> multiset_type;
+
+    Test_Set_Insert(unsigned int)
     {
-	typedef std::multiset<unsigned int> multiset_type;
+    }
+
+    void run(unsigned int insertnum)
+    {
+	multiset_type set;
+
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.insert( rand() );
+
+	assert( set.size() == insertnum );
+    }
+};
+
+/// Test the multiset hash from STL (only insert)
+struct Test_Hashset_Insert
+{
+    typedef __gnu_cxx::hash_multiset<unsigned int> multiset_type;
+
+    Test_Hashset_Insert(unsigned int)
+    {
+    }
+
+    void run(unsigned int insertnum)
+    {
 	multiset_type set;
 
 	srand(randseed);
@@ -83,29 +110,69 @@ struct test_set_insert
 
 /// Test the B+ tree with a specific leaf/inner slots (only insert)
 template <int _slots>
-struct test_btree_insert
+struct Test_Btree_Insert
 {
-    void operator()(unsigned int insertnum)
-    {
-	typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
-	    struct btree_traits_speed<_slots, _slots> > btree_type;
+    typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
+				struct btree_traits_speed<_slots, _slots> > btree_type;
 
+    Test_Btree_Insert(unsigned int)
+    {
+    }
+
+    void run(unsigned int insertnum)
+    {
 	btree_type bt;
 
 	srand(randseed);
 	for(unsigned int i = 0; i < insertnum; i++)
-	    bt.insert(rand());
+	    bt.insert( rand() );
 
 	assert( bt.size() == insertnum );
     }
 };
 
 /// Test the multiset red-black tree from STL (insert, find and delete)
-struct test_set_insert_find_delete
+struct Test_Set_InsertFindDelete
 {
-    void operator()(unsigned int insertnum)
+    typedef std::multiset<unsigned int> multiset_type;
+
+    Test_Set_InsertFindDelete(unsigned int)
     {
-	typedef std::multiset<unsigned int> multiset_type;
+    }
+
+    void run(unsigned int insertnum)
+    {
+	multiset_type set;
+
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.insert( rand() );
+
+	assert( set.size() == insertnum );
+
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.find(rand());
+
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.erase( set.find(rand()) );
+
+	assert( set.empty() );
+    }
+};
+
+/// Test the multiset hash from STL (insert, find and delete)
+struct Test_Hashset_InsertFindDelete
+{
+    typedef __gnu_cxx::hash_multiset<unsigned int> multiset_type;
+
+    Test_Hashset_InsertFindDelete(unsigned int)
+    {
+    }
+
+    void run(unsigned int insertnum)
+    {
 	multiset_type set;
 
 	srand(randseed);
@@ -128,13 +195,17 @@ struct test_set_insert_find_delete
 
 /// Test the B+ tree with a specific leaf/inner slots (insert, find and delete)
 template <int Slots>
-struct test_btree_insert_find_delete
+struct Test_Btree_InsertFindDelete
 {
-    void operator()(unsigned int insertnum)
-    {
-	typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
-	    struct btree_traits_speed<Slots, Slots> > btree_type;
+    typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
+				struct btree_traits_speed<Slots, Slots> > btree_type;
 
+    Test_Btree_InsertFindDelete(unsigned int)
+    {
+    }
+
+    void run(unsigned int insertnum)
+    {
 	btree_type bt;
 
 	srand(randseed);
@@ -155,10 +226,84 @@ struct test_btree_insert_find_delete
     }
 };
 
+/// Test the multiset red-black tree from STL (find only)
+struct Test_Set_Find
+{
+    typedef std::multiset<unsigned int> multiset_type;
+
+    multiset_type set;
+
+    Test_Set_Find(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.insert( rand() );
+
+	assert( set.size() == insertnum );
+    }
+
+    void run(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.find(rand());
+    }
+};
+
+/// Test the multiset hash from STL (find only)
+struct Test_Hashset_Find
+{
+    typedef __gnu_cxx::hash_multiset<unsigned int> multiset_type;
+
+    multiset_type set;
+
+    Test_Hashset_Find(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.insert( rand() );
+
+	assert( set.size() == insertnum );
+    }
+
+    void run(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    set.find(rand());
+    }
+};
+
+/// Test the B+ tree with a specific leaf/inner slots (find only)
+template <int Slots>
+struct Test_Btree_Find
+{
+    typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
+				struct btree_traits_speed<Slots, Slots> > btree_type;
+
+    btree_type bt;
+
+    Test_Btree_Find(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    bt.insert(rand());
+
+	assert( bt.size() == insertnum );
+    }
+
+    void run(unsigned int insertnum)
+    {
+	srand(randseed);
+	for(unsigned int i = 0; i < insertnum; i++)
+	    bt.exists(rand());
+    }
+};
+
 unsigned int repeatuntil;
 
 /// Repeat (short) tests until enough time elapsed and divide by the runs.
-template <typename functional>
+template <typename TestClass>
 void testrunner_loop(std::ostream& os, unsigned int insertnum)
 {
     unsigned int runs = 0;
@@ -168,15 +313,19 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum)
     {
 	runs = 0;
 
-	ts1 = timestamp();
-
-	for(unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
 	{
-	    functional()(insertnum);
-	    ++runs;
-	}
+	    TestClass test(insertnum);	// initialize test structures
 
-	ts2 = timestamp();
+	    ts1 = timestamp();
+
+	    for(unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
+	    {
+		test.run(insertnum);
+		++runs;
+	    }
+
+	    ts2 = timestamp();
+	}
 
 	std::cerr << "Insert " << insertnum << " repeat " << (repeatuntil / insertnum) << " time " << (ts2 - ts1) << "\n";
 
@@ -194,7 +343,7 @@ struct btree_range
 {
     inline void operator()(std::ostream& os, unsigned int insertnum)
     {
-        testrunner_loop< functional<Low> >(os, insertnum);
+	testrunner_loop< functional<Low> >(os, insertnum);
         btree_range<functional, Low+1, High>()(os, insertnum);
     }
 };
@@ -204,11 +353,11 @@ struct btree_range<functional, Low, Low>
 {
     inline void operator()(std::ostream& os, unsigned int insertnum)
     {
-        testrunner_loop< functional<Low> >(os, insertnum);
+	testrunner_loop< functional<Low> >(os, insertnum);
     }
 };
 
-/// Speed test it!
+/// Speed test them!
 int main()
 {
     { // speed test only insertion
@@ -223,9 +372,11 @@ int main()
 
 	    os << insertnum << " " << std::flush;
 
-	    testrunner_loop<test_set_insert>(os, insertnum);
+	    testrunner_loop<Test_Set_Insert>(os, insertnum);
 
-	    btree_range<test_btree_insert, min_nodeslots, max_nodeslots>()(os, insertnum);
+	    testrunner_loop<Test_Hashset_Insert>(os, insertnum);
+
+	    btree_range<Test_Btree_Insert, min_nodeslots, max_nodeslots>()(os, insertnum);
 
 	    os << "\n" << std::flush;
 	}
@@ -243,9 +394,33 @@ int main()
 
 	    os << insertnum << " " << std::flush;
 
-	    testrunner_loop<test_set_insert_find_delete>(os, insertnum);
+	    testrunner_loop<Test_Set_InsertFindDelete>(os, insertnum);
 
-	    btree_range<test_btree_insert_find_delete, min_nodeslots, max_nodeslots>()(os, insertnum);
+	    testrunner_loop<Test_Hashset_InsertFindDelete>(os, insertnum);
+
+	    btree_range<Test_Btree_InsertFindDelete, min_nodeslots, max_nodeslots>()(os, insertnum);
+
+	    os << "\n" << std::flush;
+	}
+    }
+
+    { // speed test find only
+
+	std::ofstream os("speed-find.txt");
+	
+	repeatuntil = mininsertnum;
+
+	for(unsigned int insertnum = mininsertnum; insertnum <= maxinsertnum; insertnum *= 2)
+	{
+	    std::cerr << "Find " << insertnum << "\n";
+
+	    os << insertnum << " " << std::flush;
+
+	    testrunner_loop<Test_Set_Find>(os, insertnum);
+
+	    testrunner_loop<Test_Hashset_Find>(os, insertnum);
+
+	    btree_range<Test_Btree_Find, min_nodeslots, max_nodeslots>()(os, insertnum);
 
 	    os << "\n" << std::flush;
 	}

@@ -1,3 +1,8 @@
+2008-09-07	Timo Bingmann
+	* speedtest.cc: Modifying speedtest to also test the hash table
+	container implementation from __gnu_cxx. Extending tests by
+	another set of runs measuring only the find/lookup functions.
+
 2008-09-03	Timo Bingmann
 	* btree.h: Fixing crash when running verify() on an empty btree
 	object. Now the root node is freed when the last item is
