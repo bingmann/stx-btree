@@ -1,7 +1,7 @@
 // $Id$
 
 /*
- * STX B+ Tree Demo Program v0.8.2
+ * STX B+ Tree Demo Program v0.8.3
  * Copyright (C) 2008 Timo Bingmann
  *
  * This program is free software; you can redistribute it and/or modify it
