@@ -11,13 +11,17 @@ speedtest_SOURCES = speedtest.cc
 
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DNDEBUG -I$(top_srcdir)/include
 
-EXTRA_DIST = speed-all.trt speed-all.txt speed-insert.trt speed-insert.txt \
+EXTRA_DIST = speed-all.trt speed-all.txt \
+	speed-insert.trt speed-insert.txt \
+	speed-find.trt speed-find.txt \
 	speedtest.gnuplot transpose.awk \
 	speedtest.pdf \
-	speedtest-plot-1.png speedtest-plot-2.png \
-	speedtest-plot-3.png speedtest-plot-4.png \
-	speedtest-plot-5.png speedtest-plot-6.png \
-	speedtest-plot-7.png speedtest-plot-8.png
+	speedtest-plot-01.png speedtest-plot-02.png \
+	speedtest-plot-03.png speedtest-plot-04.png \
+	speedtest-plot-05.png speedtest-plot-06.png \
+	speedtest-plot-07.png speedtest-plot-08.png \
+	speedtest-plot-09.png speedtest-plot-10.png \
+	speedtest-plot-11.png speedtest-plot-12.png
 
 plots:
 	USER=tb ./speedtest.gnuplot
