@@ -3230,9 +3230,9 @@ private:
         inline void fill()
         {
             // don't want to include string.h just for this signature
-            *reinterpret_cast<unsigned int*>(signature+0) = 0x2d787473;
-            *reinterpret_cast<unsigned int*>(signature+4) = 0x65727462;
-            *reinterpret_cast<unsigned int*>(signature+8) = 0x00000065;
+	    signature[0] = 's'; signature[1] = 't'; signature[2] = 'x'; signature[3] = '-';
+	    signature[4] = 'b'; signature[5] = 't'; signature[6] = 'r'; signature[7] = 'e';
+	    signature[8] = 'e'; signature[9] = 0; signature[10] = 0; signature[11] = 0;
 
             version = 0;
             key_type_size = sizeof(typename btree_self::key_type);
@@ -3245,14 +3245,10 @@ private:
         /// Returns true if the headers have the same vital properties
         inline bool same(const struct dump_header &o) const
         {
-            return (*reinterpret_cast<const unsigned int*>(signature+0) ==
-                    *reinterpret_cast<const unsigned int*>(o.signature+0))
-                && (*reinterpret_cast<const unsigned int*>(signature+4) ==
-                    *reinterpret_cast<const unsigned int*>(o.signature+4))
-                && (*reinterpret_cast<const unsigned int*>(signature+8) ==
-                    *reinterpret_cast<const unsigned int*>(o.signature+8))
-
-                && (version == o.version)
+            return (signature[0] == 's' && signature[1] == 't' && signature[2] == 'x' && signature[3] == '-' &&
+		    signature[4] == 'b' && signature[5] == 't' && signature[6] == 'r' && signature[7] == 'e' &&
+		    signature[8] == 'e' && signature[9] == 0 && signature[10] == 0 && signature[11] == 0)
+	        && (version == o.version)
                 && (key_type_size == o.key_type_size)
                 && (data_type_size == o.data_type_size)
                 && (leafslots == o.leafslots)
