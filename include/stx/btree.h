@@ -31,6 +31,7 @@
 #include <functional>
 #include <istream>
 #include <ostream>
+#include <memory>
 #include <assert.h>
 
 // *** Debugging Macros
@@ -133,7 +134,8 @@ template <typename _Key, typename _Data,
           typename _Value = std::pair<_Key, _Data>,
           typename _Compare = std::less<_Key>,
           typename _Traits = btree_default_map_traits<_Key, _Data>,
-          bool _Duplicates = false>
+          bool _Duplicates = false,
+          typename _Alloc = std::allocator<_Value> >
 class btree
 {
 public:
@@ -164,6 +166,9 @@ public:
     /// implement multiset and multimap.
     static const bool                   allow_duplicates = _Duplicates;
 
+    /// Seventh template parameter: STL allocator for tree nodes
+    typedef _Alloc                      allocator_type;
+
     // The macro BTREE_FRIENDS can be used by outside class to access the B+
     // tree internals. This was added for wxBTreeDemo to be able to draw the
     // tree.
@@ -173,8 +178,8 @@ public:
     // *** Constructed Types
 
     /// Typedef of our own type
-    typedef btree<key_type, data_type, value_type,
-                  key_compare, traits, allow_duplicates>        btree_self;
+    typedef btree<key_type, data_type, value_type, key_compare,
+		  traits, allow_duplicates, allocator_type> btree_self;
 
     /// Size type used to count keys
     typedef size_t                              size_type;
@@ -243,6 +248,9 @@ private:
     /// data items.
     struct inner_node : public node
     {
+	/// Define an related allocator for the inner_node structs.
+        typedef typename _Alloc::template rebind<inner_node>::other alloc_type;
+
         /// Keys of children or data pointers
         key_type        slotkey[innerslotmax];
 
@@ -279,6 +287,9 @@ private:
     /// key array is traversed very often compared to accessing the data items.
     struct leaf_node : public node
     {
+	/// Define an related allocator for the leaf_node structs.
+        typedef typename _Alloc::template rebind<leaf_node>::other alloc_type;
+
         /// Double linked list pointers to traverse the leaves
         leaf_node       *prevleaf;
 
@@ -1236,28 +1247,33 @@ private:
     /// this < relation.
     key_compare key_less;
 
+    /// Memory allocator.
+    allocator_type allocator;
+
 public:
     // *** Constructors and Destructor
 
     /// Default constructor initializing an empty B+ tree with the standard key
     /// comparison function
-    inline btree()
-        : root(NULL), headleaf(NULL), tailleaf(NULL)
+    explicit inline btree(const allocator_type &alloc = allocator_type())
+        : root(NULL), headleaf(NULL), tailleaf(NULL), allocator(alloc)
     {
     }
 
     /// Constructor initializing an empty B+ tree with a special key
     /// comparison object
-    inline btree(const key_compare &kcf)
+    explicit inline btree(const key_compare &kcf,
+                          const allocator_type &alloc = allocator_type())
         : root(NULL), headleaf(NULL), tailleaf(NULL),
-          key_less(kcf)
+          key_less(kcf), allocator(alloc)
     {
     }
 
     /// Constructor initializing a B+ tree with the range [first,last)
     template <class InputIterator>
-    inline btree(InputIterator first, InputIterator last)
-        : root(NULL), headleaf(NULL), tailleaf(NULL)
+    inline btree(InputIterator first, InputIterator last,
+                 const allocator_type &alloc = allocator_type())
+        : root(NULL), headleaf(NULL), tailleaf(NULL), allocator(alloc)
     {
         insert(first, last);
     }
@@ -1265,9 +1281,10 @@ public:
     /// Constructor initializing a B+ tree with the range [first,last) and a
     /// special key comparison object
     template <class InputIterator>
-    inline btree(InputIterator first, InputIterator last, const key_compare &kcf)
+    inline btree(InputIterator first, InputIterator last, const key_compare &kcf,
+                 const allocator_type &alloc = allocator_type())
         : root(NULL), headleaf(NULL), tailleaf(NULL),
-          key_less(kcf)
+          key_less(kcf), allocator(alloc)
     {
         insert(first, last);
     }
@@ -1286,6 +1303,7 @@ public:
         std::swap(tailleaf, from.tailleaf);
         std::swap(stats, from.stats);
         std::swap(key_less, from.key_less);
+        std::swap(allocator, from.allocator);
     }
 
 public:
@@ -1355,23 +1373,44 @@ private:
         return !key_less(a, b) && !key_less(b, a);
     }
 
+public:
+    // *** Allocators
+
+    /// Return the base node allocator provided during construction.
+    allocator_type get_allocator() const
+    {
+        return allocator;
+    }
+
 private:
     // *** Node Object Allocation and Deallocation Functions
+
+    /// Return an allocator for leaf_node objects
+    typename leaf_node::alloc_type leaf_node_allocator()
+    {
+        return typename leaf_node::alloc_type(allocator);
+    }
+
+    /// Return an allocator for inner_node objects
+    typename inner_node::alloc_type inner_node_allocator()
+    {
+        return typename inner_node::alloc_type(allocator);
+    }
 
     /// Allocate and initialize a leaf node
     inline leaf_node* allocate_leaf()
     {
-        leaf_node* n = new leaf_node;
+        leaf_node *n = new (leaf_node_allocator().allocate(1)) leaf_node();
         n->initialize();
         stats.leaves++;
         return n;
     }
 
     /// Allocate and initialize an inner node
-    inline inner_node* allocate_inner(unsigned short l)
+    inline inner_node* allocate_inner(unsigned short level)
     {
-        inner_node* n = new inner_node;
-        n->initialize(l);
+        inner_node *n = new (inner_node_allocator().allocate(1)) inner_node();
+        n->initialize(level);
         stats.innernodes++;
         return n;
     }
@@ -1381,11 +1420,17 @@ private:
     inline void free_node(node *n)
     {
         if (n->isleafnode()) {
-            delete static_cast<leaf_node*>(n);
+            leaf_node *ln = static_cast<leaf_node*>(n);
+            typename leaf_node::alloc_type a(leaf_node_allocator());
+            a.destroy(ln);
+            a.deallocate(ln, 1);
             stats.leaves--;
         }
         else {
-            delete static_cast<inner_node*>(n);
+            inner_node *in = static_cast<inner_node*>(n);
+            typename inner_node::alloc_type a(inner_node_allocator());
+            a.destroy(in);
+            a.deallocate(in, 1);
             stats.innernodes--;
         }
     }
@@ -1871,6 +1916,8 @@ public:
             clear();
 
             key_less = other.key_comp();
+            allocator = other.get_allocator();
+
             if (other.size() != 0)
             {
                 stats.leaves = stats.innernodes = 0;
@@ -1890,7 +1937,8 @@ public:
     inline btree(const btree_self &other)
         : root(NULL), headleaf(NULL), tailleaf(NULL),
           stats( other.stats ),
-          key_less( other.key_comp() )
+          key_less( other.key_comp() ),
+          allocator( other.get_allocator() )
     {
         if (size() > 0)
         {

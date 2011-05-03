@@ -1,6 +1,7 @@
 2011-05-03	Timo Bingmann
 	* btree.h: Correcting documentation of lower_bound() and
 	upper_bound(). The functions themselves were correct.
+	* btree.h: Applying STL allocator patch contributed by MH.
 
 2008-09-07	Timo Bingmann
 	* speedtest.cc: Modifying speedtest to also test the hash table

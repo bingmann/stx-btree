@@ -33,8 +33,9 @@ namespace stx {
  *
  * Implements the STL set using a B+ tree. It can be used as a drop-in
  * replacement for std::set. Not all asymptotic time requirements are met in
- * theory. There is no allocator template parameter, instead the class has a
- * traits class defining B+ tree properties like slots and self-verification.
+ * theory. The class has a traits class defining B+ tree properties like slots
+ * and self-verification. Furthermore an allocator can be specified for tree
+ * nodes.
  *
  * It is somewhat inefficient to implement a set using a B+ tree, a plain B
  * tree would hold fewer copies of the keys.
@@ -48,7 +49,8 @@ namespace stx {
  */
 template <typename _Key,
           typename _Compare = std::less<_Key>,
-          typename _Traits = btree_default_set_traits<_Key> >
+          typename _Traits = btree_default_set_traits<_Key>,
+          typename _Alloc = std::allocator<_Key> >
 class btree_set
 {
 public:
@@ -64,6 +66,9 @@ public:
     /// Third template parameter: Traits object used to define more parameters
     /// of the B+ tree
     typedef _Traits                     traits;
+
+    /// Fourth template parameter: STL allocator
+    typedef _Alloc                      allocator_type;
 
     /// The macro BTREE_FRIENDS can be used by outside class to access the B+
     /// tree internals. This was added for wxBTreeDemo to be able to draw the
@@ -88,10 +93,10 @@ public:
     typedef key_type                    value_type;
 
     /// Typedef of our own type
-    typedef btree_set<key_type, key_compare, traits>    self;
+    typedef btree_set<key_type, key_compare, traits, allocator_type> self;
 
     /// Implementation type of the btree_base
-    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false> btree_impl;
+    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false, allocator_type> btree_impl;
 
     /// Function class comparing two value_type keys.
     typedef typename btree_impl::value_compare  value_compare;
@@ -162,22 +167,24 @@ public:
 
     /// Default constructor initializing an empty B+ tree with the standard key
     /// comparison function
-    inline btree_set()
-        : tree()
+    explicit inline btree_set(const allocator_type &alloc = allocator_type())
+        : tree(alloc)
     {
     }
 
     /// Constructor initializing an empty B+ tree with a special key
     /// comparison object
-    inline btree_set(const key_compare &kcf)
-        : tree(kcf)
+    explicit inline btree_set(const key_compare &kcf,
+                              const allocator_type &alloc = allocator_type())
+        : tree(kcf, alloc)
     {
     }
 
     /// Constructor initializing a B+ tree with the range [first,last)
     template <class InputIterator>
-    inline btree_set(InputIterator first, InputIterator last)
-        : tree()
+    inline btree_set(InputIterator first, InputIterator last,
+                     const allocator_type &alloc = allocator_type())
+        : tree(alloc)
     {
         insert(first, last);
     }
@@ -185,8 +192,9 @@ public:
     /// Constructor initializing a B+ tree with the range [first,last) and a
     /// special key comparison object
     template <class InputIterator>
-    inline btree_set(InputIterator first, InputIterator last, const key_compare &kcf)
-        : tree(kcf)
+    inline btree_set(InputIterator first, InputIterator last, const key_compare &kcf,
+                     const allocator_type &alloc = allocator_type())
+        : tree(kcf, alloc)
     {
         insert(first, last);
     }
@@ -216,6 +224,15 @@ public:
     inline value_compare value_comp() const
     {
         return tree.value_comp();
+    }
+
+public:
+    // *** Allocators
+
+    /// Return the base node allocator provided during construction.
+    allocator_type get_allocator() const
+    {
+        return tree.get_allocator();
     }
 
 public:

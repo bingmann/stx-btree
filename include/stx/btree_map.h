@@ -33,8 +33,9 @@ namespace stx {
  *
  * Implements the STL map using a B+ tree. It can be used as a drop-in
  * replacement for std::map. Not all asymptotic time requirements are met in
- * theory. There is no allocator template parameter, instead the class has a
- * traits class defining B+ tree properties like slots and self-verification.
+ * theory. The class has a traits class defining B+ tree properties like slots
+ * and self-verification. Furthermore an allocator can be specified for tree
+ * nodes.
  *
  * Most noteworthy difference to the default red-black implementation of
  * std::map is that the B+ tree does not hold key and data pair together in
@@ -44,7 +45,8 @@ namespace stx {
  */
 template <typename _Key, typename _Data,
 	  typename _Compare = std::less<_Key>,
-	  typename _Traits = btree_default_map_traits<_Key, _Data> >
+	  typename _Traits = btree_default_map_traits<_Key, _Data>,
+	  typename _Alloc = std::allocator<std::pair<_Key, _Data> > >
 class btree_map
 {
 public:
@@ -65,6 +67,9 @@ public:
     /// of the B+ tree
     typedef _Traits                     traits;
 
+    /// Fifth template parameter: STL allocator
+    typedef _Alloc                      allocator_type;
+
     // The macro BTREE_FRIENDS can be used by outside class to access the B+
     // tree internals. This was added for wxBTreeDemo to be able to draw the
     // tree.
@@ -74,14 +79,14 @@ public:
     // *** Constructed Types
 
     /// Typedef of our own type
-    typedef btree_map<key_type, data_type, key_compare, traits> self;
+    typedef btree_map<key_type, data_type, key_compare, traits, allocator_type> self;
 
     /// Construct the STL-required value_type as a composition pair of key and
     /// data types
     typedef std::pair<key_type, data_type>      value_type;
 
     /// Implementation type of the btree_base
-    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false> btree_impl;
+    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false, allocator_type> btree_impl;
 
     /// Function class comparing two value_type pairs.
     typedef typename btree_impl::value_compare  value_compare;
@@ -152,30 +157,33 @@ public:
 
     /// Default constructor initializing an empty B+ tree with the standard key
     /// comparison function
-    inline btree_map()
-	: tree()
+    explicit inline btree_map(const allocator_type &alloc = allocator_type())
+	: tree(alloc)
     {
     }
 
     /// Constructor initializing an empty B+ tree with a special key
     /// comparison object
-    inline btree_map(const key_compare &kcf)
-	: tree(kcf)
+    explicit inline btree_map(const key_compare &kcf,
+                              const allocator_type &alloc = allocator_type())
+	: tree(kcf, alloc)
     {
     }
 
     /// Constructor initializing a B+ tree with the range [first,last)
     template <class InputIterator>
-    inline btree_map(InputIterator first, InputIterator last)
-	: tree(first, last)
+    inline btree_map(InputIterator first, InputIterator last,
+                     const allocator_type &alloc = allocator_type())
+	: tree(first, last, alloc)
     {
     }
 
     /// Constructor initializing a B+ tree with the range [first,last) and a
     /// special key comparison object
     template <class InputIterator>
-    inline btree_map(InputIterator first, InputIterator last, const key_compare &kcf)
-	: tree(first, last, kcf)
+    inline btree_map(InputIterator first, InputIterator last, const key_compare &kcf,
+                     const allocator_type &alloc = allocator_type())
+	: tree(first, last, kcf, alloc)
     {
     }
 
@@ -204,6 +212,15 @@ public:
     inline value_compare value_comp() const
     {
 	return tree.value_comp();
+    }
+
+public:
+    // *** Allocators
+
+    /// Return the base node allocator provided during construction.
+    allocator_type get_allocator() const
+    {
+        return tree.get_allocator();
     }
 
 public:
