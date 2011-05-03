@@ -2,6 +2,8 @@
 	* btree.h: Correcting documentation of lower_bound() and
 	upper_bound(). The functions themselves were correct.
 	* btree.h: Applying STL allocator patch contributed by MH.
+	* btree.h: Correcting limits of for loop to shift pairs from leaf
+	to right leaf nodes during deletion.
 
 2008-09-07	Timo Bingmann
 	* speedtest.cc: Modifying speedtest to also test the hash table

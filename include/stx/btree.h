@@ -32,6 +32,7 @@
 #include <istream>
 #include <ostream>
 #include <memory>
+#include <cstddef>
 #include <assert.h>
 
 // *** Debugging Macros
@@ -2942,7 +2943,7 @@ private:
 
         BTREE_ASSERT(right->slotuse + shiftnum < leafslotmax);
 
-        for(int i = right->slotuse; i >= 0; i--)
+        for(int i = right->slotuse-1; i >= 0; i--)
         {
             right->slotkey[i + shiftnum] = right->slotkey[i];
             right->slotdata[i + shiftnum] = right->slotdata[i];
@@ -2999,7 +3000,6 @@ private:
             right->slotkey[i + shiftnum] = right->slotkey[i];
             right->childid[i + shiftnum] = right->childid[i];
         }
-
         right->slotuse += shiftnum;
 
         // copy the parent's decision slotkey and childid to the last new key on the right
