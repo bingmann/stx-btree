@@ -30,9 +30,13 @@
 class LargeTest : public CPPUNIT_NS::TestFixture
 {
     CPPUNIT_TEST_SUITE( LargeTest );
-    CPPUNIT_TEST(test_3200_10);
-    CPPUNIT_TEST(test_320_1000);
-    CPPUNIT_TEST(test_320_10000);
+    CPPUNIT_TEST(test_320_mod_1000);
+    CPPUNIT_TEST(test_320_mod_10000);
+    CPPUNIT_TEST(test_3200_mod_10);
+    CPPUNIT_TEST(test_3200_mod_100);
+    CPPUNIT_TEST(test_3200_mod_1000);
+    CPPUNIT_TEST(test_3200_mod_10000);
+    CPPUNIT_TEST(test_32000_mod_10000);
     CPPUNIT_TEST(test_sequence);
     CPPUNIT_TEST_SUITE_END();
 
@@ -116,6 +120,7 @@ protected:
                 set.erase( set.find(k) );
 
                 CPPUNIT_ASSERT( bt.size() == set.size() );
+		CPPUNIT_ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
             }
         }
 
@@ -123,19 +128,39 @@ protected:
         CPPUNIT_ASSERT( set.empty() );
     }
 
-    void test_3200_10()
-    {
-        test_multi(3200, 10);
-    }
-
-    void test_320_1000()
+    void test_320_mod_1000()
     {
         test_multi(320, 1000);
     }
 
-    void test_320_10000()
+    void test_320_mod_10000()
     {
         test_multi(320, 10000);
+    }
+
+    void test_3200_mod_10()
+    {
+        test_multi(3200, 10);
+    }
+
+    void test_3200_mod_100()
+    {
+        test_multi(3200, 100);
+    }
+
+    void test_3200_mod_1000()
+    {
+        test_multi(3200, 1000);
+    }
+
+    void test_3200_mod_10000()
+    {
+        test_multi(3200, 10000);
+    }
+
+    void test_32000_mod_10000()
+    {
+        test_multi(32000, 10000);
     }
 
     void test_sequence()
@@ -209,6 +234,7 @@ protected:
                 set.erase( set.find(k) );
 
                 CPPUNIT_ASSERT( bt.size() == set.size() );
+		CPPUNIT_ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
             }
         }
 
