@@ -1,3 +1,7 @@
+2011-05-03	Timo Bingmann
+	* btree.h: Correcting documentation of lower_bound() and
+	upper_bound(). The functions themselves were correct.
+
 2008-09-07	Timo Bingmann
 	* speedtest.cc: Modifying speedtest to also test the hash table
 	container implementation from __gnu_cxx. Extending tests by
@@ -21,7 +25,7 @@
 	reverse_iterator and const_reverse_iterator should work as
 	expected now. Added two large test cases for iterators. Also
 	enabling public Default-Constructor on iterators.
-	
+
 2008-08-01	Timo Bingmann
 	* btree.h: Fixing up a memory access bug which happens in
 	leaf->slotkey[leaf->slotuse - 1] if leaf-slotuse == 0. This doesnt

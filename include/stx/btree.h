@@ -1720,8 +1720,8 @@ public:
         return num;
     }
 
-    /// Searches the B+ tree and returns an iterator to the first key less or
-    /// equal to the parameter. If unsuccessful it returns end().
+    /// Searches the B+ tree and returns an iterator to the first pair
+    /// equal to or greater than key, or end() if all keys are smaller.
     iterator lower_bound(const key_type& key)
     {
         node *n = root;
@@ -1741,8 +1741,9 @@ public:
         return iterator(leaf, slot);
     }
 
-    /// Searches the B+ tree and returns an constant iterator to the first key less or
-    /// equal to the parameter. If unsuccessful it returns end().
+    /// Searches the B+ tree and returns a constant iterator to the
+    /// first pair equal to or greater than key, or end() if all keys
+    /// are smaller.
     const_iterator lower_bound(const key_type& key) const
     {
         const node *n = root;
@@ -1762,8 +1763,8 @@ public:
         return const_iterator(leaf, slot);
     }
 
-    /// Searches the B+ tree and returns an iterator to the first key greater
-    /// than the parameter. If unsuccessful it returns end().
+    /// Searches the B+ tree and returns an iterator to the first pair
+    /// greater than key, or end() if all keys are smaller or equal.
     iterator upper_bound(const key_type& key)
     {
         node *n = root;
@@ -1783,8 +1784,9 @@ public:
         return iterator(leaf, slot);
     }
 
-    /// Searches the B+ tree and returns an constant iterator to the first key
-    /// greater than the parameter. If unsuccessful it returns end().
+    /// Searches the B+ tree and returns a constant iterator to the
+    /// first pair greater than key, or end() if all keys are smaller
+    /// or equal.
     const_iterator upper_bound(const key_type& key) const
     {
         const node *n = root;
