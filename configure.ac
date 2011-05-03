@@ -68,6 +68,7 @@ AM_CONDITIONAL(GCOV, test x"$gcov" = "xtrue")
 if test x"$gcov" = "xtrue"; then
     CFLAGS="$CFLAGS -fprofile-arcs -ftest-coverage"
     CXXFLAGS="$CXXFLAGS -fprofile-arcs -ftest-coverage"
+    LIBS="$LIBS -lgcov"
 fi
 
 # check whether cppunit is available
