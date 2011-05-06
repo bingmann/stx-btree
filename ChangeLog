@@ -1,3 +1,7 @@
+2001-05-06	Timo Bingmann
+	* btree.h, others.h: implementing erase(iterator) using recursive
+	depth first search for the referenced leaf node.
+
 2011-05-03	Timo Bingmann
 	* btree.h: Correcting documentation of lower_bound() and
 	upper_bound(). The functions themselves were correct.

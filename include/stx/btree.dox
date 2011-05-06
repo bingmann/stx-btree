@@ -156,17 +156,17 @@ which returns a writable reference to the data value in the tree.
 
 \subsection sec7-3 Erase Functions
 
-The B+ tree supports only two erase functions:
+The B+ tree supports three erase functions:
 
 \code
 size_type erase(const key_type &key); // erase all data pairs matching key
 bool erase_one(const key_type &key);  // erase one data pair matching key
+void erase(iterator iter);	      // erase pair referenced by iter
 \endcode
 
-The following STL-required functions are not supported:
+The following STL-required function is currently not supported:
 
 \code
-void erase(iterator iter);
 void erase(iterator first, iterator last);
 \endcode
 

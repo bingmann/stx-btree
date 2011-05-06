@@ -512,13 +512,11 @@ public:
         return tree.erase(key);
     }
 
-#ifdef BTREE_TODO
-    /// Erase the keys referenced by the iterator.
+    /// Erase the key/data pair referenced by the iterator.
     void erase(iterator iter)
     {
-
+	return tree.erase(iter);
     }
-#endif
 
 #ifdef BTREE_TODO
     /// Erase all keys in the range [first,last). This function is currently

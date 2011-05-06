@@ -38,6 +38,7 @@ class IteratorTest : public CPPUNIT_NS::TestFixture
     CPPUNIT_TEST(test_iterator3);
     CPPUNIT_TEST(test_iterator4);
     CPPUNIT_TEST(test_iterator5);
+    CPPUNIT_TEST(test_erase_iterator1);
     CPPUNIT_TEST_SUITE_END();
 
 protected:
@@ -791,6 +792,51 @@ protected:
             ++it;
             CPPUNIT_ASSERT( it == set.rend() );
         }
+    }
+
+    void test_erase_iterator1()
+    {
+        typedef stx::btree_multimap<int, int,
+	    std::less<int>, struct traits_nodebug> btree_type;
+
+        btree_type map;
+
+	const int size1 = 32; 
+	const int size2 = 256; 
+
+	for (int i = 0; i < size1; ++i)
+	{
+	    for (int j = 0; j < size2; ++j)
+	    {
+		map.insert2(i,j);
+	    }
+	}
+
+	CPPUNIT_ASSERT( map.size() == size1 * size2 );
+
+	// erase in reverse order. that should be the worst case for
+	// erase_iter()
+
+	for (int i = size1-1; i >= 0; --i)
+	{
+	    for (int j = size2-1; j >= 0; --j)
+	    {
+		// find iterator
+		btree_type::iterator it = map.find(i);
+		
+		while (it != map.end() && it.key() == i && it.data() != j)
+		    ++it;
+
+		CPPUNIT_ASSERT( it.key() == i );
+		CPPUNIT_ASSERT( it.data() == j );
+
+		unsigned int mapsize = map.size();
+		map.erase(it);
+		CPPUNIT_ASSERT( map.size() == mapsize - 1 );
+	    }
+	}
+
+	CPPUNIT_ASSERT( map.size() == 0 );
     }
 };
 
