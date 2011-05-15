@@ -39,7 +39,7 @@
 const unsigned int mininsertnum = 125;
 
 /// maximum number of items to insert
-const unsigned int maxinsertnum = 1024000 * 4;
+const unsigned int maxinsertnum = 1024000 * 32;
 
 const int randseed = 34234235;
 
@@ -311,7 +311,7 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum)
 
     do
     {
-	runs = 0;
+	runs = 0;	// count repetition of timed tests
 
 	{
 	    TestClass test(insertnum);	// initialize test structures
@@ -320,7 +320,7 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum)
 
 	    for(unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
 	    {
-		test.run(insertnum);
+		test.run(insertnum);	// run timed test procedure
 		++runs;
 	    }
 
@@ -329,6 +329,7 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum)
 
 	std::cerr << "Insert " << insertnum << " repeat " << (repeatuntil / insertnum) << " time " << (ts2 - ts1) << "\n";
 
+	// discard and repeat if test took less than one second.
 	if ((ts2 - ts1) < 1.0) repeatuntil *= 2;
     }
     while ((ts2 - ts1) < 1.0);
@@ -344,7 +345,7 @@ struct btree_range
     inline void operator()(std::ostream& os, unsigned int insertnum)
     {
 	testrunner_loop< functional<Low> >(os, insertnum);
-        btree_range<functional, Low+1, High>()(os, insertnum);
+        btree_range<functional, Low+2, High>()(os, insertnum);
     }
 };
 

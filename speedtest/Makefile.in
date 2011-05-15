@@ -180,17 +180,16 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 speedtest_SOURCES = speedtest.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DNDEBUG -I$(top_srcdir)/include
-EXTRA_DIST = speed-all.trt speed-all.txt \
-	speed-insert.trt speed-insert.txt \
-	speed-find.trt speed-find.txt \
+EXTRA_DIST = \
 	speedtest.gnuplot transpose.awk \
-	speedtest.pdf \
-	speedtest-plot-01.png speedtest-plot-02.png \
-	speedtest-plot-03.png speedtest-plot-04.png \
-	speedtest-plot-05.png speedtest-plot-06.png \
-	speedtest-plot-07.png speedtest-plot-08.png \
-	speedtest-plot-09.png speedtest-plot-10.png \
-	speedtest-plot-11.png speedtest-plot-12.png
+	results-2007/speedtest.pdf \
+	results-2007/speedtest-plot-??.png \
+	results-2007/speed-*.txt \
+	results-2007/speed-*.trt \
+	results-2011/speedtest.pdf \
+	results-2011/speedtest-plot-??.png \
+	results-2011/speed-*.txt \
+	results-2011/speed-*.trt
 
 all: all-am
 
