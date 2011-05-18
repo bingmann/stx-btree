@@ -1,7 +1,7 @@
-	       *** STX B+ Tree C++ Template Classes v0.8.3  ***
+	       *** STX B+ Tree C++ Template Classes v0.8.6  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-Date: 2008-09-07
+Date: 2011-05-18
 
 --- Summary ---
 
@@ -25,7 +25,7 @@ http://idlebox.net/2007/stx-btree/
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation is included in the source package. It can also be
 viewed online at
-http://idlebox.net/2007/stx-btree/stx-btree-0.8.3/doxygen-html/
+http://idlebox.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/
 
 The wxWidgets B+ tree demo program is located in the directory
 wxbtreedemo. Compiled binary versions can be found on the package web page.
@@ -105,7 +105,7 @@ folding the key and data arrays.
 --- Test Suite ---
 
 The B+ tree distribution contains an extensive test suite using
-cppunit. According to gcov 91.9% of the btree.h implementation is covered.
+cppunit. According to gcov 90.9% of the btree.h implementation is covered.
 
 --- STL Incompatibilities ---
 
@@ -124,14 +124,14 @@ iter.data() which returns a writable reference to the data value in the tree.
 
 - Erase Functions -
 
-The B+ tree supports only two erase functions:
+The B+ tree supports three erase functions:
 
 size_type erase(const key_type &key); // erase all data pairs matching key
 bool erase_one(const key_type &key);  // erase one data pair matching key
+void erase(iterator iter);            // erase pair referenced by iter
 
-The following STL-required functions are not supported:
+The following STL-required function is not supported:
 
-void erase(iterator iter);
 void erase(iterator first, iterator last);
 
 --- Extensions ---

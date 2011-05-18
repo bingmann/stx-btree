@@ -4,8 +4,8 @@
  */
 
 /*
- * STX B+ Tree Template Classes v0.8.3
- * Copyright (C) 2008 Timo Bingmann
+ * STX B+ Tree Template Classes v0.8.6
+ * Copyright (C) 2008-2011 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -79,7 +79,7 @@ public:
 private:
     // *** The Data_Type
 
-    /// \internal The empty struct used as a placeholder for the data_type
+    /// The empty struct used as a placeholder for the data_type.
     struct empty_struct
     {
     };

@@ -4,8 +4,8 @@
  */
 
 /*
- * STX B+ Tree Template Classes v0.8.3
- * Copyright (C) 2008 Timo Bingmann
+ * STX B+ Tree Template Classes v0.8.6
+ * Copyright (C) 2008-2011 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -332,8 +332,8 @@ private:
 private:
     // *** Template Magic to Convert a pair or key/data types to a value_type
 
-    /// \internal For sets the second pair_type is an empty struct, so the
-    /// value_type should only be the first.
+    /// For sets the second pair_type is an empty struct, so the value_type
+    /// should only be the first.
     template <typename value_type, typename pair_type>
     struct btree_pair_to_value
     {
@@ -347,7 +347,7 @@ private:
         }
     };
 
-    /// \internal For maps value_type is the same as the pair_type
+    /// For maps value_type is the same as the pair_type
     template <typename value_type>
     struct btree_pair_to_value<value_type, value_type>
     {
@@ -2342,8 +2342,8 @@ private:
         btree_fixmerge = 4
     };
 
-    /// \internal B+ tree recursive deletion has much information which is
-    /// needs to be passed upward.
+    /// B+ tree recursive deletion has much information which is needs to be
+    /// passed upward.
     struct result_t
     {
         /// Merged result flags
@@ -3573,8 +3573,8 @@ private:
 private:
     // *** Dump and Restore of B+ Trees
 
-    /// \internal A header for the binary image containing the base properties
-    /// of the B+ tree. These properties have to match the current template
+    /// A header for the binary image containing the base properties of the B+
+    /// tree. These properties have to match the current template
     /// instantiation.
     struct dump_header
     {
