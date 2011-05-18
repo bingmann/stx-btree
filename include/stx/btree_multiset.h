@@ -79,7 +79,7 @@ public:
 private:
     // *** The Data_Type
 
-    /// \internal The empty struct used as a placeholder for the data_type
+    /// The empty struct used as a placeholder for the data_type.
     struct empty_struct
     {
     };
