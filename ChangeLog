@@ -1,4 +1,8 @@
-2001-05-06	Timo Bingmann
+2011-05-17	Timo Bingmann
+	* speedtest: added results of new speed test run in 2011 and also
+	appended notes to old speed test doxygen page.
+
+2011-05-06	Timo Bingmann
 	* btree.h, others.h: implementing erase(iterator) using recursive
 	depth first search for the referenced leaf node.
 

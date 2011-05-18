@@ -1,5 +1,5 @@
-// $Id$
-/** \file btree_doxygen.h
+// $Id$ -*- fill-column: 79 -*-
+/** \file btree.dox
  * Contains the doxygen comments. This header is not needed to compile the B+
  * tree.
  */
@@ -26,7 +26,7 @@
 /** \mainpage STX B+ Tree Template Classes README
 
 \author Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
-\date 2008-09-07
+\date 2008-09-07 and 2011-05-17
 
 \section sec1 Summary
 
@@ -70,7 +70,7 @@ The idea originally arose while coding a read-only database, which used a huge
 map of millions of non-sequential integer keys to 8-byte file offsets. When
 using the standard STL red-black tree implementation this would yield millions
 of 20-byte heap allocations and very slow search times due to the tree's
-height. So the original intension was to reduce memory fragmentation and
+height. So the original intention was to reduce memory fragmentation and
 improve search times. The B+ tree solves this by packing multiple data pairs
 into one node with a large number of descendant nodes.
 
@@ -231,15 +231,15 @@ See the extra page \ref speedtest "Speed Test Results".
 
 /** \page speedtest Speed Test Results
 
-\section Experiment
+\section sec11 Speed Test Experiments
 
-The speed test compares the libstdc++ STL red-black tree with the implemented
-B+ tree with many different parameters. The newer STL hash table container from
-the __gnu_cxx namespace is also tested against the two trees. To keep focus on
-the algorithms and reduce data copying the multiset specializations were
-chosen. Note that the comparison between hash table and trees is somewhat
-unfair, because the hash table does not keep the keys sorted, and thus cannot
-be used for all applications.
+The B+ tree source package contains a speedtest program which compares the
+libstdc++ STL red-black tree with the implemented B+ tree with many different
+parameters. The newer STL hash table container from the __gnu_cxx namespace is
+also tested against the two trees. To keep focus on the algorithms and reduce
+data copying the multiset specializations were chosen. Note that the comparison
+between hash table and trees is somewhat unfair, because the hash table does
+not keep the keys sorted, and thus cannot be used for all applications.
 
 Three set of test procedures are used: the first only inserts \a n random
 integers into the tree / hash table. The second test first inserts \a n random
@@ -247,19 +247,27 @@ integers, then performs \a n lookups for those integers and finally erases all
 \a n integers. The last test only performs \a n lookups on a tree pre-filled
 with \a n integers. All lookups are successful.
 
-These three test sequences are preformed for \a n from 125 to 4,096,000 where
-\a n is doubled after each test run. For each \a n the test cycles are run
-until in total 8,192,000 items were inserted / lookuped. This way the measured
-speed for small \a n is averaged over up to 65,536 sample runs.
+These three test sequences are preformed for \a n from 125 to 4,096,000 or
+32,768,000 where \a n is doubled after each test run. For each \a n the test
+procedure is repeated until at least one second execution time elapses during
+the repeated cycle. This way the measured speed for small \a n is averaged over
+up to 65,536 repetitions.
 
-Lastly it is purpose of the test to determine a good node size for the B+
+Lastly, it is purpose of the test to determine a good node size for the B+
 tree. Therefore the test runs are performed on different slot sizes; both inner
 and leaf nodes hold the same number of items. The number of slots tested ranges
 from 4 to 256 slots and therefore yields node sizes from about 50 to 2,048
 bytes. This requires that the B+ tree template is instantiated for each of the
-probed node sizes!
+probed node sizes! In the 2011 test, only every other slot size is actually
+tested.
 
-The speed test source code is compiled with g++ 4.1.2 -O3 -fomit-frame-pointer
+Two test results are included in the package: one done in
+\ref sec12 "2007 with version 0.7" and another done in
+\ref sec13 "2011 with version 0.8.5".
+
+\section sec12 Results 2007
+
+The speed test source code was compiled with g++ 4.1.2 -O3 -fomit-frame-pointer
 
 \attention Compilation of the speed test with -O3 takes very long and requires
 much RAM. It is not automatically built when running "make all".
@@ -270,10 +278,10 @@ gcc. More work is needed to get g++ to optimize as well as icc.
 
 The results are be displayed below using gnuplot. All tests were run on a
 Pentium4 3.2 GHz with 2 GB RAM. A high-resolution PDF plot of the following
-images can be found in the package at speedtest/speedtest.pdf
+images can be found in the package at speedtest/results-2007/speedtest.pdf
 
-\image html speedtest-plot-01.png
-\image html speedtest-plot-02.png
+\image html speedtest-2007-01.png
+\image html speedtest-2007-02.png
 
 The first two plots above show the absolute time measured for inserting \a n
 items into seven different tree variants. For small \a n (the first plot) the
@@ -291,9 +299,9 @@ the B+ tree (with 32 slots) performs much better than the STL multiset. The STL
 hash table resizes itself in defined intervals, which leads to non-linearly
 increasing insert times.
 
-\image html speedtest-plot-03.png
+\image html speedtest-2007-03.png
 
-\image html speedtest-plot-04.png
+\image html speedtest-2007-04.png
 
 The last plots goal is to find the best node size for the B+ tree. It displays
 the total measured time of the insertion test depending on the number of slots
@@ -308,9 +316,9 @@ insertion time was measured. Instead in the first plot a whole
 insert/find/delete cycle was performed and measured. The second plot is
 restricted to the lookup / find part.
 
-\image html speedtest-plot-07.png
+\image html speedtest-2007-07.png
 
-\image html speedtest-plot-11.png
+\image html speedtest-2007-11.png
 
 The results for the trees are in general accordance to those of only
 insertion. However the hash table implementation performs much faster in both
@@ -323,5 +331,30 @@ but with around 10,000 items. And for item counts larger than 100,000 the hash
 table slows down: lookup time more than doubles. However, after doubling, the
 lookup time does not change much: lookup on tables with 1 million items takes
 approximately the same time as with 4 million items.
+
+\section sec13 Results 2011
+
+In 2011, after some smaller patches and fixes to the main code, I decided to
+rerun the old speed test on my new hardware and with up-to-date compilers.
+
+The speedtest source code was compiled on a x86_64 architecture using gcc 4.4.5
+with flags -O3 -fomit-frame-pointer. It was run in an Intel Core i7 950 clocked at 3,07 GHz. According to cpuinfo, this processor contains 8 MB L2 cache.
+
+The full results of the newly run tests are found in the package at
+speedtest/results-2011/speedtest.pdf
+
+\image html speedtest-2011-03.png
+
+This plot is maybe the most interesting, especially compared with the old run
+from 2007. Again the B+ tree multiset implementation is faster than the
+red-black tree for large number of items in the tree. However, due to the
+faster hardware and larger cache sizes, the average insertion speed plots
+diverge notable at around 100,000 items instead of at 16,000 items for the
+older Pentium 4 CPU. Nevertheless, the graphs diverge for larger \a n in
+approximately the same fashion as in the older plots.
+
+This lets one assume that the basic cache hierarchy architecture has not
+changed and the B+ tree implementation still works much better for larger item
+counts than the red-black tree.
 
 */

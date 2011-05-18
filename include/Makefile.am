@@ -11,4 +11,4 @@ nobase_include_HEADERS = \
 	stx/btree_map \
 	stx/btree_multiset \
 	stx/btree_multimap \
-	stx/btree_doxygen.h
+	stx/btree.dox
