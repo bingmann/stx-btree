@@ -5178,7 +5178,7 @@ $as_echo "no (version $WX_VERSION is not new enough)" >&6; }
 
 
 
- if test "$wxWin" != 0; then
+ if test "$wxWin" == 1; then
   HAVE_WXWIDGETS_TRUE=
   HAVE_WXWIDGETS_FALSE='#'
 else

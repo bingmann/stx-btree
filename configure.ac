@@ -91,7 +91,7 @@ AM_OPTIONS_WXCONFIG
 
 AM_PATH_WXCONFIG(2.6.0, wxWin=1)
 
-AM_CONDITIONAL(HAVE_WXWIDGETS, test "$wxWin" != 0)
+AM_CONDITIONAL(HAVE_WXWIDGETS, test "$wxWin" == 1)
 
 if test "$wxWin" != 1; then
     AC_MSG_WARN([
