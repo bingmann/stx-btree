@@ -1556,23 +1556,19 @@ private:
     {
         if (n->slotuse == 0) return 0;
 
-        int lo = 0,
-            hi = n->slotuse - 1;
+        int lo = 0, hi = n->slotuse;
 
-        while(lo < hi)
+        while (lo < hi)
         {
             int mid = (lo + hi) >> 1;
 
             if (key_lessequal(key, n->slotkey[mid])) {
-                hi = mid - 1;
+                hi = mid; // key <= mid
             }
             else {
-                lo = mid + 1;
+                lo = mid + 1; // key > mid
             }
         }
-
-        if (hi < 0 || key_less(n->slotkey[hi], key))
-            hi++;
 
         BTREE_PRINT("btree::find_lower: on " << n << " key " << key << " -> (" << lo << ") " << hi << ", ");
 
@@ -1603,23 +1599,19 @@ private:
     {
         if (n->slotuse == 0) return 0;
 
-        int lo = 0,
-            hi = n->slotuse - 1;
+        int lo = 0, hi = n->slotuse;
 
-        while(lo < hi)
+        while (lo < hi)
         {
             int mid = (lo + hi) >> 1;
 
             if (key_less(key, n->slotkey[mid])) {
-                hi = mid - 1;
+                hi = mid; // key < mid
             }
             else {
-                lo = mid + 1;
+                lo = mid + 1; // key >= mid
             }
         }
-
-        if (hi < 0 || key_lessequal(n->slotkey[hi], key))
-            hi++;
 
         BTREE_PRINT("btree::find_upper: on " << n << " key " << key << " -> (" << lo << ") " << hi << ", ");
 
