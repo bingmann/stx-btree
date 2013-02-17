@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
@@ -30,18 +28,17 @@
 #include <stx/btree_map.h>
 #include <stx/btree_set.h>
 
-class IteratorTest : public CPPUNIT_NS::TestFixture
+struct IteratorTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( IteratorTest );
-    CPPUNIT_TEST(test_iterator1);
-    CPPUNIT_TEST(test_iterator2);
-    CPPUNIT_TEST(test_iterator3);
-    CPPUNIT_TEST(test_iterator4);
-    CPPUNIT_TEST(test_iterator5);
-    CPPUNIT_TEST(test_erase_iterator1);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    IteratorTest() : tpunit::TestFixture(
+        TEST(IteratorTest::test_iterator1),
+        TEST(IteratorTest::test_iterator2),
+        TEST(IteratorTest::test_iterator3),
+        TEST(IteratorTest::test_iterator4),
+        TEST(IteratorTest::test_iterator5),
+        TEST(IteratorTest::test_erase_iterator1)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -65,12 +62,12 @@ protected:
             vector.push_back( rand() % 1000 );
         }
 
-        CPPUNIT_ASSERT( vector.size() == 3200 );
+        ASSERT( vector.size() == 3200 );
 
         // test construction and insert(iter, iter) function
         btree_type bt(vector.begin(), vector.end());
 
-        CPPUNIT_ASSERT( bt.size() == 3200 );
+        ASSERT( bt.size() == 3200 );
 
         // copy for later use
         btree_type bt2 = bt;
@@ -79,12 +76,12 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 3200; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 3200 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 1000) );
-            CPPUNIT_ASSERT(bt.size() == 3200 - i - 1);
+            ASSERT(bt.size() == 3200 - i);
+            ASSERT( bt.erase_one(rand() % 1000) );
+            ASSERT(bt.size() == 3200 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
 
         // copy btree values back to a vector
 
@@ -94,7 +91,7 @@ protected:
         // afer sorting the vector, the two must be the same
         std::sort(vector.begin(), vector.end());
 
-        CPPUNIT_ASSERT( vector == vector2 );
+        ASSERT( vector == vector2 );
 
         // test reverse iterator
         vector2.clear();
@@ -105,13 +102,13 @@ protected:
         btree_type::reverse_iterator ri = bt2.rbegin();
         for(unsigned int i = 0; i < vector2.size(); ++i)
         {
-            CPPUNIT_ASSERT( vector[i] == vector2[i] );
-            CPPUNIT_ASSERT( vector[i] == *ri );
+            ASSERT( vector[i] == vector2[i] );
+            ASSERT( vector[i] == *ri );
 
             ri++;
         }
 
-        CPPUNIT_ASSERT( ri == bt2.rend() );
+        ASSERT( ri == bt2.rend() );
     }
 
     void test_iterator2()
@@ -127,12 +124,12 @@ protected:
             vector.push_back( btree_type::value_type(rand() % 1000, 0) );
         }
 
-        CPPUNIT_ASSERT( vector.size() == 3200 );
+        ASSERT( vector.size() == 3200 );
 
         // test construction and insert(iter, iter) function
         btree_type bt(vector.begin(), vector.end());
 
-        CPPUNIT_ASSERT( bt.size() == 3200 );
+        ASSERT( bt.size() == 3200 );
 
         // copy for later use
         btree_type bt2 = bt;
@@ -141,12 +138,12 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 3200; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 3200 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 1000) );
-            CPPUNIT_ASSERT(bt.size() == 3200 - i - 1);
+            ASSERT(bt.size() == 3200 - i);
+            ASSERT( bt.erase_one(rand() % 1000) );
+            ASSERT(bt.size() == 3200 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
 
         // copy btree values back to a vector
 
@@ -156,7 +153,7 @@ protected:
         // afer sorting the vector, the two must be the same
         std::sort(vector.begin(), vector.end());
 
-        CPPUNIT_ASSERT( vector == vector2 );
+        ASSERT( vector == vector2 );
 
         // test reverse iterator
         vector2.clear();
@@ -167,12 +164,12 @@ protected:
         btree_type::reverse_iterator ri = bt2.rbegin();
         for(unsigned int i = 0; i < vector2.size(); ++i, ++ri)
         {
-            CPPUNIT_ASSERT( vector[i].first == vector2[i].first );
-            CPPUNIT_ASSERT( vector[i].first == ri->first );
-            CPPUNIT_ASSERT( vector[i].second == ri->second );
+            ASSERT( vector[i].first == vector2[i].first );
+            ASSERT( vector[i].first == ri->first );
+            ASSERT( vector[i].second == ri->second );
         }
 
-        CPPUNIT_ASSERT( ri == bt2.rend() );
+        ASSERT( ri == bt2.rend() );
     }
 
     void test_iterator3()
@@ -195,13 +192,13 @@ protected:
             for(btree_type::iterator i = map.begin();
                 i != map.end(); ++i)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test iterator prefix--
@@ -212,16 +209,16 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
             nownum--;
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_iterator prefix++
@@ -230,13 +227,13 @@ protected:
             for(btree_type::const_iterator i = map.begin();
                 i != map.end(); ++i)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_iterator prefix--
@@ -247,16 +244,16 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
             nownum--;
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator prefix++
@@ -267,11 +264,11 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator prefix--
@@ -280,18 +277,18 @@ protected:
             btree_type::reverse_iterator i;
             for(i = --map.rend(); i != map.rbegin(); --i)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
             nownum++;
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_reverse_iterator prefix++
@@ -302,11 +299,11 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_reverse_iterator prefix--
@@ -315,18 +312,18 @@ protected:
             btree_type::const_reverse_iterator i;
             for(i = --map.rend(); i != map.rbegin(); --i)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
             nownum++;
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         // postfix
@@ -337,13 +334,13 @@ protected:
             for(btree_type::iterator i = map.begin();
                 i != map.end(); i++)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test iterator postfix--
@@ -354,16 +351,16 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
             nownum--;
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_iterator postfix++
@@ -372,13 +369,13 @@ protected:
             for(btree_type::const_iterator i = map.begin();
                 i != map.end(); i++)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_iterator postfix--
@@ -389,16 +386,16 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
             nownum--;
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator postfix++
@@ -409,11 +406,11 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator postfix--
@@ -422,18 +419,18 @@ protected:
             btree_type::reverse_iterator i;
             for(i = --map.rend(); i != map.rbegin(); i--)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
             nownum++;
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_reverse_iterator postfix++
@@ -444,11 +441,11 @@ protected:
             {
                 nownum--;
 
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_reverse_iterator postfix--
@@ -457,18 +454,18 @@ protected:
             btree_type::const_reverse_iterator i;
             for(i = --map.rend(); i != map.rbegin(); i--)
             {
-                CPPUNIT_ASSERT( nownum == i->first );
-                CPPUNIT_ASSERT( nownum * 3 == i->second );
+                ASSERT( nownum == i->first );
+                ASSERT( nownum * 3 == i->second );
 
                 nownum++;
             }
 
-            CPPUNIT_ASSERT( nownum == i->first );
-            CPPUNIT_ASSERT( nownum * 3 == i->second );
+            ASSERT( nownum == i->first );
+            ASSERT( nownum * 3 == i->second );
 
             nownum++;
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
     }
 
@@ -492,11 +489,11 @@ protected:
             for(btree_type::iterator i = set.begin();
                 i != set.end(); ++i)
             {
-                CPPUNIT_ASSERT( nownum == *i );
+                ASSERT( nownum == *i );
                 nownum++;
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test iterator prefix--
@@ -505,12 +502,12 @@ protected:
             btree_type::iterator i;
             for(i = --set.end(); i != set.begin(); --i)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT( --nownum == *i );
+            ASSERT( --nownum == *i );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_iterator prefix++
@@ -519,10 +516,10 @@ protected:
             for(btree_type::const_iterator i = set.begin();
                 i != set.end(); ++i)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_iterator prefix--
@@ -531,12 +528,12 @@ protected:
             btree_type::const_iterator i;
             for(i = --set.end(); i != set.begin(); --i)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT( --nownum == *i );
+            ASSERT( --nownum == *i );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator prefix++
@@ -545,10 +542,10 @@ protected:
             for(btree_type::reverse_iterator i = set.rbegin();
                 i != set.rend(); ++i)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator prefix--
@@ -557,12 +554,12 @@ protected:
             btree_type::reverse_iterator i;
             for(i = --set.rend(); i != set.rbegin(); --i)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT( nownum++ == *i );
+            ASSERT( nownum++ == *i );
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_reverse_iterator prefix++
@@ -571,10 +568,10 @@ protected:
             for(btree_type::const_reverse_iterator i = set.rbegin();
                 i != set.rend(); ++i)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_reverse_iterator prefix--
@@ -583,12 +580,12 @@ protected:
             btree_type::const_reverse_iterator i;
             for(i = --set.rend(); i != set.rbegin(); --i)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT( nownum++ == *i );
+            ASSERT( nownum++ == *i );
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         // postfix
@@ -599,10 +596,10 @@ protected:
             for(btree_type::iterator i = set.begin();
                 i != set.end(); i++)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test iterator postfix--
@@ -612,12 +609,12 @@ protected:
             for(i = --set.end(); i != set.begin(); i--)
             {
 
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT( --nownum == *i );
+            ASSERT( --nownum == *i );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_iterator postfix++
@@ -626,10 +623,10 @@ protected:
             for(btree_type::const_iterator i = set.begin();
                 i != set.end(); i++)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_iterator postfix--
@@ -638,12 +635,12 @@ protected:
             btree_type::const_iterator i;
             for(i = --set.end(); i != set.begin(); i--)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT( --nownum == *i );
+            ASSERT( --nownum == *i );
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator postfix++
@@ -652,10 +649,10 @@ protected:
             for(btree_type::reverse_iterator i = set.rbegin();
                 i != set.rend(); i++)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test reverse_iterator postfix--
@@ -664,12 +661,12 @@ protected:
             btree_type::reverse_iterator i;
             for(i = --set.rend(); i != set.rbegin(); i--)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT( nownum++ == *i );
+            ASSERT( nownum++ == *i );
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
 
         { // test const_reverse_iterator postfix++
@@ -678,10 +675,10 @@ protected:
             for(btree_type::const_reverse_iterator i = set.rbegin();
                 i != set.rend(); i++)
             {
-                CPPUNIT_ASSERT( --nownum == *i );
+                ASSERT( --nownum == *i );
             }
 
-            CPPUNIT_ASSERT(nownum == 0);
+            ASSERT(nownum == 0);
         }
 
         { // test const_reverse_iterator postfix--
@@ -690,12 +687,12 @@ protected:
             btree_type::const_reverse_iterator i;
             for(i = --set.rend(); i != set.rbegin(); i--)
             {
-                CPPUNIT_ASSERT( nownum++ == *i );
+                ASSERT( nownum++ == *i );
             }
 
-            CPPUNIT_ASSERT( nownum++ == *i );
+            ASSERT( nownum++ == *i );
 
-            CPPUNIT_ASSERT(nownum == maxnum);
+            ASSERT(nownum == maxnum);
         }
     }
 
@@ -718,19 +715,19 @@ protected:
 
             it = set.begin();
             it--;
-            CPPUNIT_ASSERT( it == set.begin() );
+            ASSERT( it == set.begin() );
 
             it = set.begin();
             --it;
-            CPPUNIT_ASSERT( it == set.begin() );
+            ASSERT( it == set.begin() );
 
             it = set.end();
             it++;
-            CPPUNIT_ASSERT( it == set.end() );
+            ASSERT( it == set.end() );
 
             it = set.end();
             ++it;
-            CPPUNIT_ASSERT( it == set.end() );
+            ASSERT( it == set.end() );
         }
 
         {
@@ -738,19 +735,19 @@ protected:
 
             it = set.begin();
             it--;
-            CPPUNIT_ASSERT( it == set.begin() );
+            ASSERT( it == set.begin() );
 
             it = set.begin();
             --it;
-            CPPUNIT_ASSERT( it == set.begin() );
+            ASSERT( it == set.begin() );
 
             it = set.end();
             it++;
-            CPPUNIT_ASSERT( it == set.end() );
+            ASSERT( it == set.end() );
 
             it = set.end();
             ++it;
-            CPPUNIT_ASSERT( it == set.end() );
+            ASSERT( it == set.end() );
         }
 
         {
@@ -758,19 +755,19 @@ protected:
 
             it = set.rbegin();
             it--;
-            CPPUNIT_ASSERT( it == set.rbegin() );
+            ASSERT( it == set.rbegin() );
 
             it = set.rbegin();
             --it;
-            CPPUNIT_ASSERT( it == set.rbegin() );
+            ASSERT( it == set.rbegin() );
 
             it = set.rend();
             it++;
-            CPPUNIT_ASSERT( it == set.rend() );
+            ASSERT( it == set.rend() );
 
             it = set.rend();
             ++it;
-            CPPUNIT_ASSERT( it == set.rend() );
+            ASSERT( it == set.rend() );
         }
 
         {
@@ -778,19 +775,19 @@ protected:
 
             it = set.rbegin();
             it--;
-            CPPUNIT_ASSERT( it == set.rbegin() );
+            ASSERT( it == set.rbegin() );
 
             it = set.rbegin();
             --it;
-            CPPUNIT_ASSERT( it == set.rbegin() );
+            ASSERT( it == set.rbegin() );
 
             it = set.rend();
             it++;
-            CPPUNIT_ASSERT( it == set.rend() );
+            ASSERT( it == set.rend() );
 
             it = set.rend();
             ++it;
-            CPPUNIT_ASSERT( it == set.rend() );
+            ASSERT( it == set.rend() );
         }
     }
 
@@ -812,7 +809,7 @@ protected:
 	    }
 	}
 
-	CPPUNIT_ASSERT( map.size() == size1 * size2 );
+	ASSERT( map.size() == size1 * size2 );
 
 	// erase in reverse order. that should be the worst case for
 	// erase_iter()
@@ -827,17 +824,16 @@ protected:
 		while (it != map.end() && it.key() == i && it.data() != j)
 		    ++it;
 
-		CPPUNIT_ASSERT( it.key() == i );
-		CPPUNIT_ASSERT( it.data() == j );
+		ASSERT( it.key() == i );
+		ASSERT( it.data() == j );
 
 		unsigned int mapsize = map.size();
 		map.erase(it);
-		CPPUNIT_ASSERT( map.size() == mapsize - 1 );
+		ASSERT( map.size() == mapsize - 1 );
 	    }
 	}
 
-	CPPUNIT_ASSERT( map.size() == 0 );
+	ASSERT( map.size() == 0 );
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( IteratorTest );
+} __IteratorTest;

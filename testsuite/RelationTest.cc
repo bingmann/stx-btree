@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,19 +17,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
 #include <stx/btree_multiset.h>
 
-class RelationTest : public CPPUNIT_NS::TestFixture
+struct RelationTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( RelationTest );
-    CPPUNIT_TEST(test_relations);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    RelationTest() : tpunit::TestFixture(
+        TEST(RelationTest::test_relations)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -58,33 +55,32 @@ protected:
             bt2.insert(key);
         }
 
-        CPPUNIT_ASSERT( bt1 == bt2 );
+        ASSERT( bt1 == bt2 );
 
         bt1.insert(499);
         bt2.insert(500);
 
-        CPPUNIT_ASSERT( bt1 != bt2 );
-        CPPUNIT_ASSERT( bt1 < bt2 );
-        CPPUNIT_ASSERT( !(bt1 > bt2) );
+        ASSERT( bt1 != bt2 );
+        ASSERT( bt1 < bt2 );
+        ASSERT( !(bt1 > bt2) );
 
         bt1.insert(500);
         bt2.insert(499);
 
-        CPPUNIT_ASSERT( bt1 == bt2 );
-        CPPUNIT_ASSERT( bt1 <= bt2 );
+        ASSERT( bt1 == bt2 );
+        ASSERT( bt1 <= bt2 );
 
         // test assignment operator
         btree_type bt3;
 
         bt3 = bt1;
-        CPPUNIT_ASSERT( bt1 == bt3 );
-        CPPUNIT_ASSERT( bt1 >= bt3 );
+        ASSERT( bt1 == bt3 );
+        ASSERT( bt1 >= bt3 );
 
         // test copy constructor
         btree_type bt4 = bt3;
 
-        CPPUNIT_ASSERT( bt1 == bt4 );
+        ASSERT( bt1 == bt4 );
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( RelationTest );
+} __RelationTest;

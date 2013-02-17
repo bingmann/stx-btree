@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
@@ -28,13 +26,12 @@
 
 #include <stx/btree_multiset.h>
 
-class DumpRestoreTest : public CPPUNIT_NS::TestFixture
+struct DumpRestoreTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( DumpRestoreTest );
-    CPPUNIT_TEST(test_dump_restore_3200);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    DumpRestoreTest() : tpunit::TestFixture(
+        TEST(DumpRestoreTest::test_dump_restore_3200)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -61,7 +58,7 @@ protected:
                 bt.insert(rand() % 100);
             }
 
-            CPPUNIT_ASSERT(bt.size() == 3200);
+            ASSERT(bt.size() == 3200);
 
             std::ostringstream os;
             bt.dump(os);
@@ -71,7 +68,7 @@ protected:
 
 	// Also cannot check the length, because it depends on the rand()
 	// algorithm in stdlib.
-	// CPPUNIT_ASSERT( dumpstr.size() == 47772 );
+	// ASSERT( dumpstr.size() == 47772 );
 
         // cannot check the string with a hash function, because it contains
         // memory pointers
@@ -80,14 +77,14 @@ protected:
             btree_type bt2;
 
 	    std::istringstream iss(dumpstr);
-	    CPPUNIT_ASSERT( bt2.restore(iss) );
+	    ASSERT( bt2.restore(iss) );
 
-	    CPPUNIT_ASSERT( bt2.size() == 3200 );
+	    ASSERT( bt2.size() == 3200 );
 
 	    srand(34234235);
 	    for(unsigned int i = 0; i < 3200; i++)
 	    {
-		CPPUNIT_ASSERT( bt2.exists(rand() % 100) );
+		ASSERT( bt2.exists(rand() % 100) );
 	    }
 	}
 
@@ -99,9 +96,8 @@ protected:
 	    otherbtree_type bt3;
 
 	    std::istringstream iss(dumpstr);
-	    CPPUNIT_ASSERT( !bt3.restore(iss) );
+	    ASSERT( !bt3.restore(iss) );
 	}
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( DumpRestoreTest );
+} __DumpRestoreTest;

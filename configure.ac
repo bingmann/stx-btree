@@ -71,11 +71,6 @@ if test x"$gcov" = "xtrue"; then
     LIBS="$LIBS -lgcov"
 fi
 
-# check whether cppunit is available
-AM_PATH_CPPUNIT(1.10.0)
-
-AM_CONDITIONAL(HAVE_CPPUNIT, test x$CPPUNIT_CONFIG != xno)
-
 # Conditional whether to compile the speedtest binary
 AC_ARG_ENABLE(speedtest,
      [  --enable-speedtest	  Build the speedtest (takes lots of RAM) (default: no)],

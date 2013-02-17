@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,21 +17,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
 #include <stx/btree_multimap.h>
 #include <set>
 
-class BoundTest : public CPPUNIT_NS::TestFixture
+struct BoundTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( BoundTest );
-    CPPUNIT_TEST(test_3200_10);
-    CPPUNIT_TEST(test_320_1000);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    BoundTest() : tpunit::TestFixture(
+        TEST(BoundTest::test_3200_10),
+        TEST(BoundTest::test_320_1000)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -59,15 +56,15 @@ protected:
             unsigned int k = rand() % modulo;
             unsigned int v = 234;
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
             bt.insert2(k, v);
             set.insert(k);
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
         }
 
-        CPPUNIT_ASSERT( bt.size() == insnum );
+        ASSERT( bt.size() == insnum );
 
         // *** iterate
         {
@@ -75,10 +72,10 @@ protected:
             multiset_type::const_iterator si = set.begin();
             for(; bi != bt.end() && si != set.end(); ++bi, ++si)
             {
-                CPPUNIT_ASSERT( *si == bi.key() );
+                ASSERT( *si == bi.key() );
             }
-            CPPUNIT_ASSERT( bi == bt.end() );
-            CPPUNIT_ASSERT( si == set.end() );
+            ASSERT( bi == bt.end() );
+            ASSERT( si == set.end() );
         }
 
         // *** existance
@@ -87,7 +84,7 @@ protected:
         {
             unsigned int k = rand() % modulo;
 
-            CPPUNIT_ASSERT( bt.exists(k) );
+            ASSERT( bt.exists(k) );
         }
 
         // *** counting
@@ -96,7 +93,7 @@ protected:
         {
             unsigned int k = rand() % modulo;
 
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
         }
 
         // *** lower_bound
@@ -106,11 +103,11 @@ protected:
             btree_type::const_iterator bi = bt.lower_bound(k);
 
             if ( bi == bt.end() )
-                CPPUNIT_ASSERT( si == set.end() );
+                ASSERT( si == set.end() );
             else if ( si == set.end() )
-                CPPUNIT_ASSERT( bi == bt.end() );
+                ASSERT( bi == bt.end() );
             else
-                CPPUNIT_ASSERT( *si == bi.key() );
+                ASSERT( *si == bi.key() );
         }
 
         // *** upper_bound
@@ -120,11 +117,11 @@ protected:
             btree_type::const_iterator bi = bt.upper_bound(k);
 
             if ( bi == bt.end() )
-                CPPUNIT_ASSERT( si == set.end() );
+                ASSERT( si == set.end() );
             else if ( si == set.end() )
-                CPPUNIT_ASSERT( bi == bt.end() );
+                ASSERT( bi == bt.end() );
             else
-                CPPUNIT_ASSERT( *si == bi.key() );
+                ASSERT( *si == bi.key() );
         }
 
         // *** equal_range
@@ -134,18 +131,18 @@ protected:
             std::pair<btree_type::const_iterator, btree_type::const_iterator> bi = bt.equal_range(k);
 
             if ( bi.first == bt.end() )
-                CPPUNIT_ASSERT( si.first == set.end() );
+                ASSERT( si.first == set.end() );
             else if ( si.first == set.end() )
-                CPPUNIT_ASSERT( bi.first == bt.end() );
+                ASSERT( bi.first == bt.end() );
             else
-                CPPUNIT_ASSERT( *si.first == bi.first.key() );
+                ASSERT( *si.first == bi.first.key() );
 
             if ( bi.second == bt.end() )
-                CPPUNIT_ASSERT( si.second == set.end() );
+                ASSERT( si.second == set.end() );
             else if ( si.second == set.end() )
-                CPPUNIT_ASSERT( bi.second == bt.end() );
+                ASSERT( bi.second == bt.end() );
             else
-                CPPUNIT_ASSERT( *si.second == bi.second.key() );
+                ASSERT( *si.second == bi.second.key() );
         }
 
         // *** deletion
@@ -156,18 +153,18 @@ protected:
 
             if (set.find(k) != set.end())
             {
-                CPPUNIT_ASSERT( bt.size() == set.size() );
+                ASSERT( bt.size() == set.size() );
 
-                CPPUNIT_ASSERT( bt.exists(k) );
-                CPPUNIT_ASSERT( bt.erase_one(k) );
+                ASSERT( bt.exists(k) );
+                ASSERT( bt.erase_one(k) );
                 set.erase( set.find(k) );
 
-                CPPUNIT_ASSERT( bt.size() == set.size() );
+                ASSERT( bt.size() == set.size() );
             }
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
-        CPPUNIT_ASSERT( set.empty() );
+        ASSERT( bt.empty() );
+        ASSERT( set.empty() );
     }
 
     void test_3200_10()
@@ -179,6 +176,6 @@ protected:
     {
         test_multi(320, 1000);
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( BoundTest );
+} __BoundTest;
+

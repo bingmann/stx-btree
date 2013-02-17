@@ -5,7 +5,7 @@
 
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2013 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the

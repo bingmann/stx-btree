@@ -16,7 +16,6 @@
 @SET_MAKE@
 
 # B+ Tree Test Cases
-# $Id$
 
 VPATH = @srcdir@
 am__make_dryrun = \
@@ -66,21 +65,12 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am__testsuite_SOURCES_DIST = TestTrue.cc TestRunner.cc \
-	InstantiationTest.cc SimpleTest.cc LargeTest.cc BoundTest.cc \
-	IteratorTest.cc StructureTest.cc DumpRestoreTest.cc \
-	RelationTest.cc
-@HAVE_CPPUNIT_FALSE@am_testsuite_OBJECTS = TestTrue.$(OBJEXT)
-@HAVE_CPPUNIT_TRUE@am_testsuite_OBJECTS = TestRunner.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	InstantiationTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	SimpleTest.$(OBJEXT) LargeTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	BoundTest.$(OBJEXT) IteratorTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	StructureTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	DumpRestoreTest.$(OBJEXT) \
-@HAVE_CPPUNIT_TRUE@	RelationTest.$(OBJEXT)
+am_testsuite_OBJECTS = tpunit.$(OBJEXT) InstantiationTest.$(OBJEXT) \
+	SimpleTest.$(OBJEXT) LargeTest.$(OBJEXT) BoundTest.$(OBJEXT) \
+	IteratorTest.$(OBJEXT) StructureTest.$(OBJEXT) \
+	DumpRestoreTest.$(OBJEXT) RelationTest.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_LDADD = $(LDADD)
-testsuite_DEPENDENCIES =
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/scripts/depcomp
 am__depfiles_maybe = depfiles
@@ -90,8 +80,12 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+CCLD = $(CC)
+LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
 SOURCES = $(testsuite_SOURCES)
-DIST_SOURCES = $(am__testsuite_SOURCES_DIST)
+DIST_SOURCES = $(testsuite_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -112,9 +106,6 @@ CC = @CC@
 CCDEPMODE = @CCDEPMODE@
 CFLAGS = @CFLAGS@
 CPPFLAGS = @CPPFLAGS@
-CPPUNIT_CFLAGS = @CPPUNIT_CFLAGS@
-CPPUNIT_CONFIG = @CPPUNIT_CONFIG@
-CPPUNIT_LIBS = @CPPUNIT_LIBS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
@@ -218,14 +209,10 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-@HAVE_CPPUNIT_FALSE@testsuite_SOURCES = TestTrue.cc
-@HAVE_CPPUNIT_TRUE@testsuite_SOURCES = TestRunner.cc \
-@HAVE_CPPUNIT_TRUE@	InstantiationTest.cc SimpleTest.cc \
-@HAVE_CPPUNIT_TRUE@	LargeTest.cc BoundTest.cc IteratorTest.cc \
-@HAVE_CPPUNIT_TRUE@	StructureTest.cc DumpRestoreTest.cc \
-@HAVE_CPPUNIT_TRUE@	RelationTest.cc
-AM_CXXFLAGS = -W -Wall -Wold-style-cast -Wshadow -DBTREE_DEBUG -I$(top_srcdir)/include @CPPUNIT_CFLAGS@
-LDADD = @CPPUNIT_LIBS@
+testsuite_SOURCES = tpunit.cc tpunit.h InstantiationTest.cc \
+	SimpleTest.cc LargeTest.cc BoundTest.cc IteratorTest.cc \
+	StructureTest.cc DumpRestoreTest.cc RelationTest.cc
+AM_CXXFLAGS = -W -Wall -Wold-style-cast -Wshadow -DBTREE_DEBUG -I$(top_srcdir)/include
 all: all-am
 
 .SUFFIXES:
@@ -281,8 +268,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/RelationTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SimpleTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/StructureTest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestRunner.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TestTrue.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tpunit.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

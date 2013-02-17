@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 #include <time.h>
@@ -27,20 +25,19 @@
 #include <stx/btree_multiset.h>
 #include <set>
 
-class LargeTest : public CPPUNIT_NS::TestFixture
+struct LargeTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( LargeTest );
-    CPPUNIT_TEST(test_320_mod_1000);
-    CPPUNIT_TEST(test_320_mod_10000);
-    CPPUNIT_TEST(test_3200_mod_10);
-    CPPUNIT_TEST(test_3200_mod_100);
-    CPPUNIT_TEST(test_3200_mod_1000);
-    CPPUNIT_TEST(test_3200_mod_10000);
-    CPPUNIT_TEST(test_32000_mod_10000);
-    CPPUNIT_TEST(test_sequence);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    LargeTest() : tpunit::TestFixture(
+        TEST(LargeTest::test_320_mod_1000),
+        TEST(LargeTest::test_320_mod_10000),
+        TEST(LargeTest::test_3200_mod_10),
+        TEST(LargeTest::test_3200_mod_100),
+        TEST(LargeTest::test_3200_mod_1000),
+        TEST(LargeTest::test_3200_mod_10000),
+        TEST(LargeTest::test_32000_mod_10000),
+        TEST(LargeTest::test_sequence)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -67,25 +64,25 @@ protected:
         {
             unsigned int k = rand() % modulo;
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
             bt.insert(k);
             set.insert(k);
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
         }
 
-        CPPUNIT_ASSERT( bt.size() == insnum );
+        ASSERT( bt.size() == insnum );
 
         // *** iterate
         btree_type::iterator bi = bt.begin();
         multiset_type::const_iterator si = set.begin();
         for(; bi != bt.end() && si != set.end(); ++bi, ++si)
         {
-            CPPUNIT_ASSERT( *si == bi.key() );
+            ASSERT( *si == bi.key() );
         }
-        CPPUNIT_ASSERT( bi == bt.end() );
-        CPPUNIT_ASSERT( si == set.end() );
+        ASSERT( bi == bt.end() );
+        ASSERT( si == set.end() );
 
         // *** existance
         srand(34234235);
@@ -93,7 +90,7 @@ protected:
         {
             unsigned int k = rand() % modulo;
 
-            CPPUNIT_ASSERT( bt.exists(k) );
+            ASSERT( bt.exists(k) );
         }
 
         // *** counting
@@ -102,7 +99,7 @@ protected:
         {
             unsigned int k = rand() % modulo;
 
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
         }
 
         // *** deletion
@@ -113,19 +110,19 @@ protected:
 
             if (set.find(k) != set.end())
             {
-                CPPUNIT_ASSERT( bt.size() == set.size() );
+                ASSERT( bt.size() == set.size() );
 
-                CPPUNIT_ASSERT( bt.exists(k) );
-                CPPUNIT_ASSERT( bt.erase_one(k) );
+                ASSERT( bt.exists(k) );
+                ASSERT( bt.erase_one(k) );
                 set.erase( set.find(k) );
 
-                CPPUNIT_ASSERT( bt.size() == set.size() );
-		CPPUNIT_ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
+                ASSERT( bt.size() == set.size() );
+		ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
             }
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
-        CPPUNIT_ASSERT( set.empty() );
+        ASSERT( bt.empty() );
+        ASSERT( set.empty() );
     }
 
     void test_320_mod_1000()
@@ -181,25 +178,25 @@ protected:
         {
             unsigned int k = i;
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
             bt.insert(k);
             set.insert(k);
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
 
-            CPPUNIT_ASSERT( bt.size() == set.size() );
+            ASSERT( bt.size() == set.size() );
         }
 
-        CPPUNIT_ASSERT( bt.size() == insnum );
+        ASSERT( bt.size() == insnum );
 
         // *** iterate
         btree_type::iterator bi = bt.begin();
         multiset_type::const_iterator si = set.begin();
         for(; bi != bt.end() && si != set.end(); ++bi, ++si)
         {
-            CPPUNIT_ASSERT( *si == bi.key() );
+            ASSERT( *si == bi.key() );
         }
-        CPPUNIT_ASSERT( bi == bt.end() );
-        CPPUNIT_ASSERT( si == set.end() );
+        ASSERT( bi == bt.end() );
+        ASSERT( si == set.end() );
 
         // *** existance
         srand(34234235);
@@ -207,7 +204,7 @@ protected:
         {
             unsigned int k = i;
 
-            CPPUNIT_ASSERT( bt.exists(k) );
+            ASSERT( bt.exists(k) );
         }
 
         // *** counting
@@ -216,7 +213,7 @@ protected:
         {
             unsigned int k = i;
 
-            CPPUNIT_ASSERT( bt.count(k) == set.count(k) );
+            ASSERT( bt.count(k) == set.count(k) );
         }
 
         // *** deletion
@@ -227,21 +224,20 @@ protected:
 
             if (set.find(k) != set.end())
             {
-                CPPUNIT_ASSERT( bt.size() == set.size() );
+                ASSERT( bt.size() == set.size() );
 
-                CPPUNIT_ASSERT( bt.exists(k) );
-                CPPUNIT_ASSERT( bt.erase_one(k) );
+                ASSERT( bt.exists(k) );
+                ASSERT( bt.erase_one(k) );
                 set.erase( set.find(k) );
 
-                CPPUNIT_ASSERT( bt.size() == set.size() );
-		CPPUNIT_ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
+                ASSERT( bt.size() == set.size() );
+		ASSERT( std::equal(bt.begin(), bt.end(), set.begin()) );
             }
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
-        CPPUNIT_ASSERT( set.empty() );
+        ASSERT( bt.empty() );
+        ASSERT( set.empty() );
     }
 
-};
+} __LargeTest;
 
-CPPUNIT_TEST_SUITE_REGISTRATION( LargeTest );

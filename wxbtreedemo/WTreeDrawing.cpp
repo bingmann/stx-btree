@@ -316,19 +316,19 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 {
     dc.SetPen(*wxBLACK_PEN);
 
-    if (bt.tree.root)
+    if (bt.tree.m_root)
     {
         // draw tree data items in different font sizes depending on the depth
         // of the tree
-        if (bt.tree.root->level <= 1)
+        if (bt.tree.m_root->level <= 1)
         {
             dc.SetFont(wxFont(14, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
         }
-        else if (bt.tree.root->level <= 2)
+        else if (bt.tree.m_root->level <= 2)
         {
             dc.SetFont(wxFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
         }
-        else if (bt.tree.root->level <= 3)
+        else if (bt.tree.m_root->level <= 3)
         {
             dc.SetFont(wxFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL));
         }
@@ -339,16 +339,16 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
         const int offsety = 4;
 
         // calculate width of the drawn tree
-        wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.root);
+        wxSize ts = draw_node<BTreeType>(-1, -1, bt.tree.m_root);
 
         if (ts.GetWidth() < w.GetSize().GetWidth())
         {
             // center small trees on the current view area
-            ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, offsety, bt.tree.root);
+            ts = draw_node<BTreeType>((w.GetSize().GetWidth() - ts.GetWidth()) / 2, offsety, bt.tree.m_root);
         }
         else
         {
-            ts = draw_node<BTreeType>(0, offsety, bt.tree.root);
+            ts = draw_node<BTreeType>(0, offsety, bt.tree.m_root);
         }
 
         if (ts != w.oldTreeSize || w.scalefactor != w.oldscalefactor)

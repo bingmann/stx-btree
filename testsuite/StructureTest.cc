@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,19 +17,18 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
 #include <stx/btree_multiset.h>
 
-class StructureTest : public CPPUNIT_NS::TestFixture
+struct StructureTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( StructureTest );
-    CPPUNIT_TEST(test_insert_erase);
-    CPPUNIT_TEST_SUITE_END();
-
-public:
+    StructureTest() : tpunit::TestFixture(
+        TEST(StructureTest::test_insert_erase)
+        )
+    {}
 
     struct testdata
     {
@@ -49,8 +46,6 @@ public:
         {
         }
     };
-
-protected:
 
     struct testcomp
     {
@@ -85,24 +80,23 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == i);
+            ASSERT(bt.size() == i);
             bt.insert(rand() % 100);
-            CPPUNIT_ASSERT(bt.size() == i + 1);
+            ASSERT(bt.size() == i + 1);
         }
 
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 320 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-            CPPUNIT_ASSERT(bt.size() == 320 - i - 1);
+            ASSERT(bt.size() == 320 - i);
+            ASSERT( bt.erase_one(rand() % 100) );
+            ASSERT(bt.size() == 320 - i - 1);
         }
     }
-};
+
+} __StructureTest;
 
 inline std::ostream& operator<< (std::ostream &o, const struct StructureTest::testdata &t)
 {
     return o << t.a;
 }
-
-CPPUNIT_TEST_SUITE_REGISTRATION( StructureTest );

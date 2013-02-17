@@ -1,8 +1,6 @@
-// $Id$
-
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -19,7 +17,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "tpunit.h"
 
 #include <stdlib.h>
 
@@ -27,19 +25,18 @@
 #include <stx/btree_multimap.h>
 #include <stx/btree_map.h>
 
-class SimpleTest : public CPPUNIT_NS::TestFixture
+struct SimpleTest : public tpunit::TestFixture
 {
-    CPPUNIT_TEST_SUITE( SimpleTest );
-    CPPUNIT_TEST(test_empty);
-    CPPUNIT_TEST(test_set_insert_erase_320);
-    CPPUNIT_TEST(test_set_insert_erase_320_descending);
-    CPPUNIT_TEST(test_map_insert_erase_320);
-    CPPUNIT_TEST(test_map_insert_erase_320_descending);
-    CPPUNIT_TEST(test2_map_insert_erase_strings);
-    CPPUNIT_TEST(test_set_100000_uint64);
-    CPPUNIT_TEST_SUITE_END();
-
-protected:
+    SimpleTest() : tpunit::TestFixture(
+        TEST(SimpleTest::test_empty),
+        TEST(SimpleTest::test_set_insert_erase_320),
+        TEST(SimpleTest::test_set_insert_erase_320_descending),
+        TEST(SimpleTest::test_map_insert_erase_320),
+        TEST(SimpleTest::test_map_insert_erase_320_descending),
+        TEST(SimpleTest::test2_map_insert_erase_strings),
+        TEST(SimpleTest::test_set_100000_uint64)
+        )
+    {}
 
     struct traits_nodebug
     {
@@ -58,9 +55,9 @@ protected:
         btree_type bt, bt2;
         bt.verify();
 
-        CPPUNIT_ASSERT( bt.erase(42) == false );
+        ASSERT( bt.erase(42) == false );
 
-        CPPUNIT_ASSERT( bt == bt2 );
+        ASSERT( bt == bt2 );
     }
 
     void test_set_insert_erase_320()
@@ -74,20 +71,20 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == i);
+            ASSERT(bt.size() == i);
             bt.insert(rand() % 100);
-            CPPUNIT_ASSERT(bt.size() == i + 1);
+            ASSERT(bt.size() == i + 1);
         }
 
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 320 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-            CPPUNIT_ASSERT(bt.size() == 320 - i - 1);
+            ASSERT(bt.size() == 320 - i);
+            ASSERT( bt.erase_one(rand() % 100) );
+            ASSERT(bt.size() == 320 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
     }
 
     void test_set_insert_erase_320_descending()
@@ -100,20 +97,20 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == i);
+            ASSERT(bt.size() == i);
             bt.insert(rand() % 100);
-            CPPUNIT_ASSERT(bt.size() == i + 1);
+            ASSERT(bt.size() == i + 1);
         }
 
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 320 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-            CPPUNIT_ASSERT(bt.size() == 320 - i - 1);
+            ASSERT(bt.size() == 320 - i);
+            ASSERT( bt.erase_one(rand() % 100) );
+            ASSERT(bt.size() == 320 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
     }
 
     void test_map_insert_erase_320()
@@ -126,20 +123,20 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == i);
+            ASSERT(bt.size() == i);
             bt.insert2(rand() % 100, "101");
-            CPPUNIT_ASSERT(bt.size() == i + 1);
+            ASSERT(bt.size() == i + 1);
         }
 
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 320 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-            CPPUNIT_ASSERT(bt.size() == 320 - i - 1);
+            ASSERT(bt.size() == 320 - i);
+            ASSERT( bt.erase_one(rand() % 100) );
+            ASSERT(bt.size() == 320 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
         bt.verify();
     }
 
@@ -153,20 +150,20 @@ protected:
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == i);
+            ASSERT(bt.size() == i);
             bt.insert2(rand() % 100, "101");
-            CPPUNIT_ASSERT(bt.size() == i + 1);
+            ASSERT(bt.size() == i + 1);
         }
 
         srand(34234235);
         for(unsigned int i = 0; i < 320; i++)
         {
-            CPPUNIT_ASSERT(bt.size() == 320 - i);
-            CPPUNIT_ASSERT( bt.erase_one(rand() % 100) );
-            CPPUNIT_ASSERT(bt.size() == 320 - i - 1);
+            ASSERT(bt.size() == 320 - i);
+            ASSERT( bt.erase_one(rand() % 100) );
+            ASSERT(bt.size() == 320 - i - 1);
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
         bt.verify();
     }
 
@@ -194,12 +191,12 @@ protected:
             {
                 std::string key = std::string(1, letters[a]) + letters[b];
 
-                CPPUNIT_ASSERT( bt.find(key)->second == a * letters.size() + b );
-                CPPUNIT_ASSERT( bt.erase_one(key) );
+                ASSERT( bt.find(key)->second == a * letters.size() + b );
+                ASSERT( bt.erase_one(key) );
             }
         }
 
-        CPPUNIT_ASSERT( bt.empty() );
+        ASSERT( bt.empty() );
         bt.verify();
     }
 
@@ -220,8 +217,7 @@ protected:
             }
         }
 
-        CPPUNIT_ASSERT( bt.size() == 1000 );
+        ASSERT( bt.size() == 1000 );
     }
-};
 
-CPPUNIT_TEST_SUITE_REGISTRATION( SimpleTest );
+} __SimpleTest;
