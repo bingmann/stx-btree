@@ -136,7 +136,8 @@ template <typename _Key, typename _Data,
           typename _Compare = std::less<_Key>,
           typename _Traits = btree_default_map_traits<_Key, _Data>,
           bool _Duplicates = false,
-          typename _Alloc = std::allocator<_Value> >
+          typename _Alloc = std::allocator<_Value>,
+          bool _UsedAsSet = false >
 class btree
 {
 public:
@@ -170,6 +171,13 @@ public:
     /// Seventh template parameter: STL allocator for tree nodes
     typedef _Alloc                      allocator_type;
 
+    /// Eighth template parameter: boolean indicator whether the btree is used
+    /// as a set. In this case all operations on the data arrays are
+    /// omitted. This flag is kind of hacky, but required because
+    /// sizeof(empty_struct) = 1 due to the C standard. Without the flag, lots
+    /// of superfluous copying would occur.
+    static const bool                   used_as_set = _UsedAsSet;
+
     // The macro BTREE_FRIENDS can be used by outside class to access the B+
     // tree internals. This was added for wxBTreeDemo to be able to draw the
     // tree.
@@ -180,7 +188,7 @@ public:
 
     /// Typedef of our own type
     typedef btree<key_type, data_type, value_type, key_compare,
-                  traits, allow_duplicates, allocator_type> btree_self;
+                  traits, allow_duplicates, allocator_type, used_as_set> btree_self;
 
     /// Size type used to count keys
     typedef size_t                              size_type;
@@ -301,7 +309,7 @@ private:
         key_type        slotkey[leafslotmax];
 
         /// Array of data
-        data_type       slotdata[leafslotmax];
+        data_type       slotdata[used_as_set ? 1 : leafslotmax];
 
         /// Set variables to initial values
         inline void initialize()
@@ -430,7 +438,8 @@ public:
 
         /// Also friendly to the base btree class, because erase_iter() needs
         /// to read the currnode and currslot values directly.
-        friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>;
+        friend class btree<key_type, data_type, value_type, key_compare,
+                           traits, allow_duplicates, allocator_type, used_as_set>;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
         /// operator->
@@ -463,8 +472,7 @@ public:
         /// value are not stored together
         inline reference operator*() const
         {
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
-                                                         currnode->slotdata[currslot]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return temp_value;
         }
 
@@ -473,8 +481,7 @@ public:
         /// together.
         inline pointer operator->() const
         {
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
-                                                         currnode->slotdata[currslot]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return &temp_value;
         }
 
@@ -487,7 +494,7 @@ public:
         /// Writable reference to the current data object
         inline data_type& data() const
         {
-            return currnode->slotdata[currslot];
+            return currnode->slotdata[used_as_set ? 0 : currslot];
         }
 
         /// Prefix++ advance the iterator to the next slot
@@ -668,8 +675,7 @@ public:
         /// together.
         inline reference operator*() const
         {
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
-                                                         currnode->slotdata[currslot]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return temp_value;
         }
 
@@ -678,8 +684,7 @@ public:
         /// together.
         inline pointer operator->() const
         {
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot],
-                                                         currnode->slotdata[currslot]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return &temp_value;
         }
 
@@ -692,7 +697,7 @@ public:
         /// Read-only reference to the current data object
         inline const data_type& data() const
         {
-            return currnode->slotdata[currslot];
+            return currnode->slotdata[used_as_set ? 0 : currslot];
         }
 
         /// Prefix++ advance the iterator to the next slot
@@ -871,8 +876,7 @@ public:
         inline reference operator*() const
         {
             BTREE_ASSERT(currslot > 0);
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
-                                                         currnode->slotdata[currslot - 1]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return temp_value;
         }
 
@@ -882,8 +886,7 @@ public:
         inline pointer operator->() const
         {
             BTREE_ASSERT(currslot > 0);
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
-                                                         currnode->slotdata[currslot - 1]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return &temp_value;
         }
 
@@ -898,7 +901,7 @@ public:
         inline data_type& data() const
         {
             BTREE_ASSERT(currslot > 0);
-            return currnode->slotdata[currslot - 1];
+            return currnode->slotdata[used_as_set ? 0 : currslot-1];
         }
 
         /// Prefix++ advance the iterator to the next slot
@@ -1080,8 +1083,7 @@ public:
         inline reference operator*() const
         {
             BTREE_ASSERT(currslot > 0);
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
-                                                         currnode->slotdata[currslot - 1]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return temp_value;
         }
 
@@ -1091,8 +1093,7 @@ public:
         inline pointer operator->() const
         {
             BTREE_ASSERT(currslot > 0);
-            temp_value = pair_to_value_type()( pair_type(currnode->slotkey[currslot - 1],
-                                                         currnode->slotdata[currslot - 1]) );
+            temp_value = pair_to_value_type()( pair_type(key(),data()) );
             return &temp_value;
         }
 
@@ -1107,7 +1108,7 @@ public:
         inline const data_type& data() const
         {
             BTREE_ASSERT(currslot > 0);
-            return currnode->slotdata[currslot - 1];
+            return currnode->slotdata[used_as_set ? 0 : currslot-1];
         }
 
         /// Prefix++ advance the iterator to the previous slot
@@ -1335,7 +1336,8 @@ public:
         { }
 
         /// Friendly to the btree class so it may call the constructor
-        friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>;
+        friend class btree<key_type, data_type, value_type, key_compare,
+                           traits, allow_duplicates, allocator_type, used_as_set>;
 
     public:
         /// Function call "less"-operator resulting in true if x < y.
@@ -1446,6 +1448,26 @@ private:
             a.deallocate(in, 1);
             stats.innernodes--;
         }
+    }
+
+    /// Convenient template function for conditional copying of slotdata. This
+    /// should be used instead of std::copy for all slotdata manipulations.
+    template<class InputIterator, class OutputIterator>
+    static OutputIterator data_copy (InputIterator first, InputIterator last,
+                                     OutputIterator result)
+    {
+        if (used_as_set) return result; // no operation
+        else return std::copy(first, last, result);
+    }
+
+    /// Convenient template function for conditional copying of slotdata. This
+    /// should be used instead of std::copy for all slotdata manipulations.
+    template<class InputIterator, class OutputIterator>
+    static OutputIterator data_copy_backward (InputIterator first, InputIterator last,
+                                              OutputIterator result)
+    {
+        if (used_as_set) return result; // no operation
+        else return std::copy_backward(first, last, result);
     }
 
 public:
@@ -1966,7 +1988,7 @@ private:
 
             newleaf->slotuse = leaf->slotuse;
             std::copy(leaf->slotkey, leaf->slotkey + leaf->slotuse, newleaf->slotkey);
-            std::copy(leaf->slotdata, leaf->slotdata + leaf->slotuse, newleaf->slotdata);
+            data_copy(leaf->slotdata, leaf->slotdata + leaf->slotuse, newleaf->slotdata);
 
             if (headleaf == NULL)
             {
@@ -2219,11 +2241,11 @@ private:
 
             std::copy_backward(leaf->slotkey + slot, leaf->slotkey + leaf->slotuse,
                                leaf->slotkey + leaf->slotuse+1);
-            std::copy_backward(leaf->slotdata + slot, leaf->slotdata + leaf->slotuse,
+            data_copy_backward(leaf->slotdata + slot, leaf->slotdata + leaf->slotuse,
                                leaf->slotdata + leaf->slotuse+1);
 
             leaf->slotkey[slot] = key;
-            leaf->slotdata[slot] = value;
+            if (!used_as_set) leaf->slotdata[slot] = value;
             leaf->slotuse++;
 
             if (splitnode && leaf != *splitnode && slot == leaf->slotuse-1)
@@ -2263,7 +2285,7 @@ private:
 
         std::copy(leaf->slotkey + mid, leaf->slotkey + leaf->slotuse,
                   newleaf->slotkey);
-        std::copy(leaf->slotdata + mid, leaf->slotdata + leaf->slotuse,
+        data_copy(leaf->slotdata + mid, leaf->slotdata + leaf->slotuse,
                   newleaf->slotdata);
 
         leaf->slotuse = mid;
@@ -2478,7 +2500,7 @@ private:
 
             std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
                       leaf->slotkey + slot);
-            std::copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
+            data_copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
                       leaf->slotdata + slot);
 
             leaf->slotuse--;
@@ -2774,7 +2796,7 @@ private:
 
             std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
                       leaf->slotkey + slot);
-            std::copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
+            data_copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
                       leaf->slotdata + slot);
 
             leaf->slotuse--;
@@ -3054,7 +3076,7 @@ private:
 
         std::copy(right->slotkey, right->slotkey + right->slotuse,
                   left->slotkey + left->slotuse);
-        std::copy(right->slotdata, right->slotdata + right->slotuse,
+        data_copy(right->slotdata, right->slotdata + right->slotuse,
                   left->slotdata + left->slotuse);
 
         left->slotuse += right->slotuse;
@@ -3138,7 +3160,7 @@ private:
 
         std::copy(right->slotkey, right->slotkey + shiftnum,
                   left->slotkey + left->slotuse);
-        std::copy(right->slotdata, right->slotdata + shiftnum,
+        data_copy(right->slotdata, right->slotdata + shiftnum,
                   left->slotdata + left->slotuse);
 
         left->slotuse += shiftnum;
@@ -3147,7 +3169,7 @@ private:
 
         std::copy(right->slotkey + shiftnum, right->slotkey + right->slotuse,
                   right->slotkey);
-        std::copy(right->slotdata + shiftnum, right->slotdata + right->slotuse,
+        data_copy(right->slotdata + shiftnum, right->slotdata + right->slotuse,
                   right->slotdata);
 
         right->slotuse -= shiftnum;
@@ -3258,7 +3280,7 @@ private:
 
         std::copy_backward(right->slotkey, right->slotkey + right->slotuse,
                            right->slotkey + right->slotuse + shiftnum);
-        std::copy_backward(right->slotdata, right->slotdata + right->slotuse,
+        data_copy_backward(right->slotdata, right->slotdata + right->slotuse,
                            right->slotdata + right->slotuse + shiftnum);
 
         right->slotuse += shiftnum;
@@ -3266,7 +3288,7 @@ private:
         // copy the last items from the left node to the first slot in the right node.
         std::copy(left->slotkey + left->slotuse - shiftnum, left->slotkey + left->slotuse,
                   right->slotkey);
-        std::copy(left->slotdata + left->slotuse - shiftnum, left->slotdata + left->slotuse,
+        data_copy(left->slotdata + left->slotuse - shiftnum, left->slotdata + left->slotuse,
                   right->slotdata);
 
         left->slotuse -= shiftnum;

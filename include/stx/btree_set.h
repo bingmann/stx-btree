@@ -96,7 +96,8 @@ public:
     typedef btree_set<key_type, key_compare, traits, allocator_type> self;
 
     /// Implementation type of the btree_base
-    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, false, allocator_type> btree_impl;
+    typedef stx::btree<key_type, data_type, value_type, key_compare,
+                       traits, false, allocator_type, true> btree_impl;
 
     /// Function class comparing two value_type keys.
     typedef typename btree_impl::value_compare  value_compare;

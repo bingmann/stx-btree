@@ -87,7 +87,8 @@ public:
     typedef std::pair<key_type, data_type>      value_type;
 
     /// Implementation type of the btree_base
-    typedef stx::btree<key_type, data_type, value_type, key_compare, traits, true, allocator_type> btree_impl;
+    typedef stx::btree<key_type, data_type, value_type, key_compare,
+                       traits, true, allocator_type, false> btree_impl;
 
     /// Function class comparing two value_type pairs.
     typedef typename btree_impl::value_compare  value_compare;
