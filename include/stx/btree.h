@@ -5,7 +5,7 @@
 
 /*
  * STX B+ Tree Template Classes v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann
  *
  * This library is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as published by the
@@ -180,7 +180,7 @@ public:
 
     /// Typedef of our own type
     typedef btree<key_type, data_type, value_type, key_compare,
-		  traits, allow_duplicates, allocator_type> btree_self;
+                  traits, allow_duplicates, allocator_type> btree_self;
 
     /// Size type used to count keys
     typedef size_t                              size_type;
@@ -249,7 +249,7 @@ private:
     /// data items.
     struct inner_node : public node
     {
-	/// Define an related allocator for the inner_node structs.
+        /// Define an related allocator for the inner_node structs.
         typedef typename _Alloc::template rebind<inner_node>::other alloc_type;
 
         /// Keys of children or data pointers
@@ -288,7 +288,7 @@ private:
     /// key array is traversed very often compared to accessing the data items.
     struct leaf_node : public node
     {
-	/// Define an related allocator for the leaf_node structs.
+        /// Define an related allocator for the leaf_node structs.
         typedef typename _Alloc::template rebind<leaf_node>::other alloc_type;
 
         /// Double linked list pointers to traverse the leaves
@@ -416,18 +416,21 @@ public:
         /// Current key/data slot referenced
         unsigned short          currslot;
 
-        /// Friendly to the const_iterator, so it may access the two data items directly.
+        /// Friendly to the const_iterator, so it may access the two data items
+        /// directly.
         friend class const_iterator;
 
-        /// Also friendly to the reverse_iterator, so it may access the two data items directly.
+        /// Also friendly to the reverse_iterator, so it may access the two
+        /// data items directly.
         friend class reverse_iterator;
 
-        /// Also friendly to the const_reverse_iterator, so it may access the two data items directly.
+        /// Also friendly to the const_reverse_iterator, so it may access the
+        /// two data items directly.
         friend class const_reverse_iterator;
 
-	/// Also friendly to the base btree class, because erase_iter() needs
-	/// to read the currnode and currslot values directly.
-	friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>;
+        /// Also friendly to the base btree class, because erase_iter() needs
+        /// to read the currnode and currslot values directly.
+        friend class btree<key_type, data_type, value_type, key_compare, traits, allow_duplicates>;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
         /// operator->
@@ -619,7 +622,8 @@ public:
         /// Current key/data slot referenced
         unsigned short                  currslot;
 
-        /// Friendly to the reverse_const_iterator, so it may access the two data items directly
+        /// Friendly to the reverse_const_iterator, so it may access the two
+        /// data items directly
         friend class const_reverse_iterator;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
@@ -823,13 +827,16 @@ public:
         /// One slot past the current key/data slot referenced.
         unsigned short          currslot;
 
-        /// Friendly to the const_iterator, so it may access the two data items directly
+        /// Friendly to the const_iterator, so it may access the two data items
+        /// directly
         friend class iterator;
 
-        /// Also friendly to the const_iterator, so it may access the two data items directly
+        /// Also friendly to the const_iterator, so it may access the two data
+        /// items directly
         friend class const_iterator;
 
-        /// Also friendly to the const_iterator, so it may access the two data items directly
+        /// Also friendly to the const_iterator, so it may access the two data
+        /// items directly
         friend class const_reverse_iterator;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
@@ -1026,7 +1033,8 @@ public:
         /// One slot past the current key/data slot referenced.
         unsigned short                          currslot;
 
-        /// Friendly to the const_iterator, so it may access the two data items directly.
+        /// Friendly to the const_iterator, so it may access the two data items
+        /// directly.
         friend class reverse_iterator;
 
         /// Evil! A temporary value_type to STL-correctly deliver operator* and
@@ -2169,16 +2177,13 @@ private:
                     }
                 }
 
-                // put pointer to child node into correct slot
+                // move items and put pointer to child node into correct slot
                 BTREE_ASSERT(slot >= 0 && slot <= inner->slotuse);
 
-                int i = inner->slotuse;
-
-                while(i > slot) {
-                    inner->slotkey[i] = inner->slotkey[i - 1];
-                    inner->childid[i + 1] = inner->childid[i];
-                    i--;
-                }
+                std::copy_backward(inner->slotkey + slot, inner->slotkey + inner->slotuse,
+                                   inner->slotkey + inner->slotuse+1);
+                std::copy_backward(inner->childid + slot, inner->childid + inner->slotuse+1,
+                                   inner->childid + inner->slotuse+2);
 
                 inner->slotkey[slot] = newkey;
                 inner->childid[slot + 1] = newchild;
@@ -2209,19 +2214,16 @@ private:
                 }
             }
 
-            // put data item into correct data slot
+            // move items and put data item into correct data slot
+            BTREE_ASSERT(slot >= 0 && slot <= leaf->slotuse);
 
-            int i = leaf->slotuse - 1;
-            BTREE_ASSERT(i + 1 < leafslotmax);
+            std::copy_backward(leaf->slotkey + slot, leaf->slotkey + leaf->slotuse,
+                               leaf->slotkey + leaf->slotuse+1);
+            std::copy_backward(leaf->slotdata + slot, leaf->slotdata + leaf->slotuse,
+                               leaf->slotdata + leaf->slotuse+1);
 
-            while(i >= 0 && key_less(key, leaf->slotkey[i])) {
-                leaf->slotkey[i + 1] = leaf->slotkey[i];
-                leaf->slotdata[i + 1] = leaf->slotdata[i];
-                i--;
-            }
-
-            leaf->slotkey[i + 1] = key;
-            leaf->slotdata[i + 1] = value;
+            leaf->slotkey[slot] = key;
+            leaf->slotdata[slot] = value;
             leaf->slotuse++;
 
             if (splitnode && leaf != *splitnode && slot == leaf->slotuse-1)
@@ -2232,7 +2234,7 @@ private:
                 *splitkey = key;
             }
 
-            return std::pair<iterator, bool>(iterator(leaf, i + 1), true);
+            return std::pair<iterator, bool>(iterator(leaf, slot), true);
         }
     }
 
@@ -2259,12 +2261,10 @@ private:
             newleaf->nextleaf->prevleaf = newleaf;
         }
 
-        for(unsigned int slot = mid; slot < leaf->slotuse; ++slot)
-        {
-            unsigned int ni = slot - mid;
-            newleaf->slotkey[ni] = leaf->slotkey[slot];
-            newleaf->slotdata[ni] = leaf->slotdata[slot];
-        }
+        std::copy(leaf->slotkey + mid, leaf->slotkey + leaf->slotuse,
+                  newleaf->slotkey);
+        std::copy(leaf->slotdata + mid, leaf->slotdata + leaf->slotuse,
+                  newleaf->slotdata);
 
         leaf->slotuse = mid;
         leaf->nextleaf = newleaf;
@@ -2299,13 +2299,10 @@ private:
 
         newinner->slotuse = inner->slotuse - (mid + 1);
 
-        for(unsigned int slot = mid + 1; slot < inner->slotuse; ++slot)
-        {
-            unsigned int ni = slot - (mid + 1);
-            newinner->slotkey[ni] = inner->slotkey[slot];
-            newinner->childid[ni] = inner->childid[slot];
-        }
-        newinner->childid[newinner->slotuse] = inner->childid[inner->slotuse];
+        std::copy(inner->slotkey + mid+1, inner->slotkey + inner->slotuse,
+                  newinner->slotkey);
+        std::copy(inner->childid + mid+1, inner->childid + inner->slotuse+1,
+                  newinner->childid);
 
         inner->slotuse = mid;
 
@@ -2479,11 +2476,11 @@ private:
 
             BTREE_PRINT("Found key in leaf " << curr << " at slot " << slot << std::endl);
 
-            for (int i = slot; i < leaf->slotuse - 1; i++)
-            {
-                leaf->slotkey[i] = leaf->slotkey[i + 1];
-                leaf->slotdata[i] = leaf->slotdata[i + 1];
-            }
+            std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
+                      leaf->slotkey + slot);
+            std::copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
+                      leaf->slotdata + slot);
+
             leaf->slotuse--;
 
             result_t myres = btree_ok;
@@ -2651,11 +2648,11 @@ private:
 
                 free_node(inner->childid[slot]);
 
-                for(int i = slot; i < inner->slotuse; i++)
-                {
-                    inner->slotkey[i - 1] = inner->slotkey[i];
-                    inner->childid[i] = inner->childid[i + 1];
-                }
+                std::copy(inner->slotkey + slot, inner->slotkey + inner->slotuse,
+                          inner->slotkey + slot-1);
+                std::copy(inner->childid + slot+1, inner->childid + inner->slotuse+1,
+                          inner->childid + slot);
+
                 inner->slotuse--;
 
                 if (inner->level == 1)
@@ -2746,10 +2743,10 @@ private:
      * and the same underflow cases are handled as in erase_one_descend.
      */
     result_t erase_iter_descend(const iterator& iter,
-				node *curr,
-				node *left, node *right,
-				inner_node *leftparent, inner_node *rightparent,
-				inner_node *parent, unsigned int parentslot)
+                                node *curr,
+                                node *left, node *right,
+                                inner_node *leftparent, inner_node *rightparent,
+                                inner_node *parent, unsigned int parentslot)
     {
         if (curr->isleafnode())
         {
@@ -2757,12 +2754,12 @@ private:
             leaf_node *leftleaf = static_cast<leaf_node*>(left);
             leaf_node *rightleaf = static_cast<leaf_node*>(right);
 
-	    // if this is not the correct leaf, get next step in recursive
-	    // search
-	    if (leaf != iter.currnode)
-	    {
-		return btree_not_found;
-	    }
+            // if this is not the correct leaf, get next step in recursive
+            // search
+            if (leaf != iter.currnode)
+            {
+                return btree_not_found;
+            }
 
             if (iter.currslot >= leaf->slotuse)
             {
@@ -2771,15 +2768,15 @@ private:
                 return btree_not_found;
             }
 
-	    int slot = iter.currslot;
+            int slot = iter.currslot;
 
             BTREE_PRINT("Found iterator in leaf " << curr << " at slot " << slot << std::endl);
 
-            for (int i = slot; i < leaf->slotuse - 1; i++)
-            {
-                leaf->slotkey[i] = leaf->slotkey[i + 1];
-                leaf->slotdata[i] = leaf->slotdata[i + 1];
-            }
+            std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
+                      leaf->slotkey + slot);
+            std::copy(leaf->slotdata + slot+1, leaf->slotdata + leaf->slotuse,
+                      leaf->slotdata + slot);
+
             leaf->slotuse--;
 
             result_t myres = btree_ok;
@@ -2882,58 +2879,58 @@ private:
             inner_node *leftinner = static_cast<inner_node*>(left);
             inner_node *rightinner = static_cast<inner_node*>(right);
 
-	    // find first slot below which the searched iterator might be
-	    // located.
+            // find first slot below which the searched iterator might be
+            // located.
 
-	    result_t result;
+            result_t result;
             int slot = find_lower(inner, iter.key());
 
-	    while (slot <= inner->slotuse)
-	    {
-		node *myleft, *myright;
-		inner_node *myleftparent, *myrightparent;
+            while (slot <= inner->slotuse)
+            {
+                node *myleft, *myright;
+                inner_node *myleftparent, *myrightparent;
 
-		if (slot == 0) {
-		    myleft = (left == NULL) ? NULL : (static_cast<inner_node*>(left))->childid[left->slotuse - 1];
-		    myleftparent = leftparent;
-		}
-		else {
-		    myleft = inner->childid[slot - 1];
-		    myleftparent = inner;
-		}
+                if (slot == 0) {
+                    myleft = (left == NULL) ? NULL : (static_cast<inner_node*>(left))->childid[left->slotuse - 1];
+                    myleftparent = leftparent;
+                }
+                else {
+                    myleft = inner->childid[slot - 1];
+                    myleftparent = inner;
+                }
 
-		if (slot == inner->slotuse) {
-		    myright = (right == NULL) ? NULL : (static_cast<inner_node*>(right))->childid[0];
-		    myrightparent = rightparent;
-		}
-		else {
-		    myright = inner->childid[slot + 1];
-		    myrightparent = inner;
-		}
+                if (slot == inner->slotuse) {
+                    myright = (right == NULL) ? NULL : (static_cast<inner_node*>(right))->childid[0];
+                    myrightparent = rightparent;
+                }
+                else {
+                    myright = inner->childid[slot + 1];
+                    myrightparent = inner;
+                }
 
-		BTREE_PRINT("erase_iter_descend into " << inner->childid[slot] << std::endl);
+                BTREE_PRINT("erase_iter_descend into " << inner->childid[slot] << std::endl);
 
-		result = erase_iter_descend(iter,
-					    inner->childid[slot],
-					    myleft, myright,
-					    myleftparent, myrightparent,
-					    inner, slot);
+                result = erase_iter_descend(iter,
+                                            inner->childid[slot],
+                                            myleft, myright,
+                                            myleftparent, myrightparent,
+                                            inner, slot);
 
-		if (!result.has(btree_not_found))
-		    break;
+                if (!result.has(btree_not_found))
+                    break;
 
-		// continue recursive search for leaf on next slot
+                // continue recursive search for leaf on next slot
 
-		if (slot < inner->slotuse && key_less(inner->slotkey[slot],iter.key()))
-		    return btree_not_found;
+                if (slot < inner->slotuse && key_less(inner->slotkey[slot],iter.key()))
+                    return btree_not_found;
 
-		++slot;
-	    }
+                ++slot;
+            }
 
-	    if (slot > inner->slotuse)
-		return btree_not_found;
+            if (slot > inner->slotuse)
+                return btree_not_found;
 
-	    result_t myres = btree_ok;
+            result_t myres = btree_ok;
 
             if (result.has(btree_update_lastkey))
             {
@@ -2962,11 +2959,11 @@ private:
 
                 free_node(inner->childid[slot]);
 
-                for(int i = slot; i < inner->slotuse; i++)
-                {
-                    inner->slotkey[i - 1] = inner->slotkey[i];
-                    inner->childid[i] = inner->childid[i + 1];
-                }
+                std::copy(inner->slotkey + slot, inner->slotkey + inner->slotuse,
+                          inner->slotkey + slot-1);
+                std::copy(inner->childid + slot+1, inner->childid + inner->slotuse+1,
+                          inner->childid + slot);
+
                 inner->slotuse--;
 
                 if (inner->level == 1)
@@ -2980,7 +2977,8 @@ private:
 
             if (inner->isunderflow() && !(inner == root && inner->slotuse >= 1))
             {
-                // case: the inner node is the root and has just one child. that child becomes the new root
+                // case: the inner node is the root and has just one
+                // child. that child becomes the new root
                 if (leftinner == NULL && rightinner == NULL)
                 {
                     BTREE_ASSERT(inner == root);
@@ -3054,11 +3052,11 @@ private:
 
         BTREE_ASSERT(left->slotuse + right->slotuse < leafslotmax);
 
-        for (unsigned int i = 0; i < right->slotuse; i++)
-        {
-            left->slotkey[left->slotuse + i] = right->slotkey[i];
-            left->slotdata[left->slotuse + i] = right->slotdata[i];
-        }
+        std::copy(right->slotkey, right->slotkey + right->slotuse,
+                  left->slotkey + left->slotuse);
+        std::copy(right->slotdata, right->slotdata + right->slotuse,
+                  left->slotdata + left->slotuse);
+
         left->slotuse += right->slotuse;
 
         left->nextleaf = right->nextleaf;
@@ -3105,15 +3103,12 @@ private:
         left->slotuse++;
 
         // copy over keys and children from right
-        for (unsigned int i = 0; i < right->slotuse; i++)
-        {
-            left->slotkey[left->slotuse + i] = right->slotkey[i];
-            left->childid[left->slotuse + i] = right->childid[i];
-        }
+        std::copy(right->slotkey, right->slotkey + right->slotuse,
+                  left->slotkey + left->slotuse);
+        std::copy(right->childid, right->childid + right->slotuse+1,
+                  left->childid + left->slotuse);
+
         left->slotuse += right->slotuse;
-
-        left->childid[left->slotuse] = right->childid[right->slotuse];
-
         right->slotuse = 0;
 
         return btree_fixmerge;
@@ -3140,21 +3135,22 @@ private:
         BTREE_ASSERT(left->slotuse + shiftnum < leafslotmax);
 
         // copy the first items from the right node to the last slot in the left node.
-        for(unsigned int i = 0; i < shiftnum; i++)
-        {
-            left->slotkey[left->slotuse + i] = right->slotkey[i];
-            left->slotdata[left->slotuse + i] = right->slotdata[i];
-        }
+
+        std::copy(right->slotkey, right->slotkey + shiftnum,
+                  left->slotkey + left->slotuse);
+        std::copy(right->slotdata, right->slotdata + shiftnum,
+                  left->slotdata + left->slotuse);
+
         left->slotuse += shiftnum;
 
         // shift all slots in the right node to the left
 
+        std::copy(right->slotkey + shiftnum, right->slotkey + right->slotuse,
+                  right->slotkey);
+        std::copy(right->slotdata + shiftnum, right->slotdata + right->slotuse,
+                  right->slotdata);
+
         right->slotuse -= shiftnum;
-        for(int i = 0; i < right->slotuse; i++)
-        {
-            right->slotkey[i] = right->slotkey[i + shiftnum];
-            right->slotdata[i] = right->slotdata[i + shiftnum];
-        }
 
         // fixup parent
         if (parentslot < parent->slotuse) {
@@ -3203,27 +3199,25 @@ private:
         left->slotuse++;
 
         // copy the other items from the right node to the last slots in the left node.
-        for(unsigned int i = 0; i < shiftnum - 1; i++)
-        {
-            left->slotkey[left->slotuse + i] = right->slotkey[i];
-            left->childid[left->slotuse + i] = right->childid[i];
-        }
+
+        std::copy(right->slotkey, right->slotkey + shiftnum-1,
+                  left->slotkey + left->slotuse);
+        std::copy(right->childid, right->childid + shiftnum,
+                  left->childid + left->slotuse);
+
         left->slotuse += shiftnum - 1;
 
         // fixup parent
         parent->slotkey[parentslot] = right->slotkey[shiftnum - 1];
-        // last pointer in left
-        left->childid[left->slotuse] = right->childid[shiftnum - 1];
 
         // shift all slots in the right node
 
+        std::copy(right->slotkey + shiftnum, right->slotkey + right->slotuse,
+                  right->slotkey);
+        std::copy(right->childid + shiftnum, right->childid + right->slotuse+1,
+                  right->childid);
+
         right->slotuse -= shiftnum;
-        for(int i = 0; i < right->slotuse; i++)
-        {
-            right->slotkey[i] = right->slotkey[i + shiftnum];
-            right->childid[i] = right->childid[i + shiftnum];
-        }
-        right->childid[right->slotuse] = right->childid[right->slotuse + shiftnum];
     }
 
     /// Balance two leaf nodes. The function moves key/data pairs from left to
@@ -3262,19 +3256,19 @@ private:
 
         BTREE_ASSERT(right->slotuse + shiftnum < leafslotmax);
 
-        for(int i = right->slotuse-1; i >= 0; i--)
-        {
-            right->slotkey[i + shiftnum] = right->slotkey[i];
-            right->slotdata[i + shiftnum] = right->slotdata[i];
-        }
+        std::copy_backward(right->slotkey, right->slotkey + right->slotuse,
+                           right->slotkey + right->slotuse + shiftnum);
+        std::copy_backward(right->slotdata, right->slotdata + right->slotuse,
+                           right->slotdata + right->slotuse + shiftnum);
+
         right->slotuse += shiftnum;
 
         // copy the last items from the left node to the first slot in the right node.
-        for(unsigned int i = 0; i < shiftnum; i++)
-        {
-            right->slotkey[i] = left->slotkey[left->slotuse - shiftnum + i];
-            right->slotdata[i] = left->slotdata[left->slotuse - shiftnum + i];
-        }
+        std::copy(left->slotkey + left->slotuse - shiftnum, left->slotkey + left->slotuse,
+                  right->slotkey);
+        std::copy(left->slotdata + left->slotuse - shiftnum, left->slotdata + left->slotuse,
+                  right->slotdata);
+
         left->slotuse -= shiftnum;
 
         parent->slotkey[parentslot] = left->slotkey[left->slotuse-1];
@@ -3313,24 +3307,21 @@ private:
 
         BTREE_ASSERT(right->slotuse + shiftnum < innerslotmax);
 
-        right->childid[right->slotuse + shiftnum] = right->childid[right->slotuse];
-        for(int i = right->slotuse-1; i >= 0; i--)
-        {
-            right->slotkey[i + shiftnum] = right->slotkey[i];
-            right->childid[i + shiftnum] = right->childid[i];
-        }
+        std::copy_backward(right->slotkey, right->slotkey + right->slotuse,
+                           right->slotkey + right->slotuse + shiftnum);
+        std::copy_backward(right->childid, right->childid + right->slotuse+1,
+                           right->childid + right->slotuse+1 + shiftnum);
+
         right->slotuse += shiftnum;
 
         // copy the parent's decision slotkey and childid to the last new key on the right
         right->slotkey[shiftnum - 1] = parent->slotkey[parentslot];
-        right->childid[shiftnum - 1] = left->childid[left->slotuse];
 
         // copy the remaining last items from the left node to the first slot in the right node.
-        for(unsigned int i = 0; i < shiftnum - 1; i++)
-        {
-            right->slotkey[i] = left->slotkey[left->slotuse - shiftnum + i + 1];
-            right->childid[i] = left->childid[left->slotuse - shiftnum + i + 1];
-        }
+        std::copy(left->slotkey + left->slotuse - shiftnum+1, left->slotkey + left->slotuse,
+                  right->slotkey);
+        std::copy(left->childid + left->slotuse - shiftnum+1, left->childid + left->slotuse+1,
+                  right->childid);
 
         // copy the first to-be-removed key from the left node to the parent's decision slot
         parent->slotkey[parentslot] = left->slotkey[left->slotuse - shiftnum];
@@ -3599,9 +3590,9 @@ private:
         inline void fill()
         {
             // don't want to include string.h just for this signature
-	    signature[0] = 's'; signature[1] = 't'; signature[2] = 'x'; signature[3] = '-';
-	    signature[4] = 'b'; signature[5] = 't'; signature[6] = 'r'; signature[7] = 'e';
-	    signature[8] = 'e'; signature[9] = 0; signature[10] = 0; signature[11] = 0;
+            signature[0] = 's'; signature[1] = 't'; signature[2] = 'x'; signature[3] = '-';
+            signature[4] = 'b'; signature[5] = 't'; signature[6] = 'r'; signature[7] = 'e';
+            signature[8] = 'e'; signature[9] = 0; signature[10] = 0; signature[11] = 0;
 
             version = 0;
             key_type_size = sizeof(typename btree_self::key_type);
@@ -3615,9 +3606,9 @@ private:
         inline bool same(const struct dump_header &o) const
         {
             return (signature[0] == 's' && signature[1] == 't' && signature[2] == 'x' && signature[3] == '-' &&
-		    signature[4] == 'b' && signature[5] == 't' && signature[6] == 'r' && signature[7] == 'e' &&
-		    signature[8] == 'e' && signature[9] == 0 && signature[10] == 0 && signature[11] == 0)
-	        && (version == o.version)
+                    signature[4] == 'b' && signature[5] == 't' && signature[6] == 'r' && signature[7] == 'e' &&
+                    signature[8] == 'e' && signature[9] == 0 && signature[10] == 0 && signature[11] == 0)
+                && (version == o.version)
                 && (key_type_size == o.key_type_size)
                 && (data_type_size == o.data_type_size)
                 && (leafslots == o.leafslots)
