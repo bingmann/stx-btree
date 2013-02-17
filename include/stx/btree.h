@@ -42,7 +42,7 @@
 #include <iostream>
 
 /// Print out debug information to std::cout if BTREE_DEBUG is defined.
-#define BTREE_PRINT(x)          do { if (debug) (std::cout << x); } while(0)
+#define BTREE_PRINT(x)          do { if (debug) (std::cout << x << std::endl); } while(0)
 
 /// Assertion only if BTREE_DEBUG is defined. This is not used in verify().
 #define BTREE_ASSERT(x)         do { assert(x); } while(0)
@@ -1600,7 +1600,7 @@ private:
             }
         }
 
-        BTREE_PRINT("btree::find_lower: on " << n << " key " << key << " -> (" << lo << ") " << hi << ", ");
+        BTREE_PRINT("btree::find_lower: on " << n << " key " << key << " -> (" << lo << ") " << hi);
 
         // verify result using simple linear search
         if (selfverify)
@@ -1610,11 +1610,8 @@ private:
                 i--;
             i++;
 
-            BTREE_PRINT("testfind: " << i << std::endl);
+            BTREE_PRINT("btree::find_lower: testfind: " << i);
             BTREE_ASSERT(i == hi);
-        }
-        else {
-            BTREE_PRINT(std::endl);
         }
 
         return hi;
@@ -1643,7 +1640,7 @@ private:
             }
         }
 
-        BTREE_PRINT("btree::find_upper: on " << n << " key " << key << " -> (" << lo << ") " << hi << ", ");
+        BTREE_PRINT("btree::find_upper: on " << n << " key " << key << " -> (" << lo << ") " << hi);
 
         // verify result using simple linear search
         if (selfverify)
@@ -1653,11 +1650,8 @@ private:
                 i--;
             i++;
 
-            BTREE_PRINT("btree::find_upper testfind: " << i << std::endl);
+            BTREE_PRINT("btree::find_upper testfind: " << i);
             BTREE_ASSERT(i == hi);
-        }
-        else {
-            BTREE_PRINT(std::endl);
         }
 
         return hi;
@@ -2141,20 +2135,20 @@ private:
 
             int slot = find_lower(inner, key);
 
-            BTREE_PRINT("btree::insert_descend into " << inner->childid[slot] << std::endl);
+            BTREE_PRINT("btree::insert_descend into " << inner->childid[slot]);
 
             std::pair<iterator, bool> r = insert_descend(inner->childid[slot],
                                                          key, value, &newkey, &newchild);
 
             if (newchild)
             {
-                BTREE_PRINT("btree::insert_descend newchild with key " << newkey << " node " << newchild << " at slot " << slot << std::endl);
+                BTREE_PRINT("btree::insert_descend newchild with key " << newkey << " node " << newchild << " at slot " << slot);
 
                 if (inner->isfull())
                 {
                     split_inner_node(inner, splitkey, splitnode, slot);
 
-                    BTREE_PRINT("btree::insert_descend done split_inner: putslot: " << slot << " putkey: " << newkey << " upkey: " << *splitkey << std::endl);
+                    BTREE_PRINT("btree::insert_descend done split_inner: putslot: " << slot << " putkey: " << newkey << " upkey: " << *splitkey);
 
 #ifdef BTREE_DEBUG
                     if (debug)
@@ -2165,7 +2159,7 @@ private:
 #endif
 
                     // check if insert slot is in the split sibling node
-                    BTREE_PRINT("btree::insert_descend switch: " << slot << " > " << inner->slotuse+1 << std::endl);
+                    BTREE_PRINT("btree::insert_descend switch: " << slot << " > " << inner->slotuse+1);
 
                     if (slot == inner->slotuse+1 && inner->slotuse < (*splitnode)->slotuse)
                     {
@@ -2195,7 +2189,7 @@ private:
 
                         slot -= inner->slotuse+1;
                         inner = static_cast<inner_node*>(*splitnode);
-                        BTREE_PRINT("btree::insert_descend switching to splitted node " << inner << " slot " << slot <<std::endl);
+                        BTREE_PRINT("btree::insert_descend switching to splitted node " << inner << " slot " << slot);
                     }
                 }
 
@@ -2268,7 +2262,7 @@ private:
 
         unsigned int mid = (leaf->slotuse >> 1);
 
-        BTREE_PRINT("btree::split_leaf_node on " << leaf << std::endl);
+        BTREE_PRINT("btree::split_leaf_node on " << leaf);
 
         leaf_node *newleaf = allocate_leaf();
 
@@ -2306,16 +2300,16 @@ private:
 
         unsigned int mid = (inner->slotuse >> 1);
 
-        BTREE_PRINT("btree::split_inner: mid " << mid << " addslot " << addslot << std::endl);
+        BTREE_PRINT("btree::split_inner: mid " << mid << " addslot " << addslot);
 
         // if the split is uneven and the overflowing item will be put into the
         // larger node, then the smaller split node may underflow
         if (addslot <= mid && mid > inner->slotuse - (mid + 1))
             mid--;
 
-        BTREE_PRINT("btree::split_inner: mid " << mid << " addslot " << addslot << std::endl);
+        BTREE_PRINT("btree::split_inner: mid " << mid << " addslot " << addslot);
 
-        BTREE_PRINT("btree::split_inner_node on " << inner << " into two nodes " << mid << " and " << inner->slotuse - (mid + 1) << " sized" << std::endl);
+        BTREE_PRINT("btree::split_inner_node on " << inner << " into two nodes " << mid << " and " << inner->slotuse - (mid + 1) << " sized");
 
         inner_node *newinner = allocate_inner(inner->level);
 
@@ -2400,7 +2394,7 @@ public:
     /// key.
     bool erase_one(const key_type &key)
     {
-        BTREE_PRINT("btree::erase_one(" << key << ") on btree size " << size() << std::endl);
+        BTREE_PRINT("btree::erase_one(" << key << ") on btree size " << size());
 
         if (selfverify) verify();
 
@@ -2437,7 +2431,7 @@ public:
     /// Erase the key/data pair referenced by the iterator.
     void erase(iterator iter)
     {
-        BTREE_PRINT("btree::erase_iter(" << iter.currnode << "," << iter.currslot << ") on btree size " << size() << std::endl);
+        BTREE_PRINT("btree::erase_iter(" << iter.currnode << "," << iter.currslot << ") on btree size " << size());
 
         if (selfverify) verify();
 
@@ -2491,12 +2485,12 @@ private:
 
             if (slot >= leaf->slotuse || !key_equal(key, leaf->slotkey[slot]))
             {
-                BTREE_PRINT("Could not find key " << key << " to erase." << std::endl);
+                BTREE_PRINT("Could not find key " << key << " to erase.");
 
                 return btree_not_found;
             }
 
-            BTREE_PRINT("Found key in leaf " << curr << " at slot " << slot << std::endl);
+            BTREE_PRINT("Found key in leaf " << curr << " at slot " << slot);
 
             std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
                       leaf->slotkey + slot);
@@ -2520,7 +2514,7 @@ private:
                 {
                     if (leaf->slotuse >= 1)
                     {
-                        BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
+                        BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1]);
                         myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
                     }
                     else
@@ -2628,7 +2622,7 @@ private:
                 myrightparent = inner;
             }
 
-            BTREE_PRINT("erase_one_descend into " << inner->childid[slot] << std::endl);
+            BTREE_PRINT("erase_one_descend into " << inner->childid[slot]);
 
             result_t result = erase_one_descend(key,
                                                 inner->childid[slot],
@@ -2647,14 +2641,14 @@ private:
             {
                 if (parent && parentslot < parent->slotuse)
                 {
-                    BTREE_PRINT("Fixing lastkeyupdate: key " << result.lastkey << " into parent " << parent << " at parentslot " << parentslot << std::endl);
+                    BTREE_PRINT("Fixing lastkeyupdate: key " << result.lastkey << " into parent " << parent << " at parentslot " << parentslot);
 
                     BTREE_ASSERT(parent->childid[parentslot] == curr);
                     parent->slotkey[parentslot] = result.lastkey;
                 }
                 else
                 {
-                    BTREE_PRINT("Forwarding lastkeyupdate: key " << result.lastkey << std::endl);
+                    BTREE_PRINT("Forwarding lastkeyupdate: key " << result.lastkey);
                     myres |= result_t(btree_update_lastkey, result.lastkey);
                 }
             }
@@ -2785,14 +2779,14 @@ private:
 
             if (iter.currslot >= leaf->slotuse)
             {
-                BTREE_PRINT("Could not find iterator (" << iter.currnode << "," << iter.currslot << ") to erase. Invalid leaf node?" << std::endl);
+                BTREE_PRINT("Could not find iterator (" << iter.currnode << "," << iter.currslot << ") to erase. Invalid leaf node?");
 
                 return btree_not_found;
             }
 
             int slot = iter.currslot;
 
-            BTREE_PRINT("Found iterator in leaf " << curr << " at slot " << slot << std::endl);
+            BTREE_PRINT("Found iterator in leaf " << curr << " at slot " << slot);
 
             std::copy(leaf->slotkey + slot+1, leaf->slotkey + leaf->slotuse,
                       leaf->slotkey + slot);
@@ -2816,7 +2810,7 @@ private:
                 {
                     if (leaf->slotuse >= 1)
                     {
-                        BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1] << std::endl);
+                        BTREE_PRINT("Scheduling lastkeyupdate: key " << leaf->slotkey[leaf->slotuse - 1]);
                         myres |= result_t(btree_update_lastkey, leaf->slotkey[leaf->slotuse - 1]);
                     }
                     else
@@ -2930,7 +2924,7 @@ private:
                     myrightparent = inner;
                 }
 
-                BTREE_PRINT("erase_iter_descend into " << inner->childid[slot] << std::endl);
+                BTREE_PRINT("erase_iter_descend into " << inner->childid[slot]);
 
                 result = erase_iter_descend(iter,
                                             inner->childid[slot],
@@ -2958,14 +2952,14 @@ private:
             {
                 if (parent && parentslot < parent->slotuse)
                 {
-                    BTREE_PRINT("Fixing lastkeyupdate: key " << result.lastkey << " into parent " << parent << " at parentslot " << parentslot << std::endl);
+                    BTREE_PRINT("Fixing lastkeyupdate: key " << result.lastkey << " into parent " << parent << " at parentslot " << parentslot);
 
                     BTREE_ASSERT(parent->childid[parentslot] == curr);
                     parent->slotkey[parentslot] = result.lastkey;
                 }
                 else
                 {
-                    BTREE_PRINT("Forwarding lastkeyupdate: key " << result.lastkey << std::endl);
+                    BTREE_PRINT("Forwarding lastkeyupdate: key " << result.lastkey);
                     myres |= result_t(btree_update_lastkey, result.lastkey);
                 }
             }
@@ -3066,7 +3060,7 @@ private:
     /// removed by the calling parent node.
     result_t merge_leaves(leaf_node* left, leaf_node* right, inner_node* parent)
     {
-        BTREE_PRINT("Merge leaf nodes " << left << " and " << right << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Merge leaf nodes " << left << " and " << right << " with common parent " << parent << ".");
         (void)parent;
 
         BTREE_ASSERT(left->isleafnode() && right->isleafnode());
@@ -3097,7 +3091,7 @@ private:
     /// removed by the calling parent node.
     static result_t merge_inner(inner_node* left, inner_node* right, inner_node* parent, unsigned int parentslot)
     {
-        BTREE_PRINT("Merge inner nodes " << left << " and " << right << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Merge inner nodes " << left << " and " << right << " with common parent " << parent << ".");
 
         BTREE_ASSERT(left->level == right->level);
         BTREE_ASSERT(parent->level == left->level + 1);
@@ -3152,7 +3146,7 @@ private:
 
         unsigned int shiftnum = (right->slotuse - left->slotuse) >> 1;
 
-        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << ".");
 
         BTREE_ASSERT(left->slotuse + shiftnum < leafslotmax);
 
@@ -3197,7 +3191,7 @@ private:
 
         unsigned int shiftnum = (right->slotuse - left->slotuse) >> 1;
 
-        BTREE_PRINT("Shifting (inner) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Shifting (inner) " << shiftnum << " entries to left " << left << " from right " << right << " with common parent " << parent << ".");
 
         BTREE_ASSERT(left->slotuse + shiftnum < innerslotmax);
 
@@ -3258,7 +3252,7 @@ private:
 
         unsigned int shiftnum = (left->slotuse - right->slotuse) >> 1;
 
-        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << ".");
 
         if (selfverify)
         {
@@ -3309,7 +3303,7 @@ private:
 
         unsigned int shiftnum = (left->slotuse - right->slotuse) >> 1;
 
-        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << "." << std::endl);
+        BTREE_PRINT("Shifting (leaf) " << shiftnum << " entries to right " << right << " from left " << left << " with common parent " << parent << ".");
 
         if (selfverify)
         {
@@ -3454,7 +3448,7 @@ private:
     /// Recursively descend down the tree and verify each node
     void verify_node(const node* n, key_type* minkey, key_type* maxkey, tree_stats &vstats) const
     {
-        BTREE_PRINT("verifynode " << n << std::endl);
+        BTREE_PRINT("verifynode " << n);
 
         if (n->isleafnode())
         {
@@ -3496,7 +3490,7 @@ private:
                 assert(subnode->level + 1 == inner->level);
                 verify_node(subnode, &subminkey, &submaxkey, vstats);
 
-                BTREE_PRINT("verify subnode " << subnode << ": " << subminkey << " - " << submaxkey << std::endl);
+                BTREE_PRINT("verify subnode " << subnode << ": " << subminkey << " - " << submaxkey);
 
                 if (slot == 0)
                     *minkey = subminkey;
@@ -3674,7 +3668,7 @@ public:
 
         if (!myheader.same(fileheader))
         {
-            BTREE_PRINT("btree::restore: file header does not match instantiation signature." << std::endl);
+            BTREE_PRINT("btree::restore: file header does not match instantiation signature.");
             return false;
         }
 
