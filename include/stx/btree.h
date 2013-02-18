@@ -335,6 +335,25 @@ private:
         {
             return (node::slotuse < minleafslots);
         }
+
+        /// Set the (key,data) pair in slot. Overloaded function used by
+        /// bulk_load().
+        inline void set_slot(unsigned short slot, const pair_type& value)
+        {
+            BTREE_ASSERT(used_as_set == false);
+            BTREE_ASSERT(slot < node::slotuse);
+            slotkey[slot] = value.first;
+            slotdata[slot] = value.second;
+        }
+
+        /// Set the key pair in slot. Overloaded function used by
+        /// bulk_load().
+        inline void set_slot(unsigned short slot, const key_type& key)
+        {
+            BTREE_ASSERT(used_as_set == true);
+            BTREE_ASSERT(slot < node::slotuse);
+            slotkey[slot] = key;
+        }
     };
 
 private:
@@ -1283,7 +1302,9 @@ public:
     {
     }
 
-    /// Constructor initializing a B+ tree with the range [first,last)
+    /// Constructor initializing a B+ tree with the range [first,last). The
+    /// range need not be sorted. To create a B+ tree from a sorted range, use
+    /// bulk_load().
     template <class InputIterator>
     inline btree(InputIterator first, InputIterator last,
                  const allocator_type &alloc = allocator_type())
@@ -1293,7 +1314,8 @@ public:
     }
 
     /// Constructor initializing a B+ tree with the range [first,last) and a
-    /// special key comparison object
+    /// special key comparison object.  The range need not be sorted. To create
+    /// a B+ tree from a sorted range, use bulk_load().
     template <class InputIterator>
     inline btree(InputIterator first, InputIterator last, const key_compare &kcf,
                  const allocator_type &alloc = allocator_type())
@@ -2064,8 +2086,9 @@ public:
         return insert_start(key, data).first;
     }
 
-    /// Attempt to insert the range [first,last) of value_type pairs into the B+
-    /// tree. Each key/data pair is inserted individually.
+    /// Attempt to insert the range [first,last) of value_type pairs into the
+    /// B+ tree. Each key/data pair is inserted individually; to bulk load the
+    /// tree, use a constructor with range.
     template <typename InputIterator>
     inline void insert(InputIterator first, InputIterator last)
     {
@@ -2330,6 +2353,142 @@ private:
 
         *_newkey = inner->slotkey[mid];
         *_newinner = newinner;
+    }
+
+public:
+
+    // *** Bulk Loader - Construct Tree from Sorted Sequence
+
+    /// Bulk load a sorted range. Loads items into leaves and constructs a
+    /// B-tree above them. The tree must be empty when calling this function.
+    template <typename Iterator>
+    void bulk_load(Iterator ibegin, Iterator iend)
+    {
+        BTREE_ASSERT(empty());
+
+        m_stats.itemcount = iend - ibegin;
+
+        // calculate number of leaves needed, round up.
+        size_t num_items = iend - ibegin;
+        size_t num_leaves = (num_items + leafslotmax-1) / leafslotmax;
+
+        BTREE_PRINT("btree::bulk_load, level 0: " << m_stats.itemcount << " items into " << num_leaves << " leaves with up to " << ((iend - ibegin + num_leaves-1) / num_leaves) << " items per leaf.");
+
+        Iterator it = ibegin;
+        for (size_t i = 0; i < num_leaves; ++i)
+        {
+            // allocate new leaf node
+            leaf_node* leaf = allocate_leaf();
+
+            // copy keys or (key,value) pairs into leaf nodes, uses template
+            // switch leaf->set_slot().
+            leaf->slotuse = static_cast<int>(num_items / (num_leaves-i));
+            for (size_t s = 0; s < leaf->slotuse; ++s, ++it)
+                leaf->set_slot(s, *it);
+
+            if (m_tailleaf != NULL) {
+                m_tailleaf->nextleaf = leaf;
+                leaf->prevleaf = m_tailleaf;
+            }
+            else {
+                m_headleaf = leaf;
+            }
+            m_tailleaf = leaf;
+
+            num_items -= leaf->slotuse;
+        }
+
+        BTREE_ASSERT( it == iend && num_items == 0 );
+
+        // if the btree is so small to fit into one leaf, then we're done.
+        if (m_headleaf == m_tailleaf) {
+            m_root = m_headleaf;
+            return;
+        }
+
+        BTREE_ASSERT( m_stats.leaves == num_leaves );
+
+        // create first level of inner nodes, pointing to the leaves.
+        size_t num_parents = (num_leaves + (innerslotmax+1)-1) / (innerslotmax+1);
+
+        BTREE_PRINT("btree::bulk_load, level 1: " << num_leaves << " leaves in " << num_parents << " inner nodes with up to " << ((num_leaves + num_parents-1) / num_parents) << " leaves per inner node.");
+
+        // save inner nodes and maxkey for next level.
+        typedef std::pair<inner_node*, const key_type*> nextlevel_type;
+        nextlevel_type* nextlevel = new nextlevel_type[num_parents];
+
+        leaf_node* leaf = m_headleaf;
+        for (size_t i = 0; i < num_parents; ++i)
+        {
+            // allocate new inner node at level 1
+            inner_node* n = allocate_inner(1);
+
+            n->slotuse = static_cast<int>(num_leaves / (num_parents-i));
+            BTREE_ASSERT(n->slotuse > 0);
+            --n->slotuse; // this counts keys, but an inner node has keys+1 children.
+
+            // copy last key from each leaf and set child
+            for (unsigned short s = 0; s < n->slotuse; ++s)
+            {
+                n->slotkey[s] = leaf->slotkey[leaf->slotuse-1];
+                n->childid[s] = leaf;
+                leaf = leaf->nextleaf;
+            }
+            n->childid[n->slotuse] = leaf;
+
+            // track max key of any descendant.
+            nextlevel[i].first = n;
+            nextlevel[i].second = &leaf->slotkey[leaf->slotuse-1];
+
+            leaf = leaf->nextleaf;
+            num_leaves -= n->slotuse+1;
+        }
+
+        BTREE_ASSERT( leaf == NULL && num_leaves == 0 );
+
+        // recursively build inner nodes pointing to inner nodes.
+        for (int level = 2; num_parents != 1; ++level)
+        {
+            size_t num_children = num_parents;
+            num_parents = (num_children + (innerslotmax+1)-1) / (innerslotmax+1);
+
+            BTREE_PRINT("btree::bulk_load, level " << level << ": " << num_children << " children in " << num_parents << " inner nodes with up to " << ((num_children + num_parents-1) / num_parents) << " children per inner node.");
+
+            size_t inner_index = 0;
+            for (size_t i = 0; i < num_parents; ++i)
+            {
+                // allocate new inner node at level
+                inner_node* n = allocate_inner(level);
+
+                n->slotuse = static_cast<int>(num_children / (num_parents-i));
+                BTREE_ASSERT(n->slotuse > 0);
+                --n->slotuse; // this counts keys, but an inner node has keys+1 children.
+
+                // copy children and maxkeys from nextlevel
+                for (unsigned short s = 0; s < n->slotuse; ++s)
+                {
+                    n->slotkey[s] = *nextlevel[inner_index].second;
+                    n->childid[s] = nextlevel[inner_index].first;
+                    ++inner_index;
+                }
+                n->childid[n->slotuse] = nextlevel[inner_index].first;
+
+                // reuse nextlevel array for parents, because we can overwrite
+                // slots we've already consumed.
+                nextlevel[i].first = n;
+                nextlevel[i].second = nextlevel[inner_index].second;
+
+                ++inner_index;
+                num_children -= n->slotuse+1;
+            }
+
+            BTREE_ASSERT( num_children == 0 );
+        }
+
+        m_root = nextlevel[0].first;
+        delete [] nextlevel;
+
+        if (selfverify) verify();
     }
 
 private:

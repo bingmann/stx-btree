@@ -17,8 +17,8 @@ AC_ARG_ENABLE(optimize,
 		       [Build with full optimization @<:@default=no@:>@]),
         [ case "${enableval}" in
           yes)
-                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
-                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
+                CFLAGS="$CFLAGS -O3 -march=native -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -march=native -fomit-frame-pointer";
           ;;
           no) ;;
           *) AC_MSG_ERROR(bad value ${enableval} for --enable-optimize) ;;

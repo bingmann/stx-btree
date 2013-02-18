@@ -68,7 +68,8 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_testsuite_OBJECTS = tpunit.$(OBJEXT) InstantiationTest.$(OBJEXT) \
 	SimpleTest.$(OBJEXT) LargeTest.$(OBJEXT) BoundTest.$(OBJEXT) \
 	IteratorTest.$(OBJEXT) StructureTest.$(OBJEXT) \
-	DumpRestoreTest.$(OBJEXT) RelationTest.$(OBJEXT)
+	DumpRestoreTest.$(OBJEXT) RelationTest.$(OBJEXT) \
+	BulkLoadTest.$(OBJEXT)
 testsuite_OBJECTS = $(am_testsuite_OBJECTS)
 testsuite_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
@@ -211,7 +212,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 testsuite_SOURCES = tpunit.cc tpunit.h InstantiationTest.cc \
 	SimpleTest.cc LargeTest.cc BoundTest.cc IteratorTest.cc \
-	StructureTest.cc DumpRestoreTest.cc RelationTest.cc
+	StructureTest.cc DumpRestoreTest.cc RelationTest.cc \
+	BulkLoadTest.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -Wshadow -DBTREE_DEBUG -I$(top_srcdir)/include
 all: all-am
 
@@ -261,6 +263,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BoundTest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/BulkLoadTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/DumpRestoreTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/InstantiationTest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/IteratorTest.Po@am__quote@

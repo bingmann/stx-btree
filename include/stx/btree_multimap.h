@@ -505,6 +505,15 @@ public:
         return tree.insert(first, last);
     }
 
+    /// Bulk load a sorted range [first,last). Loads items into leaves and
+    /// constructs a B-tree above them. The tree must be empty when calling
+    /// this function.
+    template <typename Iterator>
+    inline void bulk_load(Iterator first, Iterator last)
+    {
+        return tree.bulk_load(first, last);
+    }
+
 public:
     // *** Public Erase Functions
 
