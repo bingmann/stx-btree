@@ -2696,8 +2696,8 @@ fi
 if test "${enable_optimize+set}" = set; then :
   enableval=$enable_optimize;  case "${enableval}" in
           yes)
-                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
-                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
+                CFLAGS="$CFLAGS -O3 -march=native -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -march=native -fomit-frame-pointer";
           ;;
           no) ;;
           *) as_fn_error $? "bad value ${enableval} for --enable-optimize" "$LINENO" 5 ;;
