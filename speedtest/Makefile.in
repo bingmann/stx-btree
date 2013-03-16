@@ -16,7 +16,6 @@
 @SET_MAKE@
 
 # B+ Tree Speed Tests
-# $Id$
 
 VPATH = @srcdir@
 am__make_dryrun = \

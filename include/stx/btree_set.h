@@ -1,4 +1,3 @@
-// $Id$
 /** \file btree_set.h
  * Contains the specialized B+ tree template class btree_set
  */

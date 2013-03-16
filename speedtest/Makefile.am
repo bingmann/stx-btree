@@ -1,5 +1,4 @@
 # B+ Tree Speed Tests
-# $Id$
 
 if BUILD_SPEEDTEST
 

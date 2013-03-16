@@ -1,4 +1,3 @@
-// $Id$ -*- fill-column: 79 -*-
 /** \file btree.dox
  * Contains the doxygen comments. This header is not needed to compile the B+
  * tree.

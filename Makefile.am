@@ -1,4 +1,4 @@
-# $Id$
+# Makefile.am
 
 SUBDIRS = . include testsuite speedtest wxbtreedemo
 

@@ -1,5 +1,5 @@
-// $Id$ -*- fill-column: 79 -*-
-/** \file btree.h
+/**
+ * \file include/stx/btree.h
  * Contains the main B+ tree implementation template class btree.
  */
 

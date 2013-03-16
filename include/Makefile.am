@@ -1,4 +1,4 @@
-# $Id$
+# include/Makefile.am
 
 nobase_include_HEADERS = \
 	stx/btree.h \

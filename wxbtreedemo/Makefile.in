@@ -15,7 +15,7 @@
 
 @SET_MAKE@
 
-# $Id$
+# wxbtreedemo/Makefile.am
 
 VPATH = @srcdir@
 am__make_dryrun = \

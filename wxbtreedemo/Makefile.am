@@ -1,4 +1,4 @@
-# $Id$
+# wxbtreedemo/Makefile.am
 
 if HAVE_WXWIDGETS
 

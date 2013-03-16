@@ -1,5 +1,3 @@
-// $Id$
-
 /*
  * STX B+ Tree Demo Program v0.8.6
  * Copyright (C) 2008-2011 Timo Bingmann
