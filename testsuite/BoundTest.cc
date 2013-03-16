@@ -32,7 +32,8 @@ struct BoundTest : public tpunit::TestFixture
         )
     {}
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -43,7 +44,8 @@ struct BoundTest : public tpunit::TestFixture
 
     void test_multi(const unsigned int insnum, const int modulo)
     {
-        typedef stx::btree_multimap<unsigned int, unsigned int, std::less<unsigned int>, struct traits_nodebug> btree_type;
+        typedef stx::btree_multimap<unsigned int, unsigned int,
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
         btree_type bt;
 
         typedef std::multiset<unsigned int> multiset_type;

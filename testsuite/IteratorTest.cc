@@ -40,7 +40,8 @@ struct IteratorTest : public tpunit::TestFixture
         )
     {}
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -52,7 +53,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_iterator1()
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         std::vector<unsigned int> vector;
 
@@ -114,7 +115,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_iterator2()
     {
         typedef stx::btree_multimap<unsigned int, unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         std::vector< btree_type::value_type > vector;
 
@@ -175,7 +176,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_iterator3()
     {
         typedef stx::btree_map<unsigned int, unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type map;
 
@@ -472,7 +473,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_iterator4()
     {
         typedef stx::btree_set<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type set;
 
@@ -699,7 +700,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_iterator5()
     {
         typedef stx::btree_set<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type set;
 
@@ -794,7 +795,7 @@ struct IteratorTest : public tpunit::TestFixture
     void test_erase_iterator1()
     {
         typedef stx::btree_multimap<int, int,
-	    std::less<int>, struct traits_nodebug> btree_type;
+	    std::less<int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type map;
 

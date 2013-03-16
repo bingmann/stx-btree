@@ -33,7 +33,8 @@ struct DumpRestoreTest : public tpunit::TestFixture
         )
     {}
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -45,7 +46,7 @@ struct DumpRestoreTest : public tpunit::TestFixture
     void test_dump_restore_3200()
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         std::string dumpstr;
 
@@ -91,7 +92,7 @@ struct DumpRestoreTest : public tpunit::TestFixture
 	{ // try restore the btree image using a different instantiation
 
 	    typedef stx::btree_multiset<long long,
-		std::less<long long>, struct traits_nodebug> otherbtree_type;
+		std::less<long long>, traits_nodebug<long long> > otherbtree_type;
 
 	    otherbtree_type bt3;
 

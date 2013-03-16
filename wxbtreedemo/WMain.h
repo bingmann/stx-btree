@@ -2,7 +2,7 @@
 
 /*
  * STX B+ Tree Demo Program v0.8.6
- * Copyright (C) 2008-2011 Timo Bingmann
+ * Copyright (C) 2008-2013 Timo Bingmann
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -46,8 +46,8 @@ class BTreeBundle
 public:
 
     /// Traits structure for the enclosed B+ tree instances.
-    template <int Slots>
-    struct btree_traits_nodebug
+    template <int Slots, typename Type>
+    struct btree_traits_nodebug : stx::btree_default_map_traits<Type,Type>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -58,65 +58,65 @@ public:
 
     // *** Many many instantiations of the B+ tree classes
 
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<4> >          btmap_int_4_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<5> >          btmap_int_5_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<6> >          btmap_int_6_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<7> >          btmap_int_7_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<8> >          btmap_int_8_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<9> >          btmap_int_9_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<10> >         btmap_int_10_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<11> >         btmap_int_11_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<12> >         btmap_int_12_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<13> >         btmap_int_13_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<14> >         btmap_int_14_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<15> >         btmap_int_15_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<16> >         btmap_int_16_slots;
-    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<32> >         btmap_int_32_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<4,int> >          btmap_int_4_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<5,int> >          btmap_int_5_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<6,int> >          btmap_int_6_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<7,int> >          btmap_int_7_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<8,int> >          btmap_int_8_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<9,int> >          btmap_int_9_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<10,int> >         btmap_int_10_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<11,int> >         btmap_int_11_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<12,int> >         btmap_int_12_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<13,int> >         btmap_int_13_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<14,int> >         btmap_int_14_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<15,int> >         btmap_int_15_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<16,int> >         btmap_int_16_slots;
+    stx::btree_map<int, int, std::less<int>, btree_traits_nodebug<32,int> >         btmap_int_32_slots;
 
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<4> >           btmap_string_4_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<5> >           btmap_string_5_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<6> >           btmap_string_6_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<7> >           btmap_string_7_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<8> >           btmap_string_8_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<9> >           btmap_string_9_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<10> >          btmap_string_10_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<11> >          btmap_string_11_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<12> >          btmap_string_12_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<13> >          btmap_string_13_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<14> >          btmap_string_14_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<15> >          btmap_string_15_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16> >          btmap_string_16_slots;
-    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32> >          btmap_string_32_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<4,wxString> >           btmap_string_4_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<5,wxString> >           btmap_string_5_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<6,wxString> >           btmap_string_6_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<7,wxString> >           btmap_string_7_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<8,wxString> >           btmap_string_8_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<9,wxString> >           btmap_string_9_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<10,wxString> >          btmap_string_10_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<11,wxString> >          btmap_string_11_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<12,wxString> >          btmap_string_12_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<13,wxString> >          btmap_string_13_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<14,wxString> >          btmap_string_14_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<15,wxString> >          btmap_string_15_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16,wxString> >          btmap_string_16_slots;
+    stx::btree_map<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32,wxString> >          btmap_string_32_slots;
 
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<4> >             btmultimap_int_4_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<5> >             btmultimap_int_5_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<6> >             btmultimap_int_6_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<7> >             btmultimap_int_7_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<8> >             btmultimap_int_8_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<9> >             btmultimap_int_9_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<10> >            btmultimap_int_10_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<11> >            btmultimap_int_11_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<12> >            btmultimap_int_12_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<13> >            btmultimap_int_13_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<14> >            btmultimap_int_14_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<15> >            btmultimap_int_15_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<16> >            btmultimap_int_16_slots;
-    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<32> >            btmultimap_int_32_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<4,int> >             btmultimap_int_4_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<5,int> >             btmultimap_int_5_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<6,int> >             btmultimap_int_6_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<7,int> >             btmultimap_int_7_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<8,int> >             btmultimap_int_8_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<9,int> >             btmultimap_int_9_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<10,int> >            btmultimap_int_10_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<11,int> >            btmultimap_int_11_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<12,int> >            btmultimap_int_12_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<13,int> >            btmultimap_int_13_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<14,int> >            btmultimap_int_14_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<15,int> >            btmultimap_int_15_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<16,int> >            btmultimap_int_16_slots;
+    stx::btree_multimap<int, int, std::less<int>, btree_traits_nodebug<32,int> >            btmultimap_int_32_slots;
 
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<4> >              btmultimap_string_4_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<5> >              btmultimap_string_5_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<6> >              btmultimap_string_6_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<7> >              btmultimap_string_7_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<8> >              btmultimap_string_8_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<9> >              btmultimap_string_9_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<10> >             btmultimap_string_10_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<11> >             btmultimap_string_11_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<12> >             btmultimap_string_12_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<13> >             btmultimap_string_13_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<14> >             btmultimap_string_14_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<15> >             btmultimap_string_15_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16> >             btmultimap_string_16_slots;
-    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32> >             btmultimap_string_32_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<4,wxString> >              btmultimap_string_4_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<5,wxString> >              btmultimap_string_5_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<6,wxString> >              btmultimap_string_6_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<7,wxString> >              btmultimap_string_7_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<8,wxString> >              btmultimap_string_8_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<9,wxString> >              btmultimap_string_9_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<10,wxString> >             btmultimap_string_10_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<11,wxString> >             btmultimap_string_11_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<12,wxString> >             btmultimap_string_12_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<13,wxString> >             btmultimap_string_13_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<14,wxString> >             btmultimap_string_14_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<15,wxString> >             btmultimap_string_15_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<16,wxString> >             btmultimap_string_16_slots;
+    stx::btree_multimap<wxString, wxString, std::less<wxString>, btree_traits_nodebug<32,wxString> >             btmultimap_string_32_slots;
 
     /// Selects the active tree: type == 0 -> integer, type == 1 -> string.
     int         selected_type;

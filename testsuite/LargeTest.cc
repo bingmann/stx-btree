@@ -39,7 +39,8 @@ struct LargeTest : public tpunit::TestFixture
         )
     {}
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -51,7 +52,7 @@ struct LargeTest : public tpunit::TestFixture
     void test_multi(const unsigned int insnum, const unsigned int modulo)
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type bt;
 
@@ -163,7 +164,7 @@ struct LargeTest : public tpunit::TestFixture
     void test_sequence()
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         btree_type bt;
 

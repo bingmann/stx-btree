@@ -62,7 +62,8 @@ struct StructureTest : public tpunit::TestFixture
         }
     };
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -73,7 +74,8 @@ struct StructureTest : public tpunit::TestFixture
 
     void test_insert_erase()
     {
-        typedef stx::btree_multiset<struct testdata, struct testcomp, struct traits_nodebug> btree_type;
+        typedef stx::btree_multiset<struct testdata, struct testcomp,
+            struct traits_nodebug<struct testdata> > btree_type;
 
         btree_type bt( testcomp(42) );
 

@@ -34,7 +34,8 @@ struct BulkLoadTest : public tpunit::TestFixture
         )
     {}
 
-    struct traits_nodebug
+    template <typename KeyType>
+    struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
         static const bool       selfverify = true;
         static const bool       debug = false;
@@ -46,7 +47,7 @@ struct BulkLoadTest : public tpunit::TestFixture
     void test_set_instance(size_t numkeys, unsigned int mod)
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         std::vector<unsigned int> keys (numkeys);
 
@@ -82,7 +83,7 @@ struct BulkLoadTest : public tpunit::TestFixture
     void test_map_instance(size_t numkeys, unsigned int mod)
     {
         typedef stx::btree_multimap<int, std::string,
-            std::less<unsigned int>, struct traits_nodebug> btree_type;
+            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
         std::vector< std::pair<int,std::string> > pairs (numkeys);
 
