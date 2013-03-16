@@ -10,21 +10,6 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE
 AM_MAINTAINER_MODE
 
-# enable full optimization by configure switch
-
-AC_ARG_ENABLE(optimize,
-	AS_HELP_STRING([--enable-optimize],
-		       [Build with full optimization @<:@default=no@:>@]),
-        [ case "${enableval}" in
-          yes)
-                CFLAGS="$CFLAGS -O3 -march=native -fomit-frame-pointer";
-                CXXFLAGS="$CXXFLAGS -O3 -march=native -fomit-frame-pointer";
-          ;;
-          no) ;;
-          *) AC_MSG_ERROR(bad value ${enableval} for --enable-optimize) ;;
-          esac ],
-        [ optimize=false ])
-
 # set debug info flag if no optimization flags are set.
 
 if test "$CFLAGS" == ""; then
@@ -39,6 +24,32 @@ AC_PROG_CXX
 AC_PROG_CC
 
 AC_LANG([C++])
+
+# enable full optimization by configure switch
+
+AC_ARG_ENABLE(optimize,
+        AS_HELP_STRING([--enable-optimize],
+                       [Build with full optimization @<:@default=no@:>@]),
+        [ case "${enableval}" in
+          yes)
+                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
+
+                # test support for -march=native (older gcc's don't have it)
+                save_cflags="$CFLAGS"
+                save_cxxflags="$CXXFLAGS"
+                CFLAGS="$CFLAGS -march=native"
+                CXXFLAGS="$CXXFLAGS -march=native"
+                AC_MSG_CHECKING([whether $CXX supports -march=native])
+                AC_COMPILE_IFELSE([AC_LANG_PROGRAM([])],
+                    [AC_MSG_RESULT([yes])],
+                    [AC_MSG_RESULT([no]); CFLAGS="$save_cflags"; CXXFLAGS="$save_cxxflags"]
+                )
+          ;;
+          no) ;;
+          *) AC_MSG_ERROR(bad value ${enableval} for --enable-optimize) ;;
+          esac ],
+        [ optimize=false ])
 
 # Checks for libraries.
 
@@ -56,7 +67,7 @@ AC_TYPE_SIZE_T
 AC_ARG_ENABLE(gcov,
     AS_HELP_STRING([--enable-gcov],
                    [enable test coverage with gcov @<:@default=no@:>@]),
-	[case "${enableval}" in
+        [case "${enableval}" in
          yes) gcov=true ;;
          no)  gcov=false ;;
          *)   AC_MSG_ERROR([bad value ${enableval} for --enable-gcov]) ;;
@@ -73,7 +84,7 @@ fi
 
 # Conditional whether to compile the speedtest binary
 AC_ARG_ENABLE(speedtest,
-     [  --enable-speedtest	  Build the speedtest (takes lots of RAM) (default: no)],
+     [  --enable-speedtest        Build the speedtest (takes lots of RAM) (default: no)],
      [case "${enableval}" in
        yes) speedtest=true ;;
        no)  speedtest=false ;;
@@ -90,14 +101,14 @@ AM_CONDITIONAL(HAVE_WXWIDGETS, test "$wxWin" == 1)
 
 if test "$wxWin" != 1; then
     AC_MSG_WARN([
-	wxWidgets does not seem to be installed on your system.
-	The wxParserDemo will not be built!
+        wxWidgets does not seem to be installed on your system.
+        The wxParserDemo will not be built!
 
         If you think wxWidgets >= 2.6.0 is installed,
-	please check that wx-config is in path, the directory
-	where wxWidgets libraries are installed (returned by
-	'wx-config --libs' command) is in LD_LIBRARY_PATH or
-	equivalent variable.
+        please check that wx-config is in path, the directory
+        where wxWidgets libraries are installed (returned by
+        'wx-config --libs' command) is in LD_LIBRARY_PATH or
+        equivalent variable.
     ])
 fi
 
@@ -112,8 +123,8 @@ AM_CONDITIONAL(GOT_RESCOMP, test x$RESCOMP != x)
 # Checks for library functions.
 
 AC_CONFIG_FILES([Makefile
-		 include/Makefile
-		 testsuite/Makefile
-		 speedtest/Makefile
+                 include/Makefile
+                 testsuite/Makefile
+                 speedtest/Makefile
                  wxbtreedemo/Makefile])
 AC_OUTPUT

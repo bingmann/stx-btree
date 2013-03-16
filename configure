@@ -747,8 +747,8 @@ ac_subst_files=''
 ac_user_opts='
 enable_option_checking
 enable_maintainer_mode
-enable_optimize
 enable_dependency_tracking
+enable_optimize
 enable_gcov
 enable_speedtest
 with_wxdir
@@ -1388,11 +1388,11 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-maintainer-mode  enable make rules and dependencies not useful
 			  (and sometimes confusing) to the casual installer
-  --enable-optimize       Build with full optimization [default=no]
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-optimize       Build with full optimization [default=no]
   --enable-gcov           enable test coverage with gcov [default=no]
-  --enable-speedtest	  Build the speedtest (takes lots of RAM) (default: no)
+  --enable-speedtest        Build the speedtest (takes lots of RAM) (default: no)
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -2688,23 +2688,6 @@ fi
 
   MAINT=$MAINTAINER_MODE_TRUE
 
-
-
-# enable full optimization by configure switch
-
-# Check whether --enable-optimize was given.
-if test "${enable_optimize+set}" = set; then :
-  enableval=$enable_optimize;  case "${enableval}" in
-          yes)
-                CFLAGS="$CFLAGS -O3 -march=native -fomit-frame-pointer";
-                CXXFLAGS="$CXXFLAGS -O3 -march=native -fomit-frame-pointer";
-          ;;
-          no) ;;
-          *) as_fn_error $? "bad value ${enableval} for --enable-optimize" "$LINENO" 5 ;;
-          esac
-else
-   optimize=false
-fi
 
 
 # set debug info flag if no optimization flags are set.
@@ -4090,10 +4073,55 @@ ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ex
 ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 
 
+# enable full optimization by configure switch
+
+
+# Check whether --enable-optimize was given.
+if test "${enable_optimize+set}" = set; then :
+  enableval=$enable_optimize;  case "${enableval}" in
+          yes)
+                CFLAGS="$CFLAGS -O3 -fomit-frame-pointer";
+                CXXFLAGS="$CXXFLAGS -O3 -fomit-frame-pointer";
+
+                # test support for -march=native (older gcc's don't have it)
+                save_cflags="$CFLAGS"
+                save_cxxflags="$CXXFLAGS"
+                CFLAGS="$CFLAGS -march=native"
+                CXXFLAGS="$CXXFLAGS -march=native"
+                { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $CXX supports -march=native" >&5
+$as_echo_n "checking whether $CXX supports -march=native... " >&6; }
+                cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }; CFLAGS="$save_cflags"; CXXFLAGS="$save_cxxflags"
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+          ;;
+          no) ;;
+          *) as_fn_error $? "bad value ${enableval} for --enable-optimize" "$LINENO" 5 ;;
+          esac
+else
+   optimize=false
+fi
+
+
 # Checks for libraries.
 
 # Checks for header files.
-
 ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -5077,24 +5105,24 @@ fi
 
 if test "$wxWin" != 1; then
     { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING:
-	wxWidgets does not seem to be installed on your system.
-	The wxParserDemo will not be built!
+        wxWidgets does not seem to be installed on your system.
+        The wxParserDemo will not be built!
 
         If you think wxWidgets >= 2.6.0 is installed,
-	please check that wx-config is in path, the directory
-	where wxWidgets libraries are installed (returned by
-	'wx-config --libs' command) is in LD_LIBRARY_PATH or
-	equivalent variable.
+        please check that wx-config is in path, the directory
+        where wxWidgets libraries are installed (returned by
+        'wx-config --libs' command) is in LD_LIBRARY_PATH or
+        equivalent variable.
     " >&5
 $as_echo "$as_me: WARNING:
-	wxWidgets does not seem to be installed on your system.
-	The wxParserDemo will not be built!
+        wxWidgets does not seem to be installed on your system.
+        The wxParserDemo will not be built!
 
         If you think wxWidgets >= 2.6.0 is installed,
-	please check that wx-config is in path, the directory
-	where wxWidgets libraries are installed (returned by
-	'wx-config --libs' command) is in LD_LIBRARY_PATH or
-	equivalent variable.
+        please check that wx-config is in path, the directory
+        where wxWidgets libraries are installed (returned by
+        'wx-config --libs' command) is in LD_LIBRARY_PATH or
+        equivalent variable.
     " >&2;}
 fi
 
