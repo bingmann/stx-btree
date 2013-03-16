@@ -54,7 +54,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_SPEEDTEST_TRUE@noinst_PROGRAMS = speedtest$(EXEEXT)
+@BUILD_SPEEDTEST_TRUE@noinst_PROGRAMS = speedtest$(EXEEXT) \
+@BUILD_SPEEDTEST_TRUE@	speedtest-tune$(EXEEXT)
 subdir = speedtest
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -68,6 +69,9 @@ PROGRAMS = $(noinst_PROGRAMS)
 am_speedtest_OBJECTS = speedtest.$(OBJEXT)
 speedtest_OBJECTS = $(am_speedtest_OBJECTS)
 speedtest_LDADD = $(LDADD)
+am_speedtest_tune_OBJECTS = speedtest-tune.$(OBJEXT)
+speedtest_tune_OBJECTS = $(am_speedtest_tune_OBJECTS)
+speedtest_tune_LDADD = $(LDADD)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/scripts/depcomp
 am__depfiles_maybe = depfiles
@@ -77,8 +81,8 @@ CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
-SOURCES = $(speedtest_SOURCES)
-DIST_SOURCES = $(speedtest_SOURCES)
+SOURCES = $(speedtest_SOURCES) $(speedtest_tune_SOURCES)
+DIST_SOURCES = $(speedtest_SOURCES) $(speedtest_tune_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -201,6 +205,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 speedtest_SOURCES = speedtest.cc
+speedtest_tune_SOURCES = speedtest-tune.cc
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DNDEBUG -I$(top_srcdir)/include
 EXTRA_DIST = \
 	speedtest.gnuplot transpose.awk \
@@ -253,6 +258,9 @@ clean-noinstPROGRAMS:
 speedtest$(EXEEXT): $(speedtest_OBJECTS) $(speedtest_DEPENDENCIES) $(EXTRA_speedtest_DEPENDENCIES) 
 	@rm -f speedtest$(EXEEXT)
 	$(CXXLINK) $(speedtest_OBJECTS) $(speedtest_LDADD) $(LIBS)
+speedtest-tune$(EXEEXT): $(speedtest_tune_OBJECTS) $(speedtest_tune_DEPENDENCIES) $(EXTRA_speedtest_tune_DEPENDENCIES) 
+	@rm -f speedtest-tune$(EXEEXT)
+	$(CXXLINK) $(speedtest_tune_OBJECTS) $(speedtest_tune_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -260,6 +268,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speedtest-tune.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/speedtest.Po@am__quote@
 
 .cc.o:

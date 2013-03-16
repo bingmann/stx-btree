@@ -3,11 +3,13 @@
 
 if BUILD_SPEEDTEST
 
-noinst_PROGRAMS = speedtest
+noinst_PROGRAMS = speedtest speedtest-tune
 
 endif
 
 speedtest_SOURCES = speedtest.cc
+
+speedtest_tune_SOURCES = speedtest-tune.cc
 
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DNDEBUG -I$(top_srcdir)/include
 
