@@ -26,7 +26,7 @@ BEGIN
             VALUE "CompanyName", "Timo Bingmann"
             VALUE "FileDescription", "B+ Tree Demonstration Program"
             VALUE "FileVersion", "0,8,3,0"
-            VALUE "Comments", "http://idlebox.net/2007/stx-btree/"
+            VALUE "Comments", "http://panthema.net/2007/stx-btree/"
             VALUE "LegalCopyright", "Copyright (C) 2008-2011 Timo Bingmann"
             VALUE "OriginalFilename", "wxBTreeDemo.exe"
         END

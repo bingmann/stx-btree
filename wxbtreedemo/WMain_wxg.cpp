@@ -56,7 +56,7 @@ WMain_wxg::WMain_wxg(wxWindow* parent, int id, const wxString& title, const wxPo
 void WMain_wxg::set_properties()
 {
     // begin wxGlade: WMain_wxg::set_properties
-    SetTitle(wxT("STX B+ Tree Demo - http://idlebox.net/"));
+    SetTitle(wxT("STX B+ Tree Demo - http://panthema.net/"));
     choice_DataType->SetSelection(0);
     choice_NodeSlots->SetSelection(1);
     button_Insert->SetToolTip(wxT("Insert the key/data pair from the data input fields."));

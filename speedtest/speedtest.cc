@@ -344,7 +344,7 @@ void TestFactory_Set<TestClass>::call_testrunner(std::ostream& os, unsigned int 
     testrunner_loop<HashSet>(os, items);
     testrunner_loop<UnorderedSet>(os, items);
 
-#if 0
+#if 1
     btree_range<BtreeSet, min_nodeslots, max_nodeslots>()(os, items);
 #else
     // just pick a few node sizes for quicker tests
@@ -368,7 +368,7 @@ void TestFactory_Map<TestClass>::call_testrunner(std::ostream& os, unsigned int 
     testrunner_loop<HashMap>(os, items);
     testrunner_loop<UnorderedMap>(os, items);
 
-#if 0
+#if 1
     btree_range<BtreeMap, min_nodeslots, max_nodeslots>()(os, items);
 #else
     // just pick a few node sizes for quicker tests

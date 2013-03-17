@@ -4,7 +4,7 @@
 <application path="." name="" class="" option="1" language="C++" top_window="WMain" encoding="ANSI_X3.4-1968" use_gettext="0" overwrite="0" use_new_namespace="1" for_version="2.6" is_template="0">
     <object class="WMain_wxg" name="WMain" base="EditFrame">
         <style>wxDEFAULT_FRAME_STYLE</style>
-        <title>STX B+ Tree Demo - http://idlebox.net/</title>
+        <title>STX B+ Tree Demo - http://panthema.net/</title>
         <centered>1</centered>
         <object class="wxBoxSizer" name="sizer_4" base="EditBoxSizer">
             <orient>wxVERTICAL</orient>

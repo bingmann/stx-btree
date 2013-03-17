@@ -24,7 +24,7 @@
 
 /** \mainpage STX B+ Tree Template Classes README
 
-\author Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
+\author Timo Bingmann (Mail: tb a-with-circle panthema dot net)
 \date 2008-09-07 and 2011-05-17
 
 \section sec1 Summary
@@ -45,12 +45,12 @@ structure a wxWidgets demo program is included in the source package.
 \section sec2 Website / API Docs / Bugs / License
 
 The current source package can be downloaded from
-http://idlebox.net/2007/stx-btree/
+http://panthema.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation is included in the source package. It can also be
 viewed online at
-http://idlebox.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/ (if you are not
+http://panthema.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/ (if you are not
 reading it right now).
 
 The wxWidgets B+ tree demo program is located in the directory

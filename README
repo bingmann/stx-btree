@@ -1,6 +1,6 @@
 	       *** STX B+ Tree C++ Template Classes v0.8.6  ***
 
-Author: Timo Bingmann (Mail: tb a-with-circle idlebox dot net)
+Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)
 Date: 2011-05-18
 
 --- Summary ---
@@ -20,12 +20,12 @@ B+ tree's structure a wxWidgets demo program is included in the source package.
 --- Website / API Docs / Bugs / License ---
 
 The current source package can be downloaded from
-http://idlebox.net/2007/stx-btree/
+http://panthema.net/2007/stx-btree/
 
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation is included in the source package. It can also be
 viewed online at
-http://idlebox.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/
+http://panthema.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/
 
 The wxWidgets B+ tree demo program is located in the directory
 wxbtreedemo. Compiled binary versions can be found on the package web page.
@@ -188,5 +188,5 @@ struct btree_default_map_traits
 The implementation was tested using the speed test sources contained in the
 package. For a long discussion on results please see the web page
 
-http://idlebox.net/2007/stx-btree/
+http://panthema.net/2007/stx-btree/
 
