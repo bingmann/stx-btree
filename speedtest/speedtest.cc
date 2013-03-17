@@ -280,8 +280,18 @@ unsigned int repeatuntil;
 
 /// Repeat (short) tests until enough time elapsed and divide by the runs.
 template <typename TestClass>
-void testrunner_loop(std::ostream& os, unsigned int items)
+void testrunner_loop(std::ostream& os, unsigned int items, int slots)
 {
+#if 1
+    // just pick a few node sizes for quicker tests
+    if (slots !=  0 && slots !=  4 && slots !=  8 &&
+        slots != 16 && slots != 32 && slots != 64 && slots != 128)
+    {
+        os << "0 " << std::flush; // write dummy zero to align gnuplot output
+        return;
+    }
+#endif
+
     unsigned int runs = 0;
     double ts1, ts2;
 
@@ -321,7 +331,7 @@ struct btree_range
 {
     inline void operator()(std::ostream& os, unsigned int items)
     {
-        testrunner_loop< functional<Low> >(os, items);
+        testrunner_loop< functional<Low> >(os, items, Low);
         btree_range<functional, Low+2, High>()(os, items);
     }
 };
@@ -331,7 +341,7 @@ struct btree_range<functional, Low, Low>
 {
     inline void operator()(std::ostream& os, unsigned int items)
     {
-        testrunner_loop< functional<Low> >(os, items);
+        testrunner_loop< functional<Low> >(os, items, Low);
     }
 };
 
@@ -340,21 +350,11 @@ void TestFactory_Set<TestClass>::call_testrunner(std::ostream& os, unsigned int 
 {
     os << items << " " << std::flush;
 
-    testrunner_loop<StdSet>(os, items);
-    testrunner_loop<HashSet>(os, items);
-    testrunner_loop<UnorderedSet>(os, items);
+    testrunner_loop<StdSet>(os, items, 0);
+    testrunner_loop<HashSet>(os, items, 0);
+    testrunner_loop<UnorderedSet>(os, items, 0);
 
-#if 1
     btree_range<BtreeSet, min_nodeslots, max_nodeslots>()(os, items);
-#else
-    // just pick a few node sizes for quicker tests
-    testrunner_loop< BtreeSet<4> >(os, items);
-    testrunner_loop< BtreeSet<8> >(os, items);
-    testrunner_loop< BtreeSet<16> >(os, items);
-    testrunner_loop< BtreeSet<32> >(os, items);
-    testrunner_loop< BtreeSet<64> >(os, items);
-    testrunner_loop< BtreeSet<128> >(os, items);
-#endif
 
     os << "\n" << std::flush;
 }
@@ -364,21 +364,11 @@ void TestFactory_Map<TestClass>::call_testrunner(std::ostream& os, unsigned int 
 {
     os << items << " " << std::flush;
 
-    testrunner_loop<StdMap>(os, items);
-    testrunner_loop<HashMap>(os, items);
-    testrunner_loop<UnorderedMap>(os, items);
+    testrunner_loop<StdMap>(os, items, 0);
+    testrunner_loop<HashMap>(os, items, 0);
+    testrunner_loop<UnorderedMap>(os, items, 0);
 
-#if 1
     btree_range<BtreeMap, min_nodeslots, max_nodeslots>()(os, items);
-#else
-    // just pick a few node sizes for quicker tests
-    testrunner_loop< BtreeMap<4> >(os, items);
-    testrunner_loop< BtreeMap<8> >(os, items);
-    testrunner_loop< BtreeMap<16> >(os, items);
-    testrunner_loop< BtreeMap<32> >(os, items);
-    testrunner_loop< BtreeMap<64> >(os, items);
-    testrunner_loop< BtreeMap<128> >(os, items);
-#endif
 
     os << "\n" << std::flush;
 }
