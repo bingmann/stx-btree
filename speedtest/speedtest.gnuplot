@@ -17,51 +17,27 @@ set output 'speedtest.pdf'
 # for generating smaller images:
 # set terminal pdf size 4, 2.4
 
+### Measuring a Sequence of Insert Operations
+
 ### 1st Plot
 
-set title "Speed Test Multiset - Absolute Time - Insertion Only (125-32000 Items)"
+set title "Speed Test Multiset - Normalized Time - Insertion Only (125-65536000 Items)"
 set key top left
-set logscale x
-set xrange [100:34000]
-set xlabel "Inserts"
-set ylabel "Seconds"
-set format x "%.0f"
-
-plot "speed-insert.txt" using 1:2 title "std::multiset" with linespoints, \
-     "speed-insert.txt" using 1:3 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-insert.txt" using 1:4 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-insert.txt" using 1:16 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-insert.txt" using 1:32 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-insert.txt" using 1:64 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-insert.txt" using 1:100 title "stx::btree_multiset<200>" with linespoints	
-
-### 2nd Plot
-
-set title "Speed Test Multiset - Absolute Time - Insertion Only (32000-32768000 Items)"
-
-set xrange [30000:38000000]
-
-replot
-
-### 3rd Plot
-
-set title "Speed Test Multiset - Normalized Time - Insertion Only (125-32768000 Items)"
-set key top left
-set logscale x
-set xrange [100:38000000]
-set xlabel "Inserts"
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
 set ylabel "Microseconds / Insert"
 set format x "%.0f"
 
-plot "speed-insert.txt" using 1:($2 / $1) * 1000000 title "std::multiset" with linespoints, \
-     "speed-insert.txt" using 1:($3 / $1) * 1000000 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-insert.txt" using 1:($4 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-insert.txt" using 1:($16 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-insert.txt" using 1:($32 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-insert.txt" using 1:($64 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-insert.txt" using 1:($100 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints	
+plot "speed-set-insert.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
+     "speed-set-insert.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
+     "speed-set-insert.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints
 
-### 4th Plot
+### 2nd Plot
 
 set title "Speed Test - Finding the Best Slot Size - Insertion Only - Plotted by Slots in B+ Tree"
 
@@ -69,60 +45,32 @@ set key top right
 set autoscale x
 set xlabel "Leaf/Inner Slots"
 set ylabel "Seconds"
-unset logscale x
-unset logscale y
 
-plot "speed-insert.trt" using ($0*2 + 4):17 every ::2 title "8192000 Inserts" with lines, \
-     "speed-insert.trt" using ($0*2 + 4):18 every ::2 title "16384000 Inserts" with lines, \
-     "speed-insert.trt" using ($0*2 + 4):19 every ::2 title "32768000 Inserts" with lines
+plot "speed-set-insert.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-set-insert.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-set-insert.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
 
-### Now Measuring a Sequence of Insert/Find/Erase Operations
+### Measuring a Sequence of Insert/Find/Erase Operations
 
 ### 1st Plot
 
-set title "Speed Test Multiset - Insert/Find/Erase (125-32000 Items)"
+set title "Speed Test Multiset - Normalized Time - Insert/Find/Erase (125-65536000 Items)"
 set key top left
-set logscale x
-set xrange [100:34000]
-set xlabel "Data Pairs"
-set ylabel "Seconds"
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
+set ylabel "Microseconds / Insert"
 set format x "%.0f"
 
-plot "speed-all.txt" using 1:2 title "std::multiset" with linespoints, \
-     "speed-all.txt" using 1:3 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-all.txt" using 1:4 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-all.txt" using 1:16 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-all.txt" using 1:32 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-all.txt" using 1:64 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-all.txt" using 1:100 title "stx::btree_multiset<200>" with linespoints	
+plot "speed-set-all.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
+     "speed-set-all.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
+     "speed-set-all.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints
 
 ### 2nd Plot
-
-set title "Speed Test Multiset - Insert/Find/Erase (32000-32768000 Items)"
-
-set xrange [30000:38000000]
-
-replot
-
-### 3rd Plot
-
-set title "Speed Test Multiset - Normalized Time - Insert/Find/Erase (125-32768000 Items)"
-set key top left
-set logscale x
-set xrange [100:38000000]
-set xlabel "Items"
-set ylabel "Microseconds / Item"
-set format x "%.0f"
-
-plot "speed-all.txt" using 1:($2 / $1) * 1000000 title "std::multiset" with linespoints, \
-     "speed-all.txt" using 1:($3 / $1) * 1000000 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-all.txt" using 1:($4 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-all.txt" using 1:($16 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-all.txt" using 1:($32 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-all.txt" using 1:($64 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-all.txt" using 1:($100 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints	
-
-### 4th Plot
 
 set title "Speed Test - Finding the Best Slot Size - Insert/Find/Erase - Plotted by Slots in B+ Tree"
 
@@ -130,60 +78,32 @@ set key top right
 set autoscale x
 set xlabel "Leaf/Inner Slots"
 set ylabel "Seconds"
-unset logscale x
-unset logscale y
 
-plot "speed-all.trt" using ($0*2 + 4):17 every ::2 title "8192000 Data Pairs" with lines, \
-     "speed-all.trt" using ($0*2 + 4):18 every ::2 title "16384000 Data Pairs" with lines, \
-     "speed-all.trt" using ($0*2 + 4):19 every ::2 title "32768000 Data Pairs" with lines
+plot "speed-set-all.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-set-all.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-set-all.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
 
 ### Now Measuring only Find Operations
 
 ### 1st Plot
 
-set title "Speed Test Multiset - Find Only (125-32000 Items)"
+set title "Speed Test Multiset - Normalized Time - Find Only (125-65536000 Items)"
 set key top left
-set logscale x
-set xrange [100:34000]
-set xlabel "Data Pairs"
-set ylabel "Seconds"
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
+set ylabel "Microseconds / Insert"
 set format x "%.0f"
 
-plot "speed-find.txt" using 1:2 title "std::multiset" with linespoints, \
-     "speed-find.txt" using 1:3 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-find.txt" using 1:4 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-find.txt" using 1:16 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-find.txt" using 1:32 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-find.txt" using 1:64 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-find.txt" using 1:100 title "stx::btree_multiset<200>" with linespoints	
+plot "speed-set-find.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
+     "speed-set-find.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
+     "speed-set-find.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints
 
 ### 2nd Plot
-
-set title "Speed Test Multiset - Find Only (32000-32768000 Items)"
-
-set xrange [30000:38000000]
-
-replot
-
-### 3rd Plot
-
-set title "Speed Test Multiset - Normalized Time - Find Only (125-32768000 Items)"
-set key top left
-set logscale x
-set xrange [100:38000000]
-set xlabel "Items"
-set ylabel "Microseconds / Item"
-set format x "%.0f"
-
-plot "speed-find.txt" using 1:($2 / $1) * 1000000 title "std::multiset" with linespoints, \
-     "speed-find.txt" using 1:($3 / $1) * 1000000 title " __gnu_cxx::hash_multiset" with linespoints, \
-     "speed-find.txt" using 1:($4 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
-     "speed-find.txt" using 1:($16 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
-     "speed-find.txt" using 1:($32 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
-     "speed-find.txt" using 1:($64 / $1) * 1000000 title "stx::btree_multiset<128>" with linespoints, \
-     "speed-find.txt" using 1:($100 / $1) * 1000000 title "stx::btree_multiset<200>" with linespoints	
-
-### 4th Plot
 
 set title "Speed Test - Finding the Best Slot Size - Find Only - Plotted by Slots in B+ Tree"
 
@@ -191,9 +111,108 @@ set key top right
 set autoscale x
 set xlabel "Leaf/Inner Slots"
 set ylabel "Seconds"
-unset logscale x
-unset logscale y
 
-plot "speed-find.trt" using ($0*2 + 4):17 every ::2 title "8192000 Lookups" with lines, \
-     "speed-find.trt" using ($0*2 + 4):18 every ::2 title "16384000 Lookups" with lines, \
-     "speed-find.trt" using ($0*2 + 4):19 every ::2 title "32768000 Lookups" with lines
+plot "speed-set-find.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-set-find.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-set-find.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
+
+################################################################################
+
+### Measuring a Sequence of Insert Operations
+
+### 1st Plot
+
+set title "Speed Test Multimap - Normalized Time - Insertion Only (125-65536000 Items)"
+set key top left
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
+set ylabel "Microseconds / Insert"
+set format x "%.0f"
+
+plot "speed-map-insert.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
+     "speed-map-insert.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
+     "speed-map-insert.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multimap<128>" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multimap<200>" with linespoints
+
+### 2nd Plot
+
+set title "Speed Test - Finding the Best Slot Size - Insertion Only - Plotted by Slots in B+ Tree"
+
+set key top right
+set autoscale x
+set xlabel "Leaf/Inner Slots"
+set ylabel "Seconds"
+
+plot "speed-map-insert.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-map-insert.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-map-insert.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
+
+### Measuring a Sequence of Insert/Find/Erase Operations
+
+### 1st Plot
+
+set title "Speed Test Multimap - Normalized Time - Insert/Find/Erase (125-65536000 Items)"
+set key top left
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
+set ylabel "Microseconds / Insert"
+set format x "%.0f"
+
+plot "speed-map-all.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
+     "speed-map-all.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
+     "speed-map-all.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multimap<128>" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multimap<200>" with linespoints
+
+### 2nd Plot
+
+set title "Speed Test - Finding the Best Slot Size - Insert/Find/Erase - Plotted by Slots in B+ Tree"
+
+set key top right
+set autoscale x
+set xlabel "Leaf/Inner Slots"
+set ylabel "Seconds"
+
+plot "speed-map-all.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-map-all.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-map-all.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
+
+### Now Measuring only Find Operations
+
+### 1st Plot
+
+set title "Speed Test Multimap - Normalized Time - Find Only (125-65536000 Items)"
+set key top left
+set xrange [6.5:26.5]
+set xlabel "Items [log2(n)]"
+set ylabel "Microseconds / Insert"
+set format x "%.0f"
+
+plot "speed-map-find.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
+     "speed-map-find.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
+     "speed-map-find.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($67 / $1) * 1000000 title "stx::btree_multimap<128>" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($103 / $1) * 1000000 title "stx::btree_multimap<200>" with linespoints
+
+### 2nd Plot
+
+set title "Speed Test - Finding the Best Slot Size - Find Only - Plotted by Slots in B+ Tree"
+
+set key top right
+set autoscale x
+set xlabel "Leaf/Inner Slots"
+set ylabel "Seconds"
+
+plot "speed-map-find.trt" using (($0-1)*2 + 4):18 every ::2 title "16384000 Items" with lines, \
+     "speed-map-find.trt" using (($0-1)*2 + 4):19 every ::2 title "32768000 Items" with lines, \
+     "speed-map-find.trt" using (($0-1)*2 + 4):20 every ::2 title "65536000 Items" with lines
