@@ -5234,7 +5234,7 @@ fi
 
 # Checks for library functions.
 
-ac_config_files="$ac_config_files Makefile include/Makefile testsuite/Makefile speedtest/Makefile wxbtreedemo/Makefile"
+ac_config_files="$ac_config_files Makefile include/Makefile testsuite/Makefile speedtest/Makefile memprofile/Makefile wxbtreedemo/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5998,6 +5998,7 @@ do
     "include/Makefile") CONFIG_FILES="$CONFIG_FILES include/Makefile" ;;
     "testsuite/Makefile") CONFIG_FILES="$CONFIG_FILES testsuite/Makefile" ;;
     "speedtest/Makefile") CONFIG_FILES="$CONFIG_FILES speedtest/Makefile" ;;
+    "memprofile/Makefile") CONFIG_FILES="$CONFIG_FILES memprofile/Makefile" ;;
     "wxbtreedemo/Makefile") CONFIG_FILES="$CONFIG_FILES wxbtreedemo/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;

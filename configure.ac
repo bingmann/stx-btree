@@ -126,5 +126,6 @@ AC_CONFIG_FILES([Makefile
                  include/Makefile
                  testsuite/Makefile
                  speedtest/Makefile
+                 memprofile/Makefile
                  wxbtreedemo/Makefile])
 AC_OUTPUT

@@ -1,6 +1,6 @@
 # Makefile.am
 
-SUBDIRS = . include testsuite speedtest wxbtreedemo
+SUBDIRS = . include testsuite speedtest memprofile wxbtreedemo
 
 AM_CFLAGS = -W -Wall -I$(srcdir)/include
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DBTREE_DEBUG -I$(srcdir)/include
