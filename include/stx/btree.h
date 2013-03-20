@@ -1624,7 +1624,7 @@ private:
     template <typename node_type>
     inline int find_lower(const node_type *n, const key_type& key) const
     {
-        if ( sizeof(n->slotkey) > traits::binsearch_threshold )
+        if ( 0 && sizeof(n->slotkey) > traits::binsearch_threshold )
         {
             if (n->slotuse == 0) return 0;
 
@@ -1671,7 +1671,7 @@ private:
     template <typename node_type>
     inline int find_upper(const node_type *n, const key_type& key) const
     {
-        if ( sizeof(n->slotkey) > traits::binsearch_threshold )
+        if ( 0 && sizeof(n->slotkey) > traits::binsearch_threshold )
         {
             if (n->slotuse == 0) return 0;
 
