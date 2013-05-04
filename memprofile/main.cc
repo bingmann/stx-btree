@@ -22,6 +22,7 @@
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <assert.h>
+#include <unistd.h>
 
 #include <fstream>
 #include <iostream>
@@ -31,6 +32,9 @@
 #include <ext/hash_map>
 #include <tr1/unordered_map>
 #include <stx/btree_multimap.h>
+
+#include <vector>
+#include <deque>
 
 #include "memprofile.h"
 
@@ -91,6 +95,39 @@ struct TestFactory_Map
 
 // --------------------------------------------------------------------------------
 
+/// Test a generic array type with insertions
+template <typename ArrayType>
+struct Test_Array_Insert
+{
+    Test_Array_Insert(unsigned int) {}
+
+    inline void run(unsigned int items)
+    {
+        ArrayType array;
+
+        srand(randseed);
+        for(unsigned int i = 0; i < items; i++) {
+            unsigned int r = rand();
+            array.push_back( std::make_pair(r,r) );
+        }
+
+        assert( array.size() == items );
+    }
+};
+
+/// Construct different array types for a generic test class
+template < template<typename ArrayType> class TestClass >
+struct TestFactory_Array
+{
+    /// Test the vector from STL
+    typedef TestClass< std::vector< std::pair<unsigned int, unsigned int> > > StdVector;
+
+    /// Test the deque from STL
+    typedef TestClass< std::deque< std::pair<unsigned int, unsigned int> > > StdDeque;
+};
+
+// --------------------------------------------------------------------------------
+
 template <typename TestClass>
 void write_memprofile(const char* filename)
 {
@@ -121,12 +158,17 @@ void write_memprofile(const char* filename)
 /// Create memory usage profiles
 int main()
 {
-    typedef TestFactory_Map<Test_Map_Insert> testfactory_type;
+    typedef TestFactory_Map<Test_Map_Insert> testmap_type;
 
-    write_memprofile< testfactory_type::StdMap >("memprofile-stdmap.txt");
-    write_memprofile< testfactory_type::HashMap >("memprofile-hashmap.txt");
-    write_memprofile< testfactory_type::UnorderedMap >("memprofile-unorderedmap.txt");
-    write_memprofile< testfactory_type::BtreeMap >("memprofile-btreemap.txt");
+    write_memprofile< testmap_type::StdMap >("memprofile-stdmap.txt");
+    write_memprofile< testmap_type::HashMap >("memprofile-hashmap.txt");
+    write_memprofile< testmap_type::UnorderedMap >("memprofile-unorderedmap.txt");
+    write_memprofile< testmap_type::BtreeMap >("memprofile-btreemap.txt");
+
+    typedef TestFactory_Array<Test_Array_Insert> testarray_type;
+
+    write_memprofile< testarray_type::StdVector >("memprofile-vector.txt");
+    write_memprofile< testarray_type::StdDeque >("memprofile-deque.txt");
 
     return 0;
 }
