@@ -55,7 +55,7 @@ build_triplet = @build@
 host_triplet = @host@
 @BUILD_SPEEDTEST_TRUE@noinst_PROGRAMS = memprofile$(EXEEXT)
 subdir = memprofile
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
+DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -203,8 +203,12 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-memprofile_SOURCES = main.cc malloc_count.c
+memprofile_SOURCES = main.cc malloc_count.c malloc_count.h memprofile.h
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -I$(top_srcdir)/include
+EXTRA_DIST = \
+	memprofile.gnuplot \
+	results-2013/*
+
 all: all-am
 
 .SUFFIXES:
@@ -218,9 +222,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu memprofile/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign memprofile/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu memprofile/Makefile
+	  $(AUTOMAKE) --foreign memprofile/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

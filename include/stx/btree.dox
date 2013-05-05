@@ -188,6 +188,11 @@ void erase(iterator first, iterator last);
 Beyond the usual STL interface the B+ tree classes support some extra goodies.
 
 \code
+// Bulk load a sorted range. Loads items into leaves and constructs a
+// B-tree above them. The tree must be empty when calling this function.
+template <typename Iterator>
+void bulk_load(Iterator ibegin, Iterator iend);
+
 // Output the tree in a pseudo-hierarchical text dump to std::cout. This
 // function requires that BTREE_DEBUG is defined prior to including the btree
 // headers. Furthermore the key and data types must be std::ostream printable.

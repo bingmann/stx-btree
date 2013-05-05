@@ -6,8 +6,8 @@ AM_CFLAGS = -W -Wall -I$(srcdir)/include
 AM_CXXFLAGS = -W -Wall -Wold-style-cast -DBTREE_DEBUG -I$(srcdir)/include
 
 EXTRA_DIST = Doxyfile \
-	doxygen-html/*.* \
-	doxygen-html/search/*.*
+	COPYING.GPLv3 \
+	doxygen-html/*
 
 if GCOV
 

@@ -12,3 +12,5 @@ nobase_include_HEADERS = \
 	stx/btree_multiset \
 	stx/btree_multimap \
 	stx/btree.dox
+
+EXTRA_DIST = LICENSE_1_0.txt

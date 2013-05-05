@@ -57,7 +57,7 @@ host_triplet = @host@
 @GOT_RESCOMP_TRUE@@HAVE_WXWIDGETS_TRUE@am__append_1 = resources.o
 subdir = wxbtreedemo
 DIST_COMMON = README $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	AUTHORS COPYING
+	AUTHORS
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -234,9 +234,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu wxbtreedemo/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign wxbtreedemo/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu wxbtreedemo/Makefile
+	  $(AUTOMAKE) --foreign wxbtreedemo/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

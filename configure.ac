@@ -2,12 +2,12 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.59)
-AC_INIT(stx-btree, 0.8.6)
+AC_INIT(stx-btree, 0.9)
 AC_CONFIG_SRCDIR([include/stx/btree.h])
 AC_CONFIG_AUX_DIR(scripts)
 AC_CANONICAL_HOST
 
-AM_INIT_AUTOMAKE
+AM_INIT_AUTOMAKE(foreign)
 AM_MAINTAINER_MODE
 
 # set debug info flag if no optimization flags are set.
