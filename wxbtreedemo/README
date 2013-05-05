@@ -1,4 +1,4 @@
-		      *** STX B+ Tree Demo GUI v0.8.6 ***
+                       *** STX B+ Tree Demo GUI v0.9 ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)
 Date: 2007-05-14
@@ -17,8 +17,8 @@ wxWidgets toolkit and can be compiled on Linux, Windows and MacOSX.
 The current demo source and some compiled binaries can be downloaded from
 http://panthema.net/2007/stx-btree/
 
-The demo's source code is released under the GNU General Public License v2
-(GPL) which can be found in the file COPYING.
+The demo's source code is released under the GNU General Public License v3
+(GPL) which can be found in the file COPYING.GPLv3.
 
 --- Program Usage ---
 

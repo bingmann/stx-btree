@@ -1,7 +1,7 @@
-	       *** STX B+ Tree C++ Template Classes v0.8.6  ***
+                *** STX B+ Tree C++ Template Classes v0.9  ***
 
 Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)
-Date: 2011-05-18
+Date: 2013-05-05
 
 --- Summary ---
 
@@ -25,7 +25,7 @@ http://panthema.net/2007/stx-btree/
 The include files are extensively documented using doxygen. The compiled
 doxygen html documentation is included in the source package. It can also be
 viewed online at
-http://panthema.net/2007/stx-btree/stx-btree-0.8.6/doxygen-html/
+http://panthema.net/2007/stx-btree/stx-btree-0.9/doxygen-html/
 
 The wxWidgets B+ tree demo program is located in the directory
 wxbtreedemo. Compiled binary versions can be found on the package web page.
@@ -33,8 +33,12 @@ wxbtreedemo. Compiled binary versions can be found on the package web page.
 If bugs should become known they will be posted on the above web page together
 with patches or corrected versions.
 
-The complete source code is released under the GNU Lesser General Public
-License v2.1 (LGPL) which can be found in the file COPYING.
+The B+ tree template source code is released under the Boost Software License,
+Version 1.0, which can be found at the header of each include file.
+
+All auxiliary programs like the wxWidgets demo, test suite and speed tests are
+licensed under the GNU General Public License v3 (GPLv3), which can be found in
+the file COPYING.GPLv3.
 
 --- Original Idea ---
 
@@ -181,6 +185,12 @@ struct btree_default_map_traits
     // node has a size of about 128 bytes.
     static const int    innerslots =
                              MAX( 8, 128 / (sizeof(_Key) + sizeof(void*)) );
+
+    /// As of stx-btree-0.9, the code does linear search in find_lower() and
+    /// find_upper() instead of binary_search, unless the node size is larger
+    /// than this threshold. See notes at
+    /// http://panthema.net/2013/0504-STX-B+Tree-Binary-vs-Linear-Search
+    static const size_t binsearch_threshold = 256;
 };
 
 --- Speed Tests ---
