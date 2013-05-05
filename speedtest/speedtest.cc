@@ -68,6 +68,8 @@ struct btree_traits_speed : stx::btree_default_set_traits<unsigned int>
 
     static const int    leafslots = _innerslots;
     static const int    innerslots = _leafslots;
+
+    static const size_t binsearch_threshold = 256*1024*1024; // never
 };
 
 // --------------------------------------------------------------------------------
@@ -349,17 +351,18 @@ void TestFactory_Set<TestClass>::call_testrunner(std::ostream& os, unsigned int 
 #else
     // just pick a few node sizes for quicker tests
     testrunner_loop< BtreeSet<4> >(os, items);
-    for (int i = 5; i < 8; ++i) os << "0 ";
+    for (int i = 6; i < 8; i+=2) os << "0 ";
     testrunner_loop< BtreeSet<8> >(os, items);
-    for (int i = 9; i < 16; ++i) os << "0 ";
+    for (int i = 10; i < 16; i+=2) os << "0 ";
     testrunner_loop< BtreeSet<16> >(os, items);
-    for (int i = 17; i < 32; ++i) os << "0 ";
+    for (int i = 18; i < 32; i+=2) os << "0 ";
     testrunner_loop< BtreeSet<32> >(os, items);
-    for (int i = 33; i < 64; ++i) os << "0 ";
+    for (int i = 34; i < 64; i+=2) os << "0 ";
     testrunner_loop< BtreeSet<64> >(os, items);
-    for (int i = 65; i < 128; ++i) os << "0 ";
+    for (int i = 66; i < 128; i+=2) os << "0 ";
     testrunner_loop< BtreeSet<128> >(os, items);
-    for (int i = 129; i <= max_nodeslots; ++i) os << "0 ";
+    for (int i = 130; i < 256; i+=2) os << "0 ";
+    testrunner_loop< BtreeSet<256> >(os, items);
 #endif
 
     os << "\n" << std::flush;
@@ -379,17 +382,18 @@ void TestFactory_Map<TestClass>::call_testrunner(std::ostream& os, unsigned int 
 #else
     // just pick a few node sizes for quicker tests
     testrunner_loop< BtreeMap<4> >(os, items);
-    for (int i = 5; i < 8; ++i) os << "0 ";
+    for (int i = 6; i < 8; i+=2) os << "0 ";
     testrunner_loop< BtreeMap<8> >(os, items);
-    for (int i = 9; i < 16; ++i) os << "0 ";
+    for (int i = 10; i < 16; i+=2) os << "0 ";
     testrunner_loop< BtreeMap<16> >(os, items);
-    for (int i = 17; i < 32; ++i) os << "0 ";
+    for (int i = 18; i < 32; i+=2) os << "0 ";
     testrunner_loop< BtreeMap<32> >(os, items);
-    for (int i = 33; i < 64; ++i) os << "0 ";
+    for (int i = 34; i < 64; i+=2) os << "0 ";
     testrunner_loop< BtreeMap<64> >(os, items);
-    for (int i = 65; i < 128; ++i) os << "0 ";
+    for (int i = 66; i < 128; i+=2) os << "0 ";
     testrunner_loop< BtreeMap<128> >(os, items);
-    for (int i = 129; i <= max_nodeslots; ++i) os << "0 ";
+    for (int i = 130; i < 256; i+=2) os << "0 ";
+    testrunner_loop< BtreeMap<256> >(os, items);
 #endif
 
     os << "\n" << std::flush;
