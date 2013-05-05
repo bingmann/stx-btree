@@ -3,7 +3,7 @@
  */
 
 /*
- * STX B+ Tree Template Classes v0.8.9
+ * STX B+ Tree Template Classes v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
