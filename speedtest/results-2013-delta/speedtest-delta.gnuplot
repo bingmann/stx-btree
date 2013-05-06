@@ -20,6 +20,8 @@ set style increment user
 set terminal pdf size 5, 3.5 dashed
 set output 'speedtest-delta.pdf'
 
+set label "Intel i7 920" at screen 0.04, screen 0.04
+
 ### 3rd Plot
 
 set title "Speed Test Multimap - Normalized Time - Insertion Only (125-65536000 Items)"
@@ -53,7 +55,6 @@ plot "new/speed-map-insert.txt" using 1:($2 / $1) * 1000000 title "std::multimap
 set title "Speed Test Multimap - Normalized Time - Insert/Find/Erase (125-65536000 Items)"
 set key top left
 set logscale x
-set xrange [100:38000000]
 set xlabel "Items"
 set ylabel "Microseconds / Item"
 set format x "%.0f"
@@ -81,7 +82,6 @@ plot "new/speed-map-all.txt" using 1:($2 / $1) * 1000000 title "std::multimap" w
 set title "Speed Test Multimap - Normalized Time - Find Only (125-65536000 Items)"
 set key top left
 set logscale x
-set xrange [100:38000000]
 set xlabel "Items"
 set ylabel "Microseconds / Item"
 set format x "%.0f"
@@ -110,7 +110,6 @@ plot "new/speed-map-find.txt" using 1:($2 / $1) * 1000000 title "std::multimap" 
 set title "Speed Test Multiset - Normalized Time - Insertion Only (125-65536000 Items)"
 set key top left
 set logscale x
-set xrange [100:76000000]
 set xlabel "Inserts"
 set ylabel "Microseconds / Insert"
 set format x "%.0f"
@@ -138,7 +137,6 @@ plot "new/speed-set-insert.txt" using 1:($2 / $1) * 1000000 title "std::multiset
 set title "Speed Test Multiset - Normalized Time - Insert/Find/Erase (125-65536000 Items)"
 set key top left
 set logscale x
-set xrange [100:38000000]
 set xlabel "Items"
 set ylabel "Microseconds / Item"
 set format x "%.0f"
@@ -166,7 +164,6 @@ plot "new/speed-set-all.txt" using 1:($2 / $1) * 1000000 title "std::multiset" w
 set title "Speed Test Multiset - Normalized Time - Find Only (125-65536000 Items)"
 set key top left
 set logscale x
-set xrange [100:38000000]
 set xlabel "Items"
 set ylabel "Microseconds / Item"
 set format x "%.0f"
