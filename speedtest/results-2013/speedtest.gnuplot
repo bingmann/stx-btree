@@ -29,7 +29,7 @@ set format x "%.0f"
 
 plot "speed-set-insert.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
      "speed-set-insert.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
-     "speed-set-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multiset" with linespoints, \
      "speed-set-insert.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
      "speed-set-insert.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
      "speed-set-insert.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
@@ -62,7 +62,7 @@ set format x "%.0f"
 
 plot "speed-set-all.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
      "speed-set-all.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
-     "speed-set-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multiset" with linespoints, \
      "speed-set-all.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
      "speed-set-all.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
      "speed-set-all.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
@@ -95,7 +95,7 @@ set format x "%.0f"
 
 plot "speed-set-find.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multiset" with linespoints, \
      "speed-set-find.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multiset" with linespoints, \
-     "speed-set-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_set" with linespoints, \
+     "speed-set-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multiset" with linespoints, \
      "speed-set-find.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multiset<4>" with linespoints,  \
      "speed-set-find.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multiset<32>" with linespoints,  \
      "speed-set-find.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multiset<64>" with linespoints, \
@@ -130,7 +130,7 @@ set format x "%.0f"
 
 plot "speed-map-insert.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
      "speed-map-insert.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
-     "speed-map-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-insert.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multimap" with linespoints, \
      "speed-map-insert.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
      "speed-map-insert.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
      "speed-map-insert.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
@@ -163,7 +163,7 @@ set format x "%.0f"
 
 plot "speed-map-all.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
      "speed-map-all.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
-     "speed-map-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-all.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multimap" with linespoints, \
      "speed-map-all.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
      "speed-map-all.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
      "speed-map-all.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
@@ -196,7 +196,7 @@ set format x "%.0f"
 
 plot "speed-map-find.txt" using (log($1)/log(2)):($2 / $1) * 1000000 title "std::multimap" with linespoints, \
      "speed-map-find.txt" using (log($1)/log(2)):($3 / $1) * 1000000 title "__gnu_cxx::hash_multimap" with linespoints, \
-     "speed-map-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_map" with linespoints, \
+     "speed-map-find.txt" using (log($1)/log(2)):($4 / $1) * 1000000 title "std::tr1::unordered_multimap" with linespoints, \
      "speed-map-find.txt" using (log($1)/log(2)):($5 / $1) * 1000000 title "stx::btree_multimap<4>" with linespoints,  \
      "speed-map-find.txt" using (log($1)/log(2)):($19 / $1) * 1000000 title "stx::btree_multimap<32>" with linespoints,  \
      "speed-map-find.txt" using (log($1)/log(2)):($35 / $1) * 1000000 title "stx::btree_multimap<64>" with linespoints, \
