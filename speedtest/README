@@ -8,5 +8,17 @@ Date: 2013-05-05
 This directory contains a set of speed tests programs, which can be used to
 compare the performance of different map containers.
 
+The speedtest is compiled when ./configure is called with --enable-speedtest,
+also add --enable-optimize!
+
+Running the speedtest creates files like speed-set-all.txt and similar.
+
+For gnuplot processing, the output files have to be transposed using the
+transpose.awk:
+$ for f in *.txt; do ./transpose.awk < $f > ${f%%.txt}.trt; done
+
+Then pick out the latest gnuplot script from the results directories and run
+it using the new result files.
+
 For more information see the speed test results web site
 http://panthema.net/2007/stx-btree/speedtest/

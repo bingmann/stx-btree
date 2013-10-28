@@ -51,7 +51,7 @@ inline double timestamp()
 template <typename KeyType, int _bs_slots>
 struct btree_traits_speed : public stx::btree_default_set_traits<KeyType>
 {
-    static const int    binsearch_threshold = _bs_slots;
+    static const size_t binsearch_threshold = _bs_slots;
 };
 
 /// Test the B+ tree with a specific leaf/inner slots (only insert)
