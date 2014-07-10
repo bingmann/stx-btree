@@ -52,8 +52,8 @@ extern "C" int printf(const char*, ...);
  * TRACE(message); adds a trace to the test output with a user
  * specified string message.
  */
-#define ABORT() __assert(__FILE__, __LINE__); return;
-#define FAIL()  __assert(__FILE__, __LINE__);
+#define ABORT() __stx_assert(__FILE__, __LINE__); return;
+#define FAIL()  __stx_assert(__FILE__, __LINE__);
 #define PASS()  /* do nothing */
 #define TRACE(message) __trace(__FILE__, __LINE__, message);
 
@@ -442,7 +442,7 @@ namespace tpunit
                    ((lhs_u.c[lsb] > rhs_u.c[lsb]) ? lhs_u.c[lsb] - rhs_u.c[lsb] : rhs_u.c[lsb] - lhs_u.c[lsb]) <= ulps;
          }
 
-         static void __assert(const char* _file, int _line)
+         static void __stx_assert(const char* _file, int _line)
             { printf("[              ]    assert #%i at %s:%i\n", ++__stats()._assertions, _file, _line); }
 
          static void __trace(const char* _file, int _line, const char* _message)
