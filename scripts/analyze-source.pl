@@ -135,6 +135,20 @@ sub process_cpp {
         }
     }
 
+    # check for double underscores
+    {
+        foreach my $ln (@data)
+        {
+            next if $ln =~ /^\s*#(if|elif|define|error)/;
+
+            if ($ln =~ m@\s__(?!(typeof__|attribute__|sync_add_and_fetch|sync_sub_and_fetch|FILE__|LINE__|FUNCTION__))@) {
+                print("double-underscore found in $path\n");
+                print $ln."\n";
+                system("emacsclient -n $path") if $launch_emacs;
+            }
+        }
+    }
+
     # check source header
     my $i = 0;
     if ($data[$i] =~ m!// -.*- mode:!) { ++$i; } # skip emacs mode line

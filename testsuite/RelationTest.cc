@@ -84,6 +84,6 @@ struct RelationTest : public tpunit::TestFixture
 
         ASSERT(bt1 == bt4);
     }
-} __RelationTest;
+} _RelationTest;
 
 /******************************************************************************/

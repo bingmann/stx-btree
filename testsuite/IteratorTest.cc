@@ -836,6 +836,6 @@ struct IteratorTest : public tpunit::TestFixture
 
         ASSERT(map.size() == 0);
     }
-} __IteratorTest;
+} _IteratorTest;
 
 /******************************************************************************/

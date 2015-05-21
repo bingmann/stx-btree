@@ -117,6 +117,6 @@ struct BulkLoadTest : public tpunit::TestFixture
         test_map_instance(32000, 10000);
         test_map_instance(117649, 100000);
     }
-} __BulkLoadTest;
+} _BulkLoadTest;
 
 /******************************************************************************/

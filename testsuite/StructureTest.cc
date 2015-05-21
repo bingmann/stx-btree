@@ -93,7 +93,7 @@ struct StructureTest : public tpunit::TestFixture
             ASSERT(bt.size() == 320 - i - 1);
         }
     }
-} __StructureTest;
+} _StructureTest;
 
 inline std::ostream& operator << (std::ostream& o, const struct StructureTest::testdata& t)
 {

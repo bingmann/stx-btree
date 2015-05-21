@@ -238,27 +238,27 @@ struct SimpleTest : public tpunit::TestFixture
 };
 
 // test binary search on different slot sizes
-struct SimpleTest<8> __SimpleTest8;
-struct SimpleTest<9> __SimpleTest9;
-struct SimpleTest<10> __SimpleTest10;
-struct SimpleTest<11> __SimpleTest11;
-struct SimpleTest<12> __SimpleTest12;
-struct SimpleTest<13> __SimpleTest13;
-struct SimpleTest<14> __SimpleTest14;
-struct SimpleTest<15> __SimpleTest15;
-struct SimpleTest<16> __SimpleTest16;
-struct SimpleTest<17> __SimpleTest17;
-struct SimpleTest<19> __SimpleTest19;
-struct SimpleTest<20> __SimpleTest20;
-struct SimpleTest<21> __SimpleTest21;
-struct SimpleTest<23> __SimpleTest23;
-struct SimpleTest<24> __SimpleTest24;
-struct SimpleTest<32> __SimpleTest32;
-struct SimpleTest<48> __SimpleTest48;
-struct SimpleTest<63> __SimpleTest63;
-struct SimpleTest<64> __SimpleTest64;
-struct SimpleTest<65> __SimpleTest65;
-struct SimpleTest<101> __SimpleTest101;
-struct SimpleTest<203> __SimpleTest203;
+struct SimpleTest<8> _SimpleTest8;
+struct SimpleTest<9> _SimpleTest9;
+struct SimpleTest<10> _SimpleTest10;
+struct SimpleTest<11> _SimpleTest11;
+struct SimpleTest<12> _SimpleTest12;
+struct SimpleTest<13> _SimpleTest13;
+struct SimpleTest<14> _SimpleTest14;
+struct SimpleTest<15> _SimpleTest15;
+struct SimpleTest<16> _SimpleTest16;
+struct SimpleTest<17> _SimpleTest17;
+struct SimpleTest<19> _SimpleTest19;
+struct SimpleTest<20> _SimpleTest20;
+struct SimpleTest<21> _SimpleTest21;
+struct SimpleTest<23> _SimpleTest23;
+struct SimpleTest<24> _SimpleTest24;
+struct SimpleTest<32> _SimpleTest32;
+struct SimpleTest<48> _SimpleTest48;
+struct SimpleTest<63> _SimpleTest63;
+struct SimpleTest<64> _SimpleTest64;
+struct SimpleTest<65> _SimpleTest65;
+struct SimpleTest<101> _SimpleTest101;
+struct SimpleTest<203> _SimpleTest203;
 
 /******************************************************************************/

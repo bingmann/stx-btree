@@ -100,6 +100,6 @@ struct DumpRestoreTest : public tpunit::TestFixture
             ASSERT(!bt3.restore(iss));
         }
     }
-} __DumpRestoreTest;
+} _DumpRestoreTest;
 
 /******************************************************************************/

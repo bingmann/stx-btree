@@ -240,6 +240,6 @@ struct LargeTest : public tpunit::TestFixture
         ASSERT(bt.empty());
         ASSERT(set.empty());
     }
-} __LargeTest;
+} _LargeTest;
 
 /******************************************************************************/

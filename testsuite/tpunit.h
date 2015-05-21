@@ -55,10 +55,10 @@ extern "C" int printf(const char*, ...);
  * TRACE(message); adds a trace to the test output with a user
  * specified string message.
  */
-#define ABORT() __assert(__FILE__, __LINE__); return;
-#define FAIL()  __assert(__FILE__, __LINE__);
+#define ABORT() _assert(__FILE__, __LINE__); return;
+#define FAIL()  _assert(__FILE__, __LINE__);
 #define PASS()  /* do nothing */
-#define TRACE(message) __trace(__FILE__, __LINE__, message);
+#define TRACE(message) _trace(__FILE__, __LINE__, message);
 
 /**
  * The set of core macros for basic predicate testing of boolean
@@ -149,13 +149,13 @@ extern "C" int printf(const char*, ...);
  * ASSERT|EXPECT_FLOAT_NEAR(lhs, rhs, abs_error); generates a failure if
  * the given floating-point values exceed the absolute error.
  */
-#define ASSERT_FLOAT_EQUAL(lhs, rhs)              \
-    do { if (__fp_equal(lhs, rhs, 4)) { PASS(); } \
-         else { ABORT(); }                        \
+#define ASSERT_FLOAT_EQUAL(lhs, rhs)             \
+    do { if (_fp_equal(lhs, rhs, 4)) { PASS(); } \
+         else { ABORT(); }                       \
     } while (0)
-#define EXPECT_FLOAT_EQUAL(lhs, rhs)              \
-    do { if (__fp_equal(lhs, rhs, 4)) { PASS(); } \
-         else { FAIL(); }                         \
+#define EXPECT_FLOAT_EQUAL(lhs, rhs)             \
+    do { if (_fp_equal(lhs, rhs, 4)) { PASS(); } \
+         else { FAIL(); }                        \
     } while (0)
 #define ASSERT_FLOAT_NEAR(lhs, rhs, abs_error)                                             \
     do { if ((((lhs) > (rhs)) ? (lhs) - (rhs) : (rhs) - (lhs)) <= (abs_error)) { PASS(); } \
@@ -335,7 +335,7 @@ public:
         method* m24 = 0, method* m25 = 0, method* m26 = 0, method* m27 = 0,
         method* m28 = 0, method* m29 = 0)
     {
-        fixture* f = &__fixtures();
+        fixture* f = &_fixtures();
         while (f->_next) { f = f->_next; }
         f = f->_next = new fixture;
 
@@ -444,25 +444,25 @@ public:
     { return new method(this, reinterpret_cast<void (TestFixture::*)()>(_method), _name, method::TEST_METHOD); }
 
 protected:
-    static int __do_run()
+    static int _do_run()
     {
-        fixture* f = __fixtures()._next;
+        fixture* f = _fixtures()._next;
         while (f)
         {
             printf("[--------------]\n");
-            __do_methods(f->_before_classes);
-            __do_tests(f);
-            __do_methods(f->_after_classes);
+            _do_methods(f->_before_classes);
+            _do_tests(f);
+            _do_methods(f->_after_classes);
             printf("[--------------]\n\n");
             f = f->_next;
         }
         printf("[==============]\n");
         printf("[ TEST RESULTS ]\n");
         printf("[==============]\n");
-        printf("[    PASSED    ] %4i tests\n", __stats()._passes);
-        printf("[    FAILED    ] %4i tests\n", __stats()._failures);
+        printf("[    PASSED    ] %4i tests\n", _stats()._passes);
+        printf("[    FAILED    ] %4i tests\n", _stats()._failures);
         printf("[==============]\n");
-        return __stats()._failures;
+        return _stats()._failures;
     }
 
     /**
@@ -471,7 +471,7 @@ protected:
      *
      * http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
      */
-    static bool __fp_equal(float lhs, float rhs, unsigned char ulps)
+    static bool _fp_equal(float lhs, float rhs, unsigned char ulps)
     {
         union
         {
@@ -508,7 +508,7 @@ protected:
      *
      * http://www.cygnus-software.com/papers/comparingfloats/comparingfloats.htm
      */
-    static bool __fp_equal(double lhs, double rhs, unsigned char ulps)
+    static bool _fp_equal(double lhs, double rhs, unsigned char ulps)
     {
         union
         {
@@ -550,14 +550,14 @@ protected:
                ((lhs_u.c[lsb] > rhs_u.c[lsb]) ? lhs_u.c[lsb] - rhs_u.c[lsb] : rhs_u.c[lsb] - lhs_u.c[lsb]) <= ulps;
     }
 
-    static void __assert(const char* _file, int _line)
-    { printf("[              ]    assert #%i at %s:%i\n", ++__stats()._assertions, _file, _line); }
+    static void _assert(const char* _file, int _line)
+    { printf("[              ]    assert #%i at %s:%i\n", ++_stats()._assertions, _file, _line); }
 
-    static void __trace(const char* _file, int _line, const char* _message)
-    { printf("[              ]    trace #%i at %s:%i: %s\n", ++__stats()._traces, _file, _line, _message); }
+    static void _trace(const char* _file, int _line, const char* _message)
+    { printf("[              ]    trace #%i at %s:%i: %s\n", ++_stats()._traces, _file, _line, _message); }
 
 private:
-    static void __do_methods(method* m)
+    static void _do_methods(method* m)
     {
         while (m)
         {
@@ -566,39 +566,39 @@ private:
         }
     }
 
-    static void __do_tests(fixture* f)
+    static void _do_tests(fixture* f)
     {
         method* t = f->_tests;
         while (t)
         {
-            __do_methods(f->_befores);
+            _do_methods(f->_befores);
 
-            int _prev_assertions = __stats()._assertions;
+            int _prev_assertions = _stats()._assertions;
             printf("[ RUN          ] %s\n", t->_name);
             (*t->_this.*t->_addr)();
-            if (_prev_assertions == __stats()._assertions)
+            if (_prev_assertions == _stats()._assertions)
             {
                 printf("[       PASSED ] %s\n", t->_name);
-                __stats()._passes++;
+                _stats()._passes++;
             }
             else
             {
                 printf("[       FAILED ] %s\n", t->_name);
-                __stats()._failures++;
+                _stats()._failures++;
             }
             t = t->_next;
 
-            __do_methods(f->_afters);
+            _do_methods(f->_afters);
         }
     }
 
-    static stats & __stats()
+    static stats & _stats()
     {
         static stats _stats;
         return _stats;
     }
 
-    static fixture & __fixtures()
+    static fixture & _fixtures()
     {
         static fixture _fixtures;
         return _fixtures;
@@ -618,7 +618,7 @@ public:
      *
      * @return The number of failing assertions. (e.g. zero if all tests pass, otherwise non-zero)
      */
-    static int Run() { return TestFixture::__do_run(); }
+    static int Run() { return TestFixture::_do_run(); }
 
 private:
     Tests() : TestFixture(0) { /* disable instance creation */ }

@@ -179,6 +179,6 @@ struct BoundTest : public tpunit::TestFixture
     {
         test_multi(320, 1000);
     }
-} __BoundTest;
+} _BoundTest;
 
 /******************************************************************************/
