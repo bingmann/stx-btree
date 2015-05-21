@@ -53,7 +53,7 @@ const int min_nodeslots = 4;
 const int max_nodeslots = 256;
 
 /// Time is measured using gettimeofday()
-inline double timestamp()
+static inline double timestamp()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -74,7 +74,7 @@ public:
     static const size_t binsearch_threshold = 256 * 1024 * 1024; // never
 };
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /// Test a generic set type with insertions
 template <typename SetType>
@@ -83,7 +83,7 @@ class Test_Set_Insert
 public:
     Test_Set_Insert(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         SetType set;
 
@@ -102,7 +102,7 @@ class Test_Set_InsertFindDelete
 public:
     Test_Set_InsertFindDelete(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         SetType set;
 
@@ -165,20 +165,23 @@ public:
     /// Test the B+ tree with a specific leaf/inner slots
     template <int Slots>
     class BtreeSet
-        : TestClass<stx::btree_multiset<unsigned int, std::less<unsigned int>,
-                                        btree_traits_speed<Slots, Slots> > >
+        : public TestClass<
+              stx::btree_multiset<unsigned int, std::less<unsigned int>,
+                                  btree_traits_speed<Slots, Slots> > >
     {
     public:
         BtreeSet(unsigned int n)
-            : TestClass<stx::btree_multiset<unsigned int, std::less<unsigned int>,
-                                            btree_traits_speed<Slots, Slots> > >(n) { }
+            : TestClass<
+                  stx::btree_multiset<unsigned int, std::less<unsigned int>,
+                                      btree_traits_speed<Slots, Slots> > >(n)
+        { }
     };
 
     /// Run tests on all set types
     void call_testrunner(std::ostream& os, unsigned int items);
 };
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /// Test a generic map type with insertions
 template <typename MapType>
@@ -187,7 +190,7 @@ class Test_Map_Insert
 public:
     Test_Map_Insert(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         MapType map;
 
@@ -208,7 +211,7 @@ class Test_Map_InsertFindDelete
 public:
     Test_Map_InsertFindDelete(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         MapType map;
 
@@ -267,28 +270,35 @@ public:
     typedef TestClass<std::multimap<unsigned int, unsigned int> > StdMap;
 
     /// Test the multimap hash from gcc's STL extensions
-    typedef TestClass<__gnu_cxx::hash_multimap<unsigned int, unsigned int> > HashMap;
+    typedef TestClass<__gnu_cxx::hash_multimap<
+                          unsigned int, unsigned int> > HashMap;
 
     /// Test the unordered_map from STL TR1
-    typedef TestClass<std::tr1::unordered_multimap<unsigned int, unsigned int> > UnorderedMap;
+    typedef TestClass<std::tr1::unordered_multimap<
+                          unsigned int, unsigned int> > UnorderedMap;
 
     /// Test the B+ tree with a specific leaf/inner slots
     template <int Slots>
     class BtreeMap
-        : TestClass<stx::btree_multimap<unsigned int, unsigned int, std::less<unsigned int>,
-                                        btree_traits_speed<Slots, Slots> > >
+        : public TestClass<
+              stx::btree_multimap<unsigned int, unsigned int,
+                                  std::less<unsigned int>,
+                                  btree_traits_speed<Slots, Slots> > >
     {
     public:
         BtreeMap(unsigned int n)
-            : TestClass<stx::btree_multimap<unsigned int, unsigned int, std::less<unsigned int>,
-                                            btree_traits_speed<Slots, Slots> > >(n) { }
+            : TestClass<
+                  stx::btree_multimap<unsigned int, unsigned int,
+                                      std::less<unsigned int>,
+                                      btree_traits_speed<Slots, Slots> > >(n)
+        { }
     };
 
     /// Run tests on all map types
     void call_testrunner(std::ostream& os, unsigned int items);
 };
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 unsigned int repeatuntil;
 
@@ -308,7 +318,8 @@ void testrunner_loop(std::ostream& os, unsigned int items)
 
             ts1 = timestamp();
 
-            for (unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += items)
+            for (unsigned int totaltests = 0;
+                 totaltests <= repeatuntil; totaltests += items)
             {
                 test.run(items);        // run timed test procedure
                 ++runs;
@@ -325,7 +336,8 @@ void testrunner_loop(std::ostream& os, unsigned int items)
     }
     while ((ts2 - ts1) < 1.0);
 
-    os << std::fixed << std::setprecision(10) << ((ts2 - ts1) / runs) << " " << std::flush;
+    os << std::fixed << std::setprecision(10)
+       << ((ts2 - ts1) / runs) << " " << std::flush;
 }
 
 // Template magic to emulate a for_each slots. These templates will roll-out
@@ -334,7 +346,7 @@ template <template <int Slots> class functional, int Low, int High>
 class btree_range
 {
 public:
-    inline void operator () (std::ostream& os, unsigned int items)
+    void operator () (std::ostream& os, unsigned int items)
     {
         testrunner_loop<functional<Low> >(os, items);
         btree_range<functional, Low + 2, High>()(os, items);
@@ -345,14 +357,15 @@ template <template <int Slots> class functional, int Low>
 class btree_range<functional, Low, Low>
 {
 public:
-    inline void operator () (std::ostream& os, unsigned int items)
+    void operator () (std::ostream& os, unsigned int items)
     {
         testrunner_loop<functional<Low> >(os, items);
     }
 };
 
 template <template <typename Type> class TestClass>
-void TestFactory_Set<TestClass>::call_testrunner(std::ostream& os, unsigned int items)
+void TestFactory_Set<TestClass>::call_testrunner(
+    std::ostream& os, unsigned int items)
 {
     os << items << " " << std::flush;
 
@@ -383,7 +396,8 @@ void TestFactory_Set<TestClass>::call_testrunner(std::ostream& os, unsigned int 
 }
 
 template <template <typename Type> class TestClass>
-void TestFactory_Map<TestClass>::call_testrunner(std::ostream& os, unsigned int items)
+void TestFactory_Map<TestClass>::call_testrunner(
+    std::ostream& os, unsigned int items)
 {
     os << items << " " << std::flush;
 
