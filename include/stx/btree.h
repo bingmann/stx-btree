@@ -267,11 +267,9 @@ private:
         unsigned short slotuse;
 
         /// Delayed initialisation of constructed node
-        inline void    initialize(const unsigned short l)
-        {
-            level = l;
-            slotuse = 0;
-        }
+        inline node(const unsigned short l, const unsigned short s = 0)
+            : level(l), slotuse(s)
+        { }
 
         /// True if this is a leaf node
         inline bool    isleafnode() const
@@ -294,10 +292,14 @@ private:
         node     * childid[innerslotmax + 1];
 
         /// Set variables to initial values
-        inline void initialize(const unsigned short l)
-        {
-            node::initialize(l);
-        }
+        inline inner_node(const unsigned short l)
+            : node(l)
+        { }
+
+        /// Construction during restore from node top
+        inline inner_node(const node& top)
+            : node(top.level, top.slotuse)
+        { }
 
         /// True if the node's slots are full
         inline bool isfull() const
@@ -339,11 +341,14 @@ private:
         data_type slotdata[used_as_set ? 1 : leafslotmax];
 
         /// Set variables to initial values
-        inline void initialize()
-        {
-            node::initialize(0);
-            prevleaf = nextleaf = NULL;
-        }
+        inline leaf_node()
+            : node(0), prevleaf(NULL), nextleaf(NULL)
+        { }
+
+        /// Construction during restore from node top
+        inline leaf_node(const node& top)
+            : node(top.level, top.slotuse), prevleaf(NULL), nextleaf(NULL)
+        { }
 
         /// True if the node's slots are full
         inline bool isfull() const
@@ -1459,8 +1464,8 @@ private:
     /// Allocate and initialize a leaf node
     inline leaf_node * allocate_leaf()
     {
-        leaf_node* n = new (leaf_node_allocator().allocate(1))leaf_node();
-        n->initialize();
+        leaf_node* n = new (leaf_node_allocator().allocate(1))
+                       leaf_node();
         m_stats.leaves++;
         return n;
     }
@@ -1468,8 +1473,8 @@ private:
     /// Allocate and initialize an inner node
     inline inner_node * allocate_inner(unsigned short level)
     {
-        inner_node* n = new (inner_node_allocator().allocate(1))inner_node();
-        n->initialize(level);
+        inner_node* n = new (inner_node_allocator().allocate(1))
+                        inner_node(level);
         m_stats.innernodes++;
         return n;
     }
@@ -3927,26 +3932,24 @@ private:
     /// serialization.
     node * restore_node(std::istream& is)
     {
-        union {
-            node       top;
-            leaf_node  leaf;
-            inner_node inner;
-        } nu;
+        node top(0);
 
         // first read only the top of the node
-        is.read(reinterpret_cast<char*>(&nu.top), sizeof(nu.top));
+        is.read(reinterpret_cast<char*>(&top), sizeof(top));
         if (!is.good()) return NULL;
 
-        if (nu.top.isleafnode())
+        if (top.isleafnode())
         {
+            leaf_node leaf(top);
+
             // read remaining data of leaf node
-            is.read(reinterpret_cast<char*>(&nu.leaf) + sizeof(nu.top), sizeof(nu.leaf) - sizeof(nu.top));
+            is.read(reinterpret_cast<char*>(&leaf) + sizeof(top), sizeof(leaf) - sizeof(top));
             if (!is.good()) return NULL;
 
             leaf_node* newleaf = allocate_leaf();
 
             // copy over all data, the leaf nodes contain only their double linked list pointers
-            *newleaf = nu.leaf;
+            *newleaf = leaf;
 
             // reconstruct the linked list from the order in the file
             if (m_headleaf == NULL) {
@@ -3963,14 +3966,16 @@ private:
         }
         else
         {
+            inner_node inner(top);
+
             // read remaining data of inner node
-            is.read(reinterpret_cast<char*>(&nu.inner) + sizeof(nu.top), sizeof(nu.inner) - sizeof(nu.top));
+            is.read(reinterpret_cast<char*>(&inner) + sizeof(top), sizeof(inner) - sizeof(top));
             if (!is.good()) return NULL;
 
             inner_node* newinner = allocate_inner(0);
 
             // copy over all data, the inner nodes contain only pointers to their children
-            *newinner = nu.inner;
+            *newinner = inner;
 
             for (unsigned short slot = 0; slot <= newinner->slotuse; ++slot)
             {
