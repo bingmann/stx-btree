@@ -18,15 +18,15 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
+#include <wx/filedlg.h>
+#include <wx/textfile.h>
+#include <wx/tokenzr.h>
+
 #include <map>
 #include <vector>
 
 #include "WMain.h"
 #include "WTreeDrawing.h"
-
-#include <wx/filedlg.h>
-#include <wx/textfile.h>
-#include <wx/tokenzr.h>
 
 WMain::WMain()
     : WMain_wxg(NULL, -1, wxT("STX B+ Tree Demo " VERSION " - http://panthema.net/"))

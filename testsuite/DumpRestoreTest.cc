@@ -18,14 +18,13 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
+#include <stx/btree_multiset.h>
 
-#include <stdlib.h>
-
+#include <cstdlib>
 #include <sstream>
 #include <iostream>
 
-#include <stx/btree_multiset.h>
+#include "tpunit.h"
 
 struct DumpRestoreTest : public tpunit::TestFixture
 {

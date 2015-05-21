@@ -18,13 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include <string>
-#include <stdlib.h>
 #include <sys/time.h>
 
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <cstdlib>
+#include <cassert>
 
 #include <set>
 #include <ext/hash_set>
@@ -35,8 +36,6 @@
 #include <ext/hash_map>
 #include <tr1/unordered_map>
 #include <stx/btree_multimap.h>
-
-#include <assert.h>
 
 // *** Settings
 
@@ -334,7 +333,7 @@ void testrunner_loop(std::ostream& os, unsigned int items)
         // discard and repeat if test took less than one second.
         if ((ts2 - ts1) < 1.0) repeatuntil *= 2;
     }
-    while ((ts2 - ts1) < 1.0);
+    while ((ts2 - ts1) < 1.0); // NOLINT
 
     os << std::fixed << std::setprecision(10)
        << ((ts2 - ts1) / runs) << " " << std::flush;

@@ -329,7 +329,7 @@ public:
             }
         }
 
-        throw (wxT("Program Error: could not find selected B+ tree"));
+        throw wxT("Program Error: could not find selected B+ tree");
     }
 
     // *** Marked Node Slots

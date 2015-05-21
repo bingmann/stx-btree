@@ -18,11 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
-
-#include <stdlib.h>
-
 #include <stx/btree_multiset.h>
+
+#include <cstdlib>
+
+#include "tpunit.h"
 
 struct StructureTest : public tpunit::TestFixture
 {
@@ -41,7 +41,7 @@ struct StructureTest : public tpunit::TestFixture
         { }
 
         // also used as implicit conversion constructor
-        inline testdata(unsigned int _a)
+        explicit testdata(unsigned int _a)
             : a(_a), b(0)
         { }
     };
@@ -50,7 +50,7 @@ struct StructureTest : public tpunit::TestFixture
     {
         unsigned int somevalue;
 
-        inline testcomp(unsigned int sv)
+        explicit testcomp(unsigned int sv)
             : somevalue(sv)
         { }
 
@@ -81,7 +81,7 @@ struct StructureTest : public tpunit::TestFixture
         for (unsigned int i = 0; i < 320; i++)
         {
             ASSERT(bt.size() == i);
-            bt.insert(rand() % 100);
+            bt.insert(testdata(rand() % 100));
             ASSERT(bt.size() == i + 1);
         }
 
@@ -89,13 +89,14 @@ struct StructureTest : public tpunit::TestFixture
         for (unsigned int i = 0; i < 320; i++)
         {
             ASSERT(bt.size() == 320 - i);
-            ASSERT(bt.erase_one(rand() % 100));
+            ASSERT(bt.erase_one(testdata(rand() % 100)));
             ASSERT(bt.size() == 320 - i - 1);
         }
     }
 } _StructureTest;
 
-inline std::ostream& operator << (std::ostream& o, const struct StructureTest::testdata& t)
+inline std::ostream& operator << (std::ostream& o,
+                                  const struct StructureTest::testdata& t)
 {
     return o << t.a;
 }

@@ -18,11 +18,11 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
-
-#include <stdlib.h>
-
 #include <stx/btree_multiset.h>
+
+#include <cstdlib>
+
+#include "tpunit.h"
 
 struct RelationTest : public tpunit::TestFixture
 {

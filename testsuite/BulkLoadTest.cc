@@ -18,14 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
-
-#include <stdlib.h>
-#include <vector>
-
 #include <stx/btree_multiset.h>
 #include <stx/btree_multimap.h>
 #include <stx/btree_map.h>
+
+#include <cstdlib>
+#include <vector>
+
+#include "tpunit.h"
 
 struct BulkLoadTest : public tpunit::TestFixture
 {

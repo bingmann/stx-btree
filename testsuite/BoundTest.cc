@@ -18,12 +18,12 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
-
-#include <stdlib.h>
-
 #include <stx/btree_multimap.h>
+
+#include <cstdlib>
 #include <set>
+
+#include "tpunit.h"
 
 struct BoundTest : public tpunit::TestFixture
 {

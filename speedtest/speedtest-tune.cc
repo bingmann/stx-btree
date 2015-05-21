@@ -18,17 +18,16 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include <string>
-#include <stdlib.h>
 #include <sys/time.h>
 
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <string>
+#include <cstdlib>
+#include <cassert>
 
 #include <stx/btree_multiset.h>
-
-#include <assert.h>
 
 // *** Settings
 
@@ -174,7 +173,7 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum, unsigned int slot
         // discard and repeat if test took less than one second.
         if ((ts2 - ts1) < 1.0) repeatuntil *= 2;
     }
-    while ((ts2 - ts1) < 1.0);
+    while ((ts2 - ts1) < 1.0); // NOLINT
 
     os << std::fixed << std::setprecision(10)
        << insertnum << " " << slots << " " << ((ts2 - ts1) / runs) << std::endl;

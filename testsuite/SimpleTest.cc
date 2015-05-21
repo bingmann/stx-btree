@@ -18,14 +18,14 @@
  * this program. If not, see <http://www.gnu.org/licenses/>.
  ******************************************************************************/
 
-#include "tpunit.h"
-
-#include <stdlib.h>
-#include <inttypes.h>
-
 #include <stx/btree_multiset.h>
 #include <stx/btree_multimap.h>
 #include <stx/btree_map.h>
+
+#include <cstdlib>
+#include <inttypes.h>
+
+#include "tpunit.h"
 
 template <int Slots>
 struct SimpleTest : public tpunit::TestFixture
