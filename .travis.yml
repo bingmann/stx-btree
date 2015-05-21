@@ -1,0 +1,11 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - mkdir build && cd build && ../configure --enable-speedtest
+
+script:
+  - make -j4
