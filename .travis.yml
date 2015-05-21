@@ -7,6 +7,14 @@ env:
     # clang default build
     - CC=clang CXX=clang++
 
+    # build with older gcc
+    - CC=gcc-4.6 CXX=g++-4.6
+
+install:
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get -qq update
+  - if [ "$CXX" == "g++-4.6" ]; then sudo apt-get install g++-4.6; fi
+
 before_script:
   - mkdir build && cd build && ../configure --enable-speedtest
 
