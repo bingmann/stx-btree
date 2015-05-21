@@ -41,16 +41,16 @@
 // *** Settings
 
 /// starting number of items to insert
-const unsigned int minitems = 125;
+static const unsigned int minitems = 125;
 
 /// maximum number of items to insert
-const unsigned int maxitems = 1024000 * 64;
+static const unsigned int maxitems = 1024000 * 64;
 
-const int randseed = 34234235;
+static const int randseed = 34234235;
 
 /// b+ tree slot range to test
-const int min_nodeslots = 4;
-const int max_nodeslots = 256;
+static const int min_nodeslots = 4;
+static const int max_nodeslots = 256;
 
 /// Time is measured using gettimeofday()
 static inline double timestamp()
@@ -81,7 +81,7 @@ template <typename SetType>
 class Test_Set_Insert
 {
 public:
-    Test_Set_Insert(unsigned int) { }
+    explicit Test_Set_Insert(unsigned int) { }
 
     void run(unsigned int items)
     {
@@ -100,7 +100,7 @@ template <typename SetType>
 class Test_Set_InsertFindDelete
 {
 public:
-    Test_Set_InsertFindDelete(unsigned int) { }
+    explicit Test_Set_InsertFindDelete(unsigned int) { }
 
     void run(unsigned int items)
     {
@@ -131,7 +131,7 @@ class Test_Set_Find
 public:
     SetType set;
 
-    Test_Set_Find(unsigned int items)
+    explicit Test_Set_Find(unsigned int items)
     {
         srand(randseed);
         for (unsigned int i = 0; i < items; i++)
@@ -170,7 +170,7 @@ public:
                                   btree_traits_speed<Slots, Slots> > >
     {
     public:
-        BtreeSet(unsigned int n)
+        explicit BtreeSet(unsigned int n)
             : TestClass<
                   stx::btree_multiset<unsigned int, std::less<unsigned int>,
                                       btree_traits_speed<Slots, Slots> > >(n)
@@ -188,7 +188,7 @@ template <typename MapType>
 class Test_Map_Insert
 {
 public:
-    Test_Map_Insert(unsigned int) { }
+    explicit Test_Map_Insert(unsigned int) { }
 
     void run(unsigned int items)
     {
@@ -209,7 +209,7 @@ template <typename MapType>
 class Test_Map_InsertFindDelete
 {
 public:
-    Test_Map_InsertFindDelete(unsigned int) { }
+    explicit Test_Map_InsertFindDelete(unsigned int) { }
 
     void run(unsigned int items)
     {
@@ -242,7 +242,7 @@ class Test_Map_Find
 public:
     MapType map;
 
-    Test_Map_Find(unsigned int items)
+    explicit Test_Map_Find(unsigned int items)
     {
         srand(randseed);
         for (unsigned int i = 0; i < items; i++) {
@@ -286,7 +286,7 @@ public:
                                   btree_traits_speed<Slots, Slots> > >
     {
     public:
-        BtreeMap(unsigned int n)
+        explicit BtreeMap(unsigned int n)
             : TestClass<
                   stx::btree_multimap<unsigned int, unsigned int,
                                       std::less<unsigned int>,

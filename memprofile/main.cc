@@ -47,7 +47,7 @@ const unsigned int insertnum = 1024000 * 8;
 const int randseed = 34234235;
 
 /// Time is measured using gettimeofday()
-inline double timestamp()
+static inline double timestamp()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -58,11 +58,12 @@ inline double timestamp()
 
 /// Test a generic map type with insertions
 template <typename MapType>
-struct Test_Map_Insert
+class Test_Map_Insert
 {
-    Test_Map_Insert(unsigned int) { }
+public:
+    explicit Test_Map_Insert(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         MapType map;
 
@@ -78,8 +79,9 @@ struct Test_Map_Insert
 
 /// Construct different map types for a generic test class
 template <template <typename MapType> class TestClass>
-struct TestFactory_Map
+class TestFactory_Map
 {
+public:
     /// Test the multimap red-black tree from STL
     typedef TestClass<std::multimap<unsigned int, unsigned int> > StdMap;
 
@@ -98,11 +100,12 @@ struct TestFactory_Map
 
 /// Test a generic array type with insertions
 template <typename ArrayType>
-struct Test_Array_Insert
+class Test_Array_Insert
 {
+public:
     Test_Array_Insert(unsigned int) { }
 
-    inline void run(unsigned int items)
+    void run(unsigned int items)
     {
         ArrayType array;
 
@@ -118,8 +121,9 @@ struct Test_Array_Insert
 
 /// Construct different array types for a generic test class
 template <template <typename ArrayType> class TestClass>
-struct TestFactory_Array
+class TestFactory_Array
 {
+public:
     /// Test the vector from STL
     typedef TestClass<std::vector<std::pair<unsigned int, unsigned int> > > StdVector;
 

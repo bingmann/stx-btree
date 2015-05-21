@@ -33,16 +33,16 @@
 // *** Settings
 
 /// maximum number of items to insert
-const unsigned int insertnum = 1024000 * 32;
+static const unsigned int insertnum = 1024000 * 32;
 
-const int randseed = 34234235;
+static const int randseed = 34234235;
 
 /// b+ tree binsearch_threshold range to test
-const int min_nodeslots = 564;
-const int max_nodeslots = 564;
+static const int min_nodeslots = 564;
+static const int max_nodeslots = 564;
 
 /// Time is measured using gettimeofday()
-inline double timestamp()
+static inline double timestamp()
 {
     struct timeval tv;
     gettimeofday(&tv, NULL);
@@ -65,7 +65,7 @@ public:
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
                                 btree_traits_speed<unsigned int, Slots> > btree_type;
 
-    Test_BtreeSet_Insert(unsigned int) { }
+    explicit Test_BtreeSet_Insert(unsigned int) { }
 
     void run(unsigned int insertnum)
     {
@@ -87,7 +87,7 @@ public:
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
                                 btree_traits_speed<unsigned int, Slots> > btree_type;
 
-    Test_BtreeSet_InsertFindDelete(unsigned int) { }
+    explicit Test_BtreeSet_InsertFindDelete(unsigned int) { }
 
     void run(unsigned int insertnum)
     {
@@ -121,7 +121,7 @@ public:
 
     btree_type bt;
 
-    Test_BtreeSet_Find(unsigned int insertnum)
+    explicit Test_BtreeSet_Find(unsigned int insertnum)
     {
         srand(randseed);
         for (unsigned int i = 0; i < insertnum; i++)
@@ -156,7 +156,8 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum, unsigned int slot
 
             ts1 = timestamp();
 
-            for (unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
+            for (unsigned int totaltests = 0;
+                 totaltests <= repeatuntil; totaltests += insertnum)
             {
                 test.run(insertnum);    // run timed test procedure
                 ++runs;
@@ -165,14 +166,18 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum, unsigned int slot
             ts2 = timestamp();
         }
 
-        std::cerr << "insertnum=" << insertnum << " slots=" << slots << " repeat=" << (repeatuntil / insertnum) << " time=" << (ts2 - ts1) << "\n";
+        std::cerr << "insertnum=" << insertnum
+                  << " slots=" << slots
+                  << " repeat=" << (repeatuntil / insertnum)
+                  << " time=" << (ts2 - ts1) << "\n";
 
         // discard and repeat if test took less than one second.
         if ((ts2 - ts1) < 1.0) repeatuntil *= 2;
     }
     while ((ts2 - ts1) < 1.0);
 
-    os << std::fixed << std::setprecision(10) << insertnum << " " << slots << " " << ((ts2 - ts1) / runs) << std::endl;
+    os << std::fixed << std::setprecision(10)
+       << insertnum << " " << slots << " " << ((ts2 - ts1) / runs) << std::endl;
 }
 
 // Template magic to emulate a for_each slots. These templates will roll-out

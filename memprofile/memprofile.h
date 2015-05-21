@@ -159,7 +159,7 @@ public:
         malloc_count_set_callback(NULL, NULL);
         fclose(m_file);
     }
-#endif // !STX_MEMPROFILE_MEMPROFILE_HEADER
+};
 
 #endif // !STX_MEMPROFILE_MEMPROFILE_H_HEADER
 
