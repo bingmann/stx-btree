@@ -1,4 +1,6 @@
-/*
+/*******************************************************************************
+ * testsuite/InstantiationTest.cc
+ *
  * STX B+ Tree Test Suite v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -14,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ ******************************************************************************/
 
 #include <stx/btree_map.h>
 #include <stx/btree_multimap.h>
@@ -27,3 +29,5 @@ template class stx::btree_set<unsigned int>;
 template class stx::btree_map<int, double>;
 template class stx::btree_multiset<int>;
 template class stx::btree_multimap<int, int>;
+
+/******************************************************************************/

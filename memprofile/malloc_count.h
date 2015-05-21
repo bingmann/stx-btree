@@ -1,10 +1,9 @@
-/******************************************************************************
- * malloc_count.h
+/*******************************************************************************
+ * memprofile/malloc_count.h
  *
  * Header containing prototypes of user-callable functions to retrieve run-time
  * information about malloc()/free() allocation.
  *
- ******************************************************************************
  * Copyright (C) 2013 Timo Bingmann <tb@panthema.net>
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -16,7 +15,7 @@
  *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,10 +23,10 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
- *****************************************************************************/
+ ******************************************************************************/
 
-#ifndef _MALLOC_COUNT_H_
-#define _MALLOC_COUNT_H_
+#ifndef STX_MEMPROFILE_MALLOC_COUNT_H_HEADER
+#define STX_MEMPROFILE_MALLOC_COUNT_H_HEADER
 
 #include <stdlib.h>
 
@@ -45,7 +44,7 @@ extern size_t malloc_count_peak(void);
 extern void malloc_count_reset_peak(void);
 
 /* typedef of callback function */
-typedef void (*malloc_count_callback_type)(void* cookie, size_t current);
+typedef void (* malloc_count_callback_type)(void* cookie, size_t current);
 
 /* supply malloc_count with a callback function that is invoked on each change
  * of the current allocation. The callback function must not use
@@ -59,6 +58,6 @@ extern void malloc_count_print_status(void);
 } /* extern "C" */
 #endif
 
-#endif /* _MALLOC_COUNT_H_ */
+#endif // !STX_MEMPROFILE_MALLOC_COUNT_H_HEADER
 
-/*****************************************************************************/
+/******************************************************************************/

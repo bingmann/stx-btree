@@ -1,4 +1,6 @@
-/**
+/*******************************************************************************
+ * testsuite/tpunit.cc
+ *
  * Copyright (c) 2011 Trevor Pounds
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -18,16 +20,18 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
- */
+ ******************************************************************************/
 
 #include "tpunit.h"
 
 int main()
 {
-   /**
-    * Run all of the registered tpunit++ tests. Returns 0 if
-    * all tests are successful, otherwise returns the number
-    * of failing assertions.
-    */
-   return tpunit::Tests::Run();
+    /**
+     * Run all of the registered tpunit++ tests. Returns 0 if
+     * all tests are successful, otherwise returns the number
+     * of failing assertions.
+     */
+    return tpunit::Tests::Run();
 }
+
+/******************************************************************************/

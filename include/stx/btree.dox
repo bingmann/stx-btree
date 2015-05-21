@@ -1,9 +1,6 @@
-/** \file btree.dox
- * Contains the doxygen comments. This header is not needed to compile the B+
- * tree.
- */
-
-/*
+/*******************************************************************************
+ * include/stx/btree.dox
+ *
  * STX B+ Tree Template Classes v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -30,6 +27,11 @@
  * FOR ANY DAMAGES OR OTHER LIABILITY, WHETHER IN CONTRACT, TORT OR OTHERWISE,
  * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
+ ******************************************************************************/
+
+/** \file btree.dox
+ * Contains the doxygen comments. This header is not needed to compile the B+
+ * tree.
  */
 
 /** \mainpage STX B+ Tree Template Classes README
@@ -253,3 +255,5 @@ See the web page http://panthema.net/2007/stx-btree/speedtest/ for speed test
 results and a discussion thereof.
 
 */
+
+/******************************************************************************/

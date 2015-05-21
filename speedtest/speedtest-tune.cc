@@ -1,4 +1,6 @@
-/*
+/*******************************************************************************
+ * speedtest/speedtest-tune.cc
+ *
  * STX B+ Tree Speed Test Program v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -14,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ ******************************************************************************/
 
 #include <string>
 #include <stdlib.h>
@@ -49,57 +51,60 @@ inline double timestamp()
 
 /// Traits used for the speed tests, BTREE_DEBUG is not defined.
 template <typename KeyType, int _bs_slots>
-struct btree_traits_speed : public stx::btree_default_set_traits<KeyType>
+class btree_traits_speed : public stx::btree_default_set_traits<KeyType>
 {
+public:
     static const size_t binsearch_threshold = _bs_slots;
 };
 
 /// Test the B+ tree with a specific leaf/inner slots (only insert)
 template <int Slots>
-struct Test_BtreeSet_Insert
+class Test_BtreeSet_Insert
 {
+public:
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
                                 btree_traits_speed<unsigned int, Slots> > btree_type;
 
-    Test_BtreeSet_Insert(unsigned int) {}
+    Test_BtreeSet_Insert(unsigned int) { }
 
     void run(unsigned int insertnum)
     {
         btree_type bt;
 
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
-            bt.insert( rand() );
+        for (unsigned int i = 0; i < insertnum; i++)
+            bt.insert(rand());
 
-        assert( bt.size() == insertnum );
+        assert(bt.size() == insertnum);
     }
 };
 
 /// Test the B+ tree with a specific leaf/inner slots (insert, find and delete)
 template <int Slots>
-struct Test_BtreeSet_InsertFindDelete
+class Test_BtreeSet_InsertFindDelete
 {
+public:
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
-                                struct btree_traits_speed<unsigned int, Slots> > btree_type;
+                                btree_traits_speed<unsigned int, Slots> > btree_type;
 
-    Test_BtreeSet_InsertFindDelete(unsigned int) {}
+    Test_BtreeSet_InsertFindDelete(unsigned int) { }
 
     void run(unsigned int insertnum)
     {
         btree_type bt;
 
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
+        for (unsigned int i = 0; i < insertnum; i++)
             bt.insert(rand());
 
-        assert( bt.size() == insertnum );
+        assert(bt.size() == insertnum);
 
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
+        for (unsigned int i = 0; i < insertnum; i++)
             bt.exists(rand());
 
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
+        for (unsigned int i = 0; i < insertnum; i++)
             bt.erase_one(rand());
 
         assert(bt.empty());
@@ -108,26 +113,27 @@ struct Test_BtreeSet_InsertFindDelete
 
 /// Test the B+ tree with a specific leaf/inner slots (find only)
 template <int Slots>
-struct Test_BtreeSet_Find
+class Test_BtreeSet_Find
 {
+public:
     typedef stx::btree_multiset<unsigned int, std::less<unsigned int>,
-                                struct btree_traits_speed<unsigned int, Slots> > btree_type;
+                                btree_traits_speed<unsigned int, Slots> > btree_type;
 
     btree_type bt;
 
     Test_BtreeSet_Find(unsigned int insertnum)
     {
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
+        for (unsigned int i = 0; i < insertnum; i++)
             bt.insert(rand());
 
-        assert( bt.size() == insertnum );
+        assert(bt.size() == insertnum);
     }
 
     void run(unsigned int insertnum)
     {
         srand(randseed);
-        for(unsigned int i = 0; i < insertnum; i++)
+        for (unsigned int i = 0; i < insertnum; i++)
             bt.exists(rand());
     }
 };
@@ -143,16 +149,16 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum, unsigned int slot
 
     do
     {
-        runs = 0;	// count repetition of timed tests
+        runs = 0;                      // count repetition of timed tests
 
         {
-            TestClass test(insertnum);	// initialize test structures
+            TestClass test(insertnum); // initialize test structures
 
             ts1 = timestamp();
 
-            for(unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
+            for (unsigned int totaltests = 0; totaltests <= repeatuntil; totaltests += insertnum)
             {
-                test.run(insertnum);	// run timed test procedure
+                test.run(insertnum);    // run timed test procedure
                 ++runs;
             }
 
@@ -171,22 +177,24 @@ void testrunner_loop(std::ostream& os, unsigned int insertnum, unsigned int slot
 
 // Template magic to emulate a for_each slots. These templates will roll-out
 // btree instantiations for each of the Low-High leaf/inner slot numbers.
-template< template<int Slots> class functional, int Low, int High>
-struct test_range
+template <template <int Slots> class functional, int Low, int High>
+class test_range
 {
-    inline void operator()(std::ostream& os, unsigned int insertnum)
+public:
+    inline void operator () (std::ostream& os, unsigned int insertnum)
     {
-        testrunner_loop< functional<Low> >(os, insertnum, Low);
-        test_range<functional, Low+8, High>()(os, insertnum);
+        testrunner_loop<functional<Low> >(os, insertnum, Low);
+        test_range<functional, Low + 8, High>()(os, insertnum);
     }
 };
 
-template< template<int Slots> class functional, int Low>
-struct test_range<functional, Low, Low>
+template <template <int Slots> class functional, int Low>
+class test_range<functional, Low, Low>
 {
-    inline void operator()(std::ostream& os, unsigned int insertnum)
+public:
+    inline void operator () (std::ostream& os, unsigned int insertnum)
     {
-        testrunner_loop< functional<Low> >(os, insertnum, Low);
+        testrunner_loop<functional<Low> >(os, insertnum, Low);
     }
 };
 
@@ -214,8 +222,7 @@ int main()
         test_range<Test_BtreeSet_InsertFindDelete, min_nodeslots, max_nodeslots>()(os, insertnum);
      }
 */
-    { // Set - speed test find only
-
+    {   // Set - speed test find only
         std::ofstream os("tune-set-find.txt");
 
         std::cerr << "set: find " << insertnum << "\n";
@@ -226,3 +233,5 @@ int main()
 
     return 0;
 }
+
+/******************************************************************************/

@@ -1,4 +1,6 @@
-/*
+/*******************************************************************************
+ * wxbtreedemo/WTreeDrawing.cpp
+ *
  * STX B+ Tree Demo Program v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -14,14 +16,14 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ ******************************************************************************/
 
 #include "WTreeDrawing.h"
 #include "WMain.h"
 
 #include <vector>
 
-WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
+WTreeDrawing::WTreeDrawing(wxWindow* parent, int id)
     : wxScrolledWindow(parent, id),
       wmain(NULL)
 {
@@ -32,12 +34,12 @@ WTreeDrawing::WTreeDrawing(wxWindow *parent, int id)
     hasfocus = false;
 }
 
-void WTreeDrawing::SetWMain(WMain *wm)
+void WTreeDrawing::SetWMain(WMain* wm)
 {
     wmain = wm;
 }
 
-void WTreeDrawing::OnPaint(wxPaintEvent &)
+void WTreeDrawing::OnPaint(wxPaintEvent&)
 {
     wxPaintDC dc(this);
 
@@ -47,24 +49,24 @@ void WTreeDrawing::OnPaint(wxPaintEvent &)
     DrawBTree(dc);
 }
 
-void WTreeDrawing::OnSize(wxSizeEvent &se)
+void WTreeDrawing::OnSize(wxSizeEvent& se)
 {
     Refresh();
 }
 
-void WTreeDrawing::OnSetFocus(wxFocusEvent &fe)
+void WTreeDrawing::OnSetFocus(wxFocusEvent& fe)
 {
     hasfocus = true;
     Refresh();
 }
 
-void WTreeDrawing::OnKillFocus(wxFocusEvent &fe)
+void WTreeDrawing::OnKillFocus(wxFocusEvent& fe)
 {
     hasfocus = false;
     Refresh();
 }
 
-void WTreeDrawing::OnMouseWheel(wxMouseEvent &me)
+void WTreeDrawing::OnMouseWheel(wxMouseEvent& me)
 {
     scalefactor += 0.05 * me.GetWheelRotation() / me.GetWheelDelta();
     scalefactor = std::max(0.1, scalefactor);
@@ -86,7 +88,7 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 
     if (node->isleafnode())
     {
-        const typename btree_impl::leaf_node *leafnode = static_cast<const typename btree_impl::leaf_node*>(node);
+        const typename btree_impl::leaf_node * leafnode = static_cast<const typename btree_impl::leaf_node*>(node);
 
         int textx = 0, texty = 0;
         int maxh = 0;
@@ -128,29 +130,29 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
                 }
 
                 dc.DrawRectangle(offsetx + textx, offsety + texty,
-                                 maxw + 2*textpadding, textkeyh + 2*textpadding);
+                                 maxw + 2 * textpadding, textkeyh + 2 * textpadding);
 
                 dc.DrawText(textkey,
                             offsetx + textx + textpadding + addkeyw,
                             offsety + texty + textpadding);
 
-                dc.DrawRectangle(offsetx + textx, offsety + texty + textkeyh + 2*textpadding - 1,
-                                 maxw + 2*textpadding, textvalh + 2*textpadding);
+                dc.DrawRectangle(offsetx + textx, offsety + texty + textkeyh + 2 * textpadding - 1,
+                                 maxw + 2 * textpadding, textvalh + 2 * textpadding);
 
                 dc.DrawText(textval,
                             offsetx + textx + textpadding + addvalw,
-                            offsety + texty + textkeyh + 2*textpadding + textpadding - 1);
+                            offsety + texty + textkeyh + 2 * textpadding + textpadding - 1);
             }
 
-            textx += maxw + 2*textpadding - 1;
-            maxh = std::max(maxh, textkeyh + 2*textpadding + textvalh + 2*textpadding - 1);
+            textx += maxw + 2 * textpadding - 1;
+            maxh = std::max(maxh, textkeyh + 2 * textpadding + textvalh + 2 * textpadding - 1);
         }
 
         return wxSize(textx, maxh);
     }
     else
     {
-        const typename btree_impl::inner_node *innernode = static_cast<const typename btree_impl::inner_node*>(node);
+        const typename btree_impl::inner_node * innernode = static_cast<const typename btree_impl::inner_node*>(node);
 
         const int childnum = (innernode->slotuse + 1);
         // find the maximium width and height of all children
@@ -170,7 +172,7 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
         int maxh = 0;
 
         // calculate width of box.
-        int allchildw = (childnum + 1) * (childmaxw / 2 + nodepadding) - 2*nodepadding;
+        int allchildw = (childnum + 1) * (childmaxw / 2 + nodepadding) - 2 * nodepadding;
 
         if (childnum % 2 == 0)
         {
@@ -189,12 +191,12 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
             textkey << innernode->slotkey[slot];
             dc.GetTextExtent(textkey, &textkeyw, &textkeyh);
 
-            textx += textkeyw + 2*textpadding - 1;
-            keyboxh = std::max(keyboxh, textkeyh + 2*textpadding - 1);
+            textx += textkeyw + 2 * textpadding - 1;
+            keyboxh = std::max(keyboxh, textkeyh + 2 * textpadding - 1);
         }
 
         textx = std::max(0, allchildw - textx) / 2;
-        childy = keyboxh + nodepadding*4;
+        childy = keyboxh + nodepadding * 4;
 
         for (unsigned int slot = 0; slot < innernode->slotuse; ++slot)
         {
@@ -214,7 +216,7 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
                 }
 
                 dc.DrawRectangle(offsetx + textx, offsety + texty,
-                                 textkeyw + 2*textpadding, textkeyh + 2*textpadding);
+                                 textkeyw + 2 * textpadding, textkeyh + 2 * textpadding);
                 dc.DrawText(textkey,
                             offsetx + textx + textpadding,
                             offsety + texty + textpadding);
@@ -248,12 +250,12 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
             }
 
             // advance text position
-            textx += textkeyw + 2*textpadding - 1;
+            textx += textkeyw + 2 * textpadding - 1;
 
             // advance child position
             childx += childmaxw / 2 + nodepadding;
 
-            if ((slot+1) * 2 == childnum)
+            if ((slot + 1) * 2 == childnum)
             {
                 childx += childmaxw / 2 + nodepadding;
             }
@@ -309,7 +311,7 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_node(int offsetx, int offsety, const cla
 }
 
 template <class BTreeType>
-wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
+wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType& bt)
 {
     dc.SetPen(*wxBLACK_PEN);
 
@@ -367,30 +369,30 @@ wxSize WTreeDrawing::BTreeOp_Draw::draw_tree(BTreeType &bt)
 }
 
 template <class BTreeType>
-wxSize WTreeDrawing::BTreeOp_Draw::opInteger(BTreeType &bt)
+wxSize WTreeDrawing::BTreeOp_Draw::opInteger(BTreeType& bt)
 {
     draw_tree(bt);
 }
 
 template <class BTreeType>
-wxSize WTreeDrawing::BTreeOp_Draw::opIntegerMulti(BTreeType &bt)
+wxSize WTreeDrawing::BTreeOp_Draw::opIntegerMulti(BTreeType& bt)
 {
     draw_tree(bt);
 }
 
 template <class BTreeType>
-wxSize WTreeDrawing::BTreeOp_Draw::opString(BTreeType &bt)
+wxSize WTreeDrawing::BTreeOp_Draw::opString(BTreeType& bt)
 {
     draw_tree(bt);
 }
 
 template <class BTreeType>
-wxSize WTreeDrawing::BTreeOp_Draw::opStringMulti(BTreeType &bt)
+wxSize WTreeDrawing::BTreeOp_Draw::opStringMulti(BTreeType& bt)
 {
     draw_tree(bt);
 }
 
-void WTreeDrawing::DrawBTree(wxDC &dc)
+void WTreeDrawing::DrawBTree(wxDC& dc)
 {
     if (!wmain) return;
 
@@ -400,11 +402,13 @@ void WTreeDrawing::DrawBTree(wxDC &dc)
 
 BEGIN_EVENT_TABLE(WTreeDrawing, wxScrolledWindow)
 
-    EVT_PAINT           (WTreeDrawing::OnPaint)
-    EVT_SIZE            (WTreeDrawing::OnSize)
-    EVT_MOUSEWHEEL      (WTreeDrawing::OnMouseWheel)
+EVT_PAINT(WTreeDrawing::OnPaint)
+EVT_SIZE(WTreeDrawing::OnSize)
+EVT_MOUSEWHEEL(WTreeDrawing::OnMouseWheel)
 
-    EVT_SET_FOCUS       (WTreeDrawing::OnSetFocus)
-    EVT_KILL_FOCUS      (WTreeDrawing::OnKillFocus)
+EVT_SET_FOCUS(WTreeDrawing::OnSetFocus)
+EVT_KILL_FOCUS(WTreeDrawing::OnKillFocus)
 
 END_EVENT_TABLE()
+
+/******************************************************************************/

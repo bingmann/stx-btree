@@ -1,4 +1,6 @@
-/*
+/*******************************************************************************
+ * testsuite/BulkLoadTest.cc
+ *
  * STX B+ Tree Test Suite v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -14,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ ******************************************************************************/
 
 #include "tpunit.h"
 
@@ -28,30 +30,30 @@
 struct BulkLoadTest : public tpunit::TestFixture
 {
     BulkLoadTest() : tpunit::TestFixture(
-        TEST(BulkLoadTest::test_set),
-        TEST(BulkLoadTest::test_map)
-        )
-    {}
+                         TEST(BulkLoadTest::test_set),
+                         TEST(BulkLoadTest::test_map)
+                         )
+    { }
 
     template <typename KeyType>
     struct traits_nodebug : stx::btree_default_set_traits<KeyType>
     {
-        static const bool       selfverify = true;
-        static const bool       debug = false;
+        static const bool selfverify = true;
+        static const bool debug = false;
 
-        static const int        leafslots = 8;
-        static const int        innerslots = 8;
+        static const int  leafslots = 8;
+        static const int  innerslots = 8;
     };
 
     void test_set_instance(size_t numkeys, unsigned int mod)
     {
         typedef stx::btree_multiset<unsigned int,
-            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
+                                    std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
-        std::vector<unsigned int> keys (numkeys);
+        std::vector<unsigned int> keys(numkeys);
 
         srand(34234235);
-        for(unsigned int i = 0; i < numkeys; i++)
+        for (unsigned int i = 0; i < numkeys; i++)
         {
             keys[i] = rand() % mod;
         }
@@ -62,10 +64,10 @@ struct BulkLoadTest : public tpunit::TestFixture
         bt.bulk_load(keys.begin(), keys.end());
 
         unsigned int i = 0;
-        for(btree_type::iterator it = bt.begin();
-            it != bt.end(); ++it, ++i)
+        for (btree_type::iterator it = bt.begin();
+             it != bt.end(); ++it, ++i)
         {
-            ASSERT( *it == keys[i]  );
+            ASSERT(*it == keys[i]);
         }
     }
 
@@ -82,12 +84,12 @@ struct BulkLoadTest : public tpunit::TestFixture
     void test_map_instance(size_t numkeys, unsigned int mod)
     {
         typedef stx::btree_multimap<int, std::string,
-            std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
+                                    std::less<unsigned int>, traits_nodebug<unsigned int> > btree_type;
 
-        std::vector< std::pair<int,std::string> > pairs (numkeys);
+        std::vector<std::pair<int, std::string> > pairs(numkeys);
 
         srand(34234235);
-        for(unsigned int i = 0; i < numkeys; i++)
+        for (unsigned int i = 0; i < numkeys; i++)
         {
             pairs[i].first = rand() % mod;
             pairs[i].second = "key";
@@ -99,10 +101,10 @@ struct BulkLoadTest : public tpunit::TestFixture
         bt.bulk_load(pairs.begin(), pairs.end());
 
         unsigned int i = 0;
-        for(btree_type::iterator it = bt.begin();
-            it != bt.end(); ++it, ++i)
+        for (btree_type::iterator it = bt.begin();
+             it != bt.end(); ++it, ++i)
         {
-            ASSERT( *it == pairs[i]  );
+            ASSERT(*it == pairs[i]);
         }
     }
 
@@ -115,5 +117,6 @@ struct BulkLoadTest : public tpunit::TestFixture
         test_map_instance(32000, 10000);
         test_map_instance(117649, 100000);
     }
-
 } __BulkLoadTest;
+
+/******************************************************************************/

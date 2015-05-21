@@ -1,9 +1,8 @@
-/******************************************************************************
- * memprofile.h
+/*******************************************************************************
+ * memprofile/memprofile.h
  *
  * Class to write the datafile for a memory profile plot using malloc_count.
  *
- ******************************************************************************
  * Copyright (C) 2013 Timo Bingmann <tb@panthema.net>
  *
  * This program is free software: you can redistribute it and/or modify it
@@ -18,10 +17,10 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program.  If not, see <http://www.gnu.org/licenses/>.
- *****************************************************************************/
+ ******************************************************************************/
 
-#ifndef _MEM_PROFILE_H_
-#define _MEM_PROFILE_H_
+#ifndef STX_MEMPROFILE_MEMPROFILE_H_HEADER
+#define STX_MEMPROFILE_MEMPROFILE_H_HEADER
 
 #include <stdio.h>
 #include <sys/time.h>
@@ -41,33 +40,31 @@
 class MemProfile
 {
 protected:
-
     /// output time resolution
-    double      m_time_resolution;
+    double m_time_resolution;
     /// output memory resolution
-    size_t      m_size_resolution;
+    size_t m_size_resolution;
 
     /// function marker for multi-output
     const char* m_funcname;
     /// output file
-    FILE*       m_file;
+    FILE* m_file;
 
     /// start of current memprofile
-    double      m_base_ts;
+    double m_base_ts;
     /// start memory usage of current memprofile
-    size_t      m_base_mem;
+    size_t m_base_mem;
     /// start stack pointer of memprofile
-    char*       m_stack_base;
+    char* m_stack_base;
 
     /// timestamp of previous log output
-    double      m_prev_ts;
+    double m_prev_ts;
     /// memory usage of previous log output
-    size_t      m_prev_mem;
+    size_t m_prev_mem;
     /// maximum memory usage to previous log output
-    size_t      m_max;
+    size_t m_max;
 
 protected:
-
     /// template function missing in cmath, absolute difference
     template <typename Type>
     static inline Type absdiff(const Type& a, const Type& b)
@@ -94,7 +91,7 @@ protected:
             fprintf(m_file, "func=%s ts=%g mem=%llu\n",
                     m_funcname, ts - m_base_ts, mem);
         }
-        else { // simple gnuplot output
+        else {            // simple gnuplot output
             fprintf(m_file, "%g %llu\n",
                     ts - m_base_ts, mem);
         }
@@ -109,11 +106,11 @@ protected:
             mem += m_stack_base - reinterpret_cast<char*>(&mem);
 
         double ts = timestamp();
-        if (m_max < mem) m_max = mem; // keep max usage to last output
+        if (m_max < mem) m_max = mem;                     // keep max usage to last output
 
         // check to output a pair
         if (ts - m_prev_ts > m_time_resolution ||
-            absdiff(mem, m_prev_mem) > m_size_resolution )
+            absdiff(mem, m_prev_mem) > m_size_resolution)
         {
             output(ts, m_max);
             m_max = 0;
@@ -129,7 +126,6 @@ protected:
     }
 
 public:
-
     /** Constructor for MemProfile.
      * @param filepath          file to write memprofile log entries to.
      * @param time_resolution   resolution when a log entry is always written.
@@ -139,14 +135,14 @@ public:
     MemProfile(const char* filepath,
                double time_resolution = 0.1, size_t size_resolution = 1024,
                const char* funcname = NULL)
-        : m_time_resolution( time_resolution ),
-          m_size_resolution( size_resolution ),
-          m_funcname( funcname ),
-          m_base_ts( timestamp() ),
-          m_base_mem( malloc_count_current() ),
-          m_prev_ts( m_base_ts ),
-          m_prev_mem( m_base_mem ),
-          m_max( 0 )
+        : m_time_resolution(time_resolution),
+          m_size_resolution(size_resolution),
+          m_funcname(funcname),
+          m_base_ts(timestamp()),
+          m_base_mem(malloc_count_current()),
+          m_prev_ts(m_base_ts),
+          m_prev_mem(m_base_mem),
+          m_max(0)
     {
         char stack;
         m_stack_base = &stack;
@@ -159,10 +155,12 @@ public:
     {
         m_prev_ts = 0; // force flush
         m_prev_mem = 0;
-        callback( malloc_count_current() );
+        callback(malloc_count_current());
         malloc_count_set_callback(NULL, NULL);
         fclose(m_file);
     }
-};
+#endif // !STX_MEMPROFILE_MEMPROFILE_HEADER
 
-#endif // _MEM_PROFILE_H_
+#endif // !STX_MEMPROFILE_MEMPROFILE_H_HEADER
+
+/******************************************************************************/

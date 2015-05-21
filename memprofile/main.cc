@@ -1,4 +1,6 @@
-/*
+/*******************************************************************************
+ * memprofile/main.cc
+ *
  * STX B+ Tree Memory Profiling Program v0.9
  * Copyright (C) 2008-2013 Timo Bingmann
  *
@@ -14,7 +16,7 @@
  *
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>.
- */
+ ******************************************************************************/
 
 #include <string>
 #include <stdlib.h>
@@ -52,80 +54,80 @@ inline double timestamp()
     return tv.tv_sec + tv.tv_usec * 0.000001;
 }
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /// Test a generic map type with insertions
 template <typename MapType>
 struct Test_Map_Insert
 {
-    Test_Map_Insert(unsigned int) {}
+    Test_Map_Insert(unsigned int) { }
 
     inline void run(unsigned int items)
     {
         MapType map;
 
         srand(randseed);
-        for(unsigned int i = 0; i < items; i++) {
+        for (unsigned int i = 0; i < items; i++) {
             unsigned int r = rand();
-            map.insert( std::make_pair(r,r) );
+            map.insert(std::make_pair(r, r));
         }
 
-        assert( map.size() == items );
+        assert(map.size() == items);
     }
 };
 
 /// Construct different map types for a generic test class
-template < template<typename MapType> class TestClass >
+template <template <typename MapType> class TestClass>
 struct TestFactory_Map
 {
     /// Test the multimap red-black tree from STL
-    typedef TestClass< std::multimap<unsigned int, unsigned int> > StdMap;
+    typedef TestClass<std::multimap<unsigned int, unsigned int> > StdMap;
 
     /// Test the multimap hash from gcc's STL extensions
-    typedef TestClass< __gnu_cxx::hash_multimap<unsigned int, unsigned int> > HashMap;
+    typedef TestClass<__gnu_cxx::hash_multimap<unsigned int, unsigned int> > HashMap;
 
     /// Test the unordered_map from STL TR1
-    typedef TestClass< std::tr1::unordered_multimap<unsigned int, unsigned int> > UnorderedMap;
+    typedef TestClass<std::tr1::unordered_multimap<unsigned int, unsigned int> > UnorderedMap;
 
     /// Test the B+ tree with a auto-detected leaf/inner slots
-    typedef TestClass< stx::btree_multimap<unsigned int, unsigned int,
-                                           std::less<unsigned int> > > BtreeMap;
+    typedef TestClass<stx::btree_multimap<unsigned int, unsigned int,
+                                          std::less<unsigned int> > > BtreeMap;
 };
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 /// Test a generic array type with insertions
 template <typename ArrayType>
 struct Test_Array_Insert
 {
-    Test_Array_Insert(unsigned int) {}
+    Test_Array_Insert(unsigned int) { }
 
     inline void run(unsigned int items)
     {
         ArrayType array;
 
         srand(randseed);
-        for(unsigned int i = 0; i < items; i++) {
+        for (unsigned int i = 0; i < items; i++) {
             unsigned int r = rand();
-            array.push_back( std::make_pair(r,r) );
+            array.push_back(std::make_pair(r, r));
         }
 
-        assert( array.size() == items );
+        assert(array.size() == items);
     }
 };
 
 /// Construct different array types for a generic test class
-template < template<typename ArrayType> class TestClass >
+template <template <typename ArrayType> class TestClass>
 struct TestFactory_Array
 {
     /// Test the vector from STL
-    typedef TestClass< std::vector< std::pair<unsigned int, unsigned int> > > StdVector;
+    typedef TestClass<std::vector<std::pair<unsigned int, unsigned int> > > StdVector;
 
     /// Test the deque from STL
-    typedef TestClass< std::deque< std::pair<unsigned int, unsigned int> > > StdDeque;
+    typedef TestClass<std::deque<std::pair<unsigned int, unsigned int> > > StdDeque;
 };
 
-// --------------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 
 template <typename TestClass>
 void write_memprofile(const char* filename)
@@ -134,18 +136,18 @@ void write_memprofile(const char* filename)
     // house-keeping is necessary after the structure is freed. Use just fork
     // instead.
     pid_t pid = fork();
-    
+
     if (pid == 0)
     {
         std::cout << "Writing memory profile " << filename << std::endl;
         {
-            MemProfile mp(filename, 0.1, 16*1024);
-            TestClass test(insertnum);	// initialize test structures
+            MemProfile mp(filename, 0.1, 16 * 1024);
+            TestClass test(insertnum);  // initialize test structures
 
             double ts1 = timestamp();
-            test.run(insertnum);	// run timed test procedure
+            test.run(insertnum);        // run timed test procedure
             double ts2 = timestamp();
-            std::cout << "done, time=" << (ts2-ts1) << std::endl;
+            std::cout << "done, time=" << (ts2 - ts1) << std::endl;
         }
         exit(0);
     }
@@ -159,15 +161,17 @@ int main()
 {
     typedef TestFactory_Map<Test_Map_Insert> testmap_type;
 
-    write_memprofile< testmap_type::StdMap >("memprofile-stdmap.txt");
-    write_memprofile< testmap_type::HashMap >("memprofile-hashmap.txt");
-    write_memprofile< testmap_type::UnorderedMap >("memprofile-unorderedmap.txt");
-    write_memprofile< testmap_type::BtreeMap >("memprofile-btreemap.txt");
+    write_memprofile<testmap_type::StdMap>("memprofile-stdmap.txt");
+    write_memprofile<testmap_type::HashMap>("memprofile-hashmap.txt");
+    write_memprofile<testmap_type::UnorderedMap>("memprofile-unorderedmap.txt");
+    write_memprofile<testmap_type::BtreeMap>("memprofile-btreemap.txt");
 
     typedef TestFactory_Array<Test_Array_Insert> testarray_type;
 
-    write_memprofile< testarray_type::StdVector >("memprofile-vector.txt");
-    write_memprofile< testarray_type::StdDeque >("memprofile-deque.txt");
+    write_memprofile<testarray_type::StdVector>("memprofile-vector.txt");
+    write_memprofile<testarray_type::StdDeque>("memprofile-deque.txt");
 
     return 0;
 }
+
+/******************************************************************************/
