@@ -16,7 +16,8 @@ install:
   - if [ "$USE_CXX" == "g++-4.6" ]; then sudo apt-get install g++-4.6; fi
 
 before_script:
-  - mkdir build && cd build && CC=$USE_CC CXX=$USE_CXX../configure --enable-speedtest
+  - mkdir build && cd build && CC="$USE_CC" CXX="$USE_CXX" ../configure --enable-speedtest
 
 script:
   - make -j4
+  - make check
