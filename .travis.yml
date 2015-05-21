@@ -3,20 +3,20 @@ language: cpp
 env:
   matrix:
     # gcc default build
-    - CC=gcc CXX=g++
+    - USE_CC=gcc     USE_CXX=g++
     # clang default build
-    - CC=clang CXX=clang++
+    - USE_CC=clang   USE_CXX=clang++
 
     # build with older gcc
-    - CC=gcc-4.6 CXX=g++-4.6
+    - USE_CC=gcc-4.6 USE_CXX=g++-4.6
 
 install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get -qq update
-  - if [ "$CXX" == "g++-4.6" ]; then sudo apt-get install g++-4.6; fi
+  - if [ "$USE_CXX" == "g++-4.6" ]; then sudo apt-get install g++-4.6; fi
 
 before_script:
-  - mkdir build && cd build && ../configure --enable-speedtest
+  - mkdir build && cd build && CC=$USE_CC CXX=$USE_CXX../configure --enable-speedtest
 
 script:
   - make -j4
