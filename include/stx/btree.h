@@ -511,7 +511,7 @@ public:
         { }
 
         /// Copy-constructor from a reverse iterator
-        inline iterator(const reverse_iterator& it)
+        inline iterator(const reverse_iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
@@ -700,17 +700,17 @@ public:
         { }
 
         /// Copy-constructor from a mutable iterator
-        inline const_iterator(const iterator& it)
+        inline const_iterator(const iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
         /// Copy-constructor from a mutable reverse iterator
-        inline const_iterator(const reverse_iterator& it)
+        inline const_iterator(const reverse_iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
         /// Copy-constructor from a const reverse iterator
-        inline const_iterator(const const_reverse_iterator& it)
+        inline const_iterator(const const_reverse_iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
@@ -908,7 +908,7 @@ public:
         { }
 
         /// Copy-constructor from a mutable iterator
-        inline reverse_iterator(const iterator& it)
+        inline reverse_iterator(const iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
@@ -1101,17 +1101,17 @@ public:
         { }
 
         /// Copy-constructor from a mutable iterator
-        inline const_reverse_iterator(const iterator& it)
+        inline const_reverse_iterator(const iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
         /// Copy-constructor from a const iterator
-        inline const_reverse_iterator(const const_iterator& it)
+        inline const_reverse_iterator(const const_iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
         /// Copy-constructor from a mutable reverse iterator
-        inline const_reverse_iterator(const reverse_iterator& it)
+        inline const_reverse_iterator(const reverse_iterator& it) // NOLINT
             : currnode(it.currnode), currslot(it.currslot)
         { }
 
@@ -1369,7 +1369,7 @@ public:
         key_compare key_comp;
 
         /// Constructor called from btree::value_comp()
-        inline value_compare(key_compare kc)
+        inline explicit value_compare(key_compare kc)
             : key_comp(kc)
         { }
 
@@ -2013,7 +2013,7 @@ public:
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
     /// copy of all key/data pairs.
-    inline btree(const self_type& other)
+    inline btree(const btree& other)
         : m_root(NULL), m_headleaf(NULL), m_tailleaf(NULL),
           m_stats(other.m_stats),
           m_key_less(other.key_comp()),
@@ -2553,7 +2553,7 @@ private:
 
         /// Constructor of a result with a specific flag, this can also be used
         /// as for implicit conversion.
-        inline result_t(result_flags_t f = btree_ok)
+        inline explicit result_t(result_flags_t f = btree_ok)
             : flags(f), lastkey()
         { }
 
@@ -2681,7 +2681,7 @@ private:
             {
                 BTREE_PRINT("Could not find key " << key << " to erase.");
 
-                return btree_not_found;
+                return result_t(btree_not_found);
             }
 
             BTREE_PRINT("Found key in leaf " << curr << " at slot " << slot);
@@ -2693,7 +2693,7 @@ private:
 
             leaf->slotuse--;
 
-            result_t myres = btree_ok;
+            result_t myres = result_t(btree_ok);
 
             // if the last key of the leaf was changed, the parent is notified
             // and updates the key of this leaf
@@ -2739,7 +2739,7 @@ private:
                     BTREE_ASSERT(m_stats.leaves == 0);
                     BTREE_ASSERT(m_stats.innernodes == 0);
 
-                    return btree_ok;
+                    return result_t(btree_ok);
                 }
                 // case : if both left and right leaves would underflow in case of
                 // a shift, then merging is necessary. choose the more local merger
@@ -2785,7 +2785,7 @@ private:
                 }
             }
 
-            return myres;
+            return result_t(myres);
         }
         else // !curr->isleafnode()
         {
@@ -2824,11 +2824,11 @@ private:
                                                 myleftparent, myrightparent,
                                                 inner, slot);
 
-            result_t myres = btree_ok;
+            result_t myres = result_t(btree_ok);
 
             if (result.has(btree_not_found))
             {
-                return result;
+                return result_t(result);
             }
 
             if (result.has(btree_update_lastkey))
@@ -2887,7 +2887,7 @@ private:
                     inner->slotuse = 0;
                     free_node(inner);
 
-                    return btree_ok;
+                    return result_t(btree_ok);
                 }
                 // case : if both left and right leaves would underflow in case of
                 // a shift, then merging is necessary. choose the more local merger
@@ -2933,7 +2933,7 @@ private:
                 }
             }
 
-            return myres;
+            return result_t(myres);
         }
     }
 
@@ -2968,14 +2968,14 @@ private:
             // search
             if (leaf != iter.currnode)
             {
-                return btree_not_found;
+                return result_t(btree_not_found);
             }
 
             if (iter.currslot >= leaf->slotuse)
             {
                 BTREE_PRINT("Could not find iterator (" << iter.currnode << "," << iter.currslot << ") to erase. Invalid leaf node?");
 
-                return btree_not_found;
+                return result_t(btree_not_found);
             }
 
             int slot = iter.currslot;
@@ -2989,7 +2989,7 @@ private:
 
             leaf->slotuse--;
 
-            result_t myres = btree_ok;
+            result_t myres = result_t(btree_ok);
 
             // if the last key of the leaf was changed, the parent is notified
             // and updates the key of this leaf
@@ -3035,7 +3035,7 @@ private:
                     BTREE_ASSERT(m_stats.leaves == 0);
                     BTREE_ASSERT(m_stats.innernodes == 0);
 
-                    return btree_ok;
+                    return result_t(btree_ok);
                 }
                 // case : if both left and right leaves would underflow in case of
                 // a shift, then merging is necessary. choose the more local merger
@@ -3132,15 +3132,15 @@ private:
                 // continue recursive search for leaf on next slot
 
                 if (slot < inner->slotuse && key_less(inner->slotkey[slot], iter.key()))
-                    return btree_not_found;
+                    return result_t(btree_not_found);
 
                 ++slot;
             }
 
             if (slot > inner->slotuse)
-                return btree_not_found;
+                return result_t(btree_not_found);
 
-            result_t myres = btree_ok;
+            result_t myres = result_t(btree_ok);
 
             if (result.has(btree_update_lastkey))
             {
@@ -3199,7 +3199,7 @@ private:
                     inner->slotuse = 0;
                     free_node(inner);
 
-                    return btree_ok;
+                    return result_t(btree_ok);
                 }
                 // case : if both left and right leaves would underflow in case of
                 // a shift, then merging is necessary. choose the more local merger
@@ -3245,7 +3245,7 @@ private:
                 }
             }
 
-            return myres;
+            return result_t(myres);
         }
     }
 
@@ -3277,7 +3277,7 @@ private:
 
         right->slotuse = 0;
 
-        return btree_fixmerge;
+        return result_t(btree_fixmerge);
     }
 
     /// Merge two inner nodes. The function moves all key/childid pairs from
@@ -3321,7 +3321,7 @@ private:
         left->slotuse += right->slotuse;
         right->slotuse = 0;
 
-        return btree_fixmerge;
+        return result_t(btree_fixmerge);
     }
 
     /// Balance two leaf nodes. The function moves key/data pairs from right to
@@ -3365,7 +3365,7 @@ private:
         // fixup parent
         if (parentslot < parent->slotuse) {
             parent->slotkey[parentslot] = left->slotkey[left->slotuse - 1];
-            return btree_ok;
+            return result_t(btree_ok);
         }
         else {  // the update is further up the tree
             return result_t(btree_update_lastkey, left->slotkey[left->slotuse - 1]);

@@ -103,7 +103,7 @@ template <typename ArrayType>
 class Test_Array_Insert
 {
 public:
-    Test_Array_Insert(unsigned int) { }
+    explicit Test_Array_Insert(unsigned int) { }
 
     void run(unsigned int items)
     {

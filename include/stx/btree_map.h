@@ -457,7 +457,7 @@ public:
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
     /// copy of all key/data pairs.
-    inline btree_map(const self_type& other)
+    inline btree_map(const btree_map& other)
         : tree(other.tree)
     { }
 

@@ -457,7 +457,7 @@ public:
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
     /// copy or all key/data pairs.
-    inline btree_multimap(const self_type& other)
+    inline btree_multimap(const btree_multimap& other)
         : tree(other.tree)
     { }
 
