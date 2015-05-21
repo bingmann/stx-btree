@@ -45,7 +45,7 @@
 #include <ostream>
 #include <memory>
 #include <cstddef>
-#include <assert.h>
+#include <cassert>
 
 // *** Debugging Macros
 
@@ -85,25 +85,26 @@ namespace stx {
 /** Generates default traits for a B+ tree used as a set. It estimates leaf and
  * inner node sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key>
-struct btree_default_set_traits
+class btree_default_set_traits
 {
+public:
     /// If true, the tree will self verify it's invariants after each insert()
     /// or erase(). The header must have been compiled with BTREE_DEBUG defined.
-    static const bool   selfverify = false;
+    static const bool selfverify = false;
 
     /// If true, the tree will print out debug information and a tree dump
     /// during insert() or erase() operation. The header must have been
     /// compiled with BTREE_DEBUG defined and key_type must be std::ostream
     /// printable.
-    static const bool   debug = false;
+    static const bool debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int    leafslots = BTREE_MAX(8, 256 / (sizeof(_Key)));
+    static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key)));
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int    innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
 
     /// As of stx-btree-0.9, the code does linear search in find_lower() and
     /// find_upper() instead of binary_search, unless the node size is larger
@@ -115,25 +116,26 @@ struct btree_default_set_traits
 /** Generates default traits for a B+ tree used as a map. It estimates leaf and
  * inner node sizes by assuming a cache line size of 256 bytes. */
 template <typename _Key, typename _Data>
-struct btree_default_map_traits
+class btree_default_map_traits
 {
+public:
     /// If true, the tree will self verify it's invariants after each insert()
     /// or erase(). The header must have been compiled with BTREE_DEBUG defined.
-    static const bool   selfverify = false;
+    static const bool selfverify = false;
 
     /// If true, the tree will print out debug information and a tree dump
     /// during insert() or erase() operation. The header must have been
     /// compiled with BTREE_DEBUG defined and key_type must be std::ostream
     /// printable.
-    static const bool   debug = false;
+    static const bool debug = false;
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int    leafslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(_Data)));
+    static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(_Data)));
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int    innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
 
     /// As of stx-btree-0.9, the code does linear search in find_lower() and
     /// find_upper() instead of binary_search, unless the node size is larger
@@ -212,12 +214,13 @@ public:
 
     /// Typedef of our own type
     typedef btree<key_type, data_type, value_type, key_compare,
-                  traits, allow_duplicates, allocator_type, used_as_set> btree_self;
+                  traits, allow_duplicates, allocator_type, used_as_set> self_type;
 
     /// Size type used to count keys
     typedef size_t size_type;
 
-    /// The pair of key_type and data_type, this may be different from value_type.
+    /// The pair of key_type and data_type, this may be different from
+    /// value_type.
     typedef std::pair<key_type, data_type> pair_type;
 
 public:
@@ -459,9 +462,6 @@ public:
         /// STL-magic
         typedef ptrdiff_t difference_type;
 
-        /// Our own type
-        typedef iterator self;
-
     private:
         // *** Members
 
@@ -545,7 +545,7 @@ public:
         }
 
         /// Prefix++ advance the iterator to the next slot
-        inline self& operator ++ ()
+        inline iterator& operator ++ ()
         {
             if (currslot + 1 < currnode->slotuse) {
                 ++currslot;
@@ -563,9 +563,9 @@ public:
         }
 
         /// Postfix++ advance the iterator to the next slot
-        inline self operator ++ (int)
+        inline iterator operator ++ (int)
         {
-            self tmp = *this;   // copy ourselves
+            iterator tmp = *this;   // copy ourselves
 
             if (currslot + 1 < currnode->slotuse) {
                 ++currslot;
@@ -583,7 +583,7 @@ public:
         }
 
         /// Prefix-- backstep the iterator to the last slot
-        inline self& operator -- ()
+        inline iterator& operator -- ()
         {
             if (currslot > 0) {
                 --currslot;
@@ -601,9 +601,9 @@ public:
         }
 
         /// Postfix-- backstep the iterator to the last slot
-        inline self operator -- (int)
+        inline iterator operator -- (int)
         {
-            self tmp = *this;   // copy ourselves
+            iterator tmp = *this;   // copy ourselves
 
             if (currslot > 0) {
                 --currslot;
@@ -621,13 +621,13 @@ public:
         }
 
         /// Equality of iterators
-        inline bool operator == (const self& x) const
+        inline bool operator == (const iterator& x) const
         {
             return (x.currnode == currnode) && (x.currslot == currslot);
         }
 
         /// Inequality of iterators
-        inline bool operator != (const self& x) const
+        inline bool operator != (const iterator& x) const
         {
             return (x.currnode != currnode) || (x.currslot != currslot);
         }
@@ -663,9 +663,6 @@ public:
 
         /// STL-magic
         typedef ptrdiff_t difference_type;
-
-        /// Our own type
-        typedef const_iterator self;
 
     private:
         // *** Members
@@ -748,7 +745,7 @@ public:
         }
 
         /// Prefix++ advance the iterator to the next slot
-        inline self& operator ++ ()
+        inline const_iterator& operator ++ ()
         {
             if (currslot + 1 < currnode->slotuse) {
                 ++currslot;
@@ -766,9 +763,9 @@ public:
         }
 
         /// Postfix++ advance the iterator to the next slot
-        inline self operator ++ (int)
+        inline const_iterator operator ++ (int)
         {
-            self tmp = *this;   // copy ourselves
+            const_iterator tmp = *this;   // copy ourselves
 
             if (currslot + 1 < currnode->slotuse) {
                 ++currslot;
@@ -786,7 +783,7 @@ public:
         }
 
         /// Prefix-- backstep the iterator to the last slot
-        inline self& operator -- ()
+        inline const_iterator& operator -- ()
         {
             if (currslot > 0) {
                 --currslot;
@@ -804,9 +801,9 @@ public:
         }
 
         /// Postfix-- backstep the iterator to the last slot
-        inline self operator -- (int)
+        inline const_iterator operator -- (int)
         {
-            self tmp = *this;   // copy ourselves
+            const_iterator tmp = *this;   // copy ourselves
 
             if (currslot > 0) {
                 --currslot;
@@ -824,13 +821,13 @@ public:
         }
 
         /// Equality of iterators
-        inline bool operator == (const self& x) const
+        inline bool operator == (const const_iterator& x) const
         {
             return (x.currnode == currnode) && (x.currslot == currslot);
         }
 
         /// Inequality of iterators
-        inline bool operator != (const self& x) const
+        inline bool operator != (const const_iterator& x) const
         {
             return (x.currnode != currnode) || (x.currslot != currslot);
         }
@@ -866,9 +863,6 @@ public:
 
         /// STL-magic
         typedef ptrdiff_t difference_type;
-
-        /// Our own type
-        typedef reverse_iterator self;
 
     private:
         // *** Members
@@ -952,7 +946,7 @@ public:
         }
 
         /// Prefix++ advance the iterator to the next slot
-        inline self& operator ++ ()
+        inline reverse_iterator& operator ++ ()
         {
             if (currslot > 1) {
                 --currslot;
@@ -970,9 +964,9 @@ public:
         }
 
         /// Postfix++ advance the iterator to the next slot
-        inline self operator ++ (int)
+        inline reverse_iterator operator ++ (int)
         {
-            self tmp = *this;   // copy ourselves
+            reverse_iterator tmp = *this;   // copy ourselves
 
             if (currslot > 1) {
                 --currslot;
@@ -990,7 +984,7 @@ public:
         }
 
         /// Prefix-- backstep the iterator to the last slot
-        inline self& operator -- ()
+        inline reverse_iterator& operator -- ()
         {
             if (currslot < currnode->slotuse) {
                 ++currslot;
@@ -1008,9 +1002,9 @@ public:
         }
 
         /// Postfix-- backstep the iterator to the last slot
-        inline self operator -- (int)
+        inline reverse_iterator operator -- (int)
         {
-            self tmp = *this;   // copy ourselves
+            reverse_iterator tmp = *this;   // copy ourselves
 
             if (currslot < currnode->slotuse) {
                 ++currslot;
@@ -1028,13 +1022,13 @@ public:
         }
 
         /// Equality of iterators
-        inline bool operator == (const self& x) const
+        inline bool operator == (const reverse_iterator& x) const
         {
             return (x.currnode == currnode) && (x.currslot == currslot);
         }
 
         /// Inequality of iterators
-        inline bool operator != (const self& x) const
+        inline bool operator != (const reverse_iterator& x) const
         {
             return (x.currnode != currnode) || (x.currslot != currslot);
         }
@@ -1070,9 +1064,6 @@ public:
 
         /// STL-magic
         typedef ptrdiff_t difference_type;
-
-        /// Our own type
-        typedef const_reverse_iterator self;
 
     private:
         // *** Members
@@ -1159,7 +1150,7 @@ public:
         }
 
         /// Prefix++ advance the iterator to the previous slot
-        inline self& operator ++ ()
+        inline const_reverse_iterator& operator ++ ()
         {
             if (currslot > 1) {
                 --currslot;
@@ -1177,9 +1168,9 @@ public:
         }
 
         /// Postfix++ advance the iterator to the previous slot
-        inline self operator ++ (int)
+        inline const_reverse_iterator operator ++ (int)
         {
-            self tmp = *this;   // copy ourselves
+            const_reverse_iterator tmp = *this;   // copy ourselves
 
             if (currslot > 1) {
                 --currslot;
@@ -1197,7 +1188,7 @@ public:
         }
 
         /// Prefix-- backstep the iterator to the next slot
-        inline self& operator -- ()
+        inline const_reverse_iterator& operator -- ()
         {
             if (currslot < currnode->slotuse) {
                 ++currslot;
@@ -1215,9 +1206,9 @@ public:
         }
 
         /// Postfix-- backstep the iterator to the next slot
-        inline self operator -- (int)
+        inline const_reverse_iterator operator -- (int)
         {
-            self tmp = *this;   // copy ourselves
+            const_reverse_iterator tmp = *this;   // copy ourselves
 
             if (currslot < currnode->slotuse) {
                 ++currslot;
@@ -1235,13 +1226,13 @@ public:
         }
 
         /// Equality of iterators
-        inline bool operator == (const self& x) const
+        inline bool operator == (const const_reverse_iterator& x) const
         {
             return (x.currnode == currnode) && (x.currslot == currslot);
         }
 
         /// Inequality of iterators
-        inline bool operator != (const self& x) const
+        inline bool operator != (const const_reverse_iterator& x) const
         {
             return (x.currnode != currnode) || (x.currslot != currslot);
         }
@@ -1264,10 +1255,10 @@ public:
         size_type                   innernodes;
 
         /// Base B+ tree parameter: The number of key/data slots in each leaf
-        static const unsigned short leafslots = btree_self::leafslotmax;
+        static const unsigned short leafslots = self_type::leafslotmax;
 
         /// Base B+ tree parameter: The number of key slots in each inner node.
-        static const unsigned short innerslots = btree_self::innerslotmax;
+        static const unsigned short innerslots = self_type::innerslotmax;
 
         /// Zero initialized
         inline tree_stats()
@@ -1357,7 +1348,7 @@ public:
     }
 
     /// Fast swapping of two identical B+ tree objects.
-    void swap(btree_self& from)
+    void swap(self_type& from)
     {
         std::swap(m_root, from.m_root);
         std::swap(m_headleaf, from.m_headleaf);
@@ -1957,38 +1948,38 @@ public:
     /// Equality relation of B+ trees of the same type. B+ trees of the same
     /// size and equal elements (both key and data) are considered
     /// equal. Beware of the random ordering of duplicate keys.
-    inline bool operator == (const btree_self& other) const
+    inline bool operator == (const self_type& other) const
     {
         return (size() == other.size()) && std::equal(begin(), end(), other.begin());
     }
 
     /// Inequality relation. Based on operator==.
-    inline bool operator != (const btree_self& other) const
+    inline bool operator != (const self_type& other) const
     {
         return !(*this == other);
     }
 
     /// Total ordering relation of B+ trees of the same type. It uses
     /// std::lexicographical_compare() for the actual comparison of elements.
-    inline bool operator < (const btree_self& other) const
+    inline bool operator < (const self_type& other) const
     {
         return std::lexicographical_compare(begin(), end(), other.begin(), other.end());
     }
 
     /// Greater relation. Based on operator<.
-    inline bool operator > (const btree_self& other) const
+    inline bool operator > (const self_type& other) const
     {
         return other < *this;
     }
 
     /// Less-equal relation. Based on operator<.
-    inline bool operator <= (const btree_self& other) const
+    inline bool operator <= (const self_type& other) const
     {
         return !(other < *this);
     }
 
     /// Greater-equal relation. Based on operator<.
-    inline bool operator >= (const btree_self& other) const
+    inline bool operator >= (const self_type& other) const
     {
         return !(*this < other);
     }
@@ -1997,7 +1988,7 @@ public:
     /// *** Fast Copy: Assign Operator and Copy Constructors
 
     /// Assignment operator. All the key/data pairs are copied
-    inline btree_self& operator = (const btree_self& other)
+    inline self_type& operator = (const self_type& other)
     {
         if (this != &other)
         {
@@ -2022,7 +2013,7 @@ public:
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
     /// copy of all key/data pairs.
-    inline btree(const btree_self& other)
+    inline btree(const self_type& other)
         : m_root(NULL), m_headleaf(NULL), m_tailleaf(NULL),
           m_stats(other.m_stats),
           m_key_less(other.key_comp()),
@@ -3824,19 +3815,22 @@ private:
             signature[11] = 0;
 
             version = 0;
-            key_type_size = sizeof(typename btree_self::key_type);
-            data_type_size = sizeof(typename btree_self::data_type);
-            leafslots = btree_self::leafslotmax;
-            innerslots = btree_self::innerslotmax;
-            allow_duplicates = btree_self::allow_duplicates;
+            key_type_size = sizeof(typename self_type::key_type);
+            data_type_size = sizeof(typename self_type::data_type);
+            leafslots = self_type::leafslotmax;
+            innerslots = self_type::innerslotmax;
+            allow_duplicates = self_type::allow_duplicates;
         }
 
         /// Returns true if the headers have the same vital properties
         inline bool same(const struct dump_header& o) const
         {
-            return (signature[0] == 's' && signature[1] == 't' && signature[2] == 'x' && signature[3] == '-' &&
-                    signature[4] == 'b' && signature[5] == 't' && signature[6] == 'r' && signature[7] == 'e' &&
-                    signature[8] == 'e' && signature[9] == 0 && signature[10] == 0 && signature[11] == 0)
+            return (signature[0] == 's' && signature[1] == 't' &&
+                    signature[2] == 'x' && signature[3] == '-' &&
+                    signature[4] == 'b' && signature[5] == 't' &&
+                    signature[6] == 'r' && signature[7] == 'e' &&
+                    signature[8] == 'e' && signature[9] == 0 &&
+                    signature[10] == 0 && signature[11] == 0)
                    && (version == o.version)
                    && (key_type_size == o.key_type_size)
                    && (data_type_size == o.data_type_size)

@@ -104,7 +104,7 @@ public:
     typedef key_type value_type;
 
     /// Typedef of our own type
-    typedef btree_multiset<key_type, key_compare, traits, allocator_type> self;
+    typedef btree_multiset<key_type, key_compare, traits, allocator_type> self_type;
 
     /// Implementation type of the btree_base
     typedef stx::btree<key_type, data_type, value_type, key_compare,
@@ -214,7 +214,7 @@ public:
     { }
 
     /// Fast swapping of two identical B+ tree objects.
-    void swap(self& from)
+    void swap(self_type& from)
     {
         std::swap(tree, from.tree);
     }
@@ -418,38 +418,38 @@ public:
 
     /// Equality relation of B+ trees of the same type. B+ trees of the same
     /// size and equal key (counts) are considered equal.
-    inline bool operator == (const self& other) const
+    inline bool operator == (const self_type& other) const
     {
         return (tree == other.tree);
     }
 
     /// Inequality relation. Based on operator==.
-    inline bool operator != (const self& other) const
+    inline bool operator != (const self_type& other) const
     {
         return (tree != other.tree);
     }
 
     /// Total ordering relation of B+ trees of the same type. It uses
     /// std::lexicographical_compare() for the actual comparison of elements.
-    inline bool operator < (const self& other) const
+    inline bool operator < (const self_type& other) const
     {
         return (tree < other.tree);
     }
 
     /// Greater relation. Based on operator<.
-    inline bool operator > (const self& other) const
+    inline bool operator > (const self_type& other) const
     {
         return (tree > other.tree);
     }
 
     /// Less-equal relation. Based on operator<.
-    inline bool operator <= (const self& other) const
+    inline bool operator <= (const self_type& other) const
     {
         return (tree <= other.tree);
     }
 
     /// Greater-equal relation. Based on operator<.
-    inline bool operator >= (const self& other) const
+    inline bool operator >= (const self_type& other) const
     {
         return (tree >= other.tree);
     }
@@ -458,7 +458,7 @@ public:
     /// *** Fast Copy: Assign Operator and Copy Constructors
 
     /// Assignment operator. All the keys are copied
-    inline self& operator = (const self& other)
+    inline self_type& operator = (const self_type& other)
     {
         if (this != &other)
         {
@@ -469,7 +469,7 @@ public:
 
     /// Copy constructor. The newly initialized B+ tree object will contain a
     /// copy of all keys.
-    inline btree_multiset(const self& other)
+    inline btree_multiset(const self_type& other)
         : tree(other.tree)
     { }
 
