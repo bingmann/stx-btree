@@ -1407,13 +1407,13 @@ private:
     // *** Convenient Key Comparison Functions Generated From key_less
 
     /// True if a < b ? "constructed" from m_key_less()
-    inline bool key_less(const key_type& a, const key_type b) const
+    inline bool key_less(const key_type& a, const key_type& b) const
     {
         return m_key_less(a, b);
     }
 
     /// True if a <= b ? constructed from key_less()
-    inline bool key_lessequal(const key_type& a, const key_type b) const
+    inline bool key_lessequal(const key_type& a, const key_type& b) const
     {
         return !m_key_less(b, a);
     }
@@ -1425,7 +1425,7 @@ private:
     }
 
     /// True if a >= b ? constructed from key_less()
-    inline bool key_greaterequal(const key_type& a, const key_type b) const
+    inline bool key_greaterequal(const key_type& a, const key_type& b) const
     {
         return !m_key_less(a, b);
     }
