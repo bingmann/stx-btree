@@ -2306,7 +2306,7 @@ private:
             if (!used_as_set) leaf->slotdata[slot] = value;
             leaf->slotuse++;
 
-            if (splitnode && leaf != *splitnode && slot == leaf->slotuse - 1)
+            if (*splitnode && leaf != *splitnode && slot == leaf->slotuse - 1)
             {
                 // special case: the node was split, and the insert is at the
                 // last slot of the old node. then the splitkey must be
