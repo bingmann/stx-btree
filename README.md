@@ -3,6 +3,13 @@
 Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)<br/>
 Date: 2013-05-05
 
+# **The STX B+ Tree package is obsolete.**
+
+## The B+ Tree code was merged into the **TLX Library**:<br/>
+<b>https://github.com/tlx/tlx/tree/master/tlx/container</b>
+
+This is an improved version with **better STL semantics** and it will be maintain in the TLX library.
+
 ## Summary
 
 The STX B+ Tree package is a set of C++ template classes implementing a B+ tree
