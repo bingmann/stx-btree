@@ -1,9 +1,9 @@
-                *** STX B+ Tree C++ Template Classes v0.9  ***
+# STX B+ Tree C++ Template Classes v0.9
 
-Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)
+Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)<br/>
 Date: 2013-05-05
 
---- Summary ---
+## Summary
 
 The STX B+ Tree package is a set of C++ template classes implementing a B+ tree
 key/data container in main memory. The classes are designed as drop-in
@@ -17,7 +17,7 @@ contain extensive assertion and verification mechanisms to ensure the
 implementation's correctness by testing the tree invariants. To illustrate the
 B+ tree's structure a wxWidgets demo program is included in the source package.
 
---- Website / API Docs / Bugs / License ---
+## Website / API Docs / Bugs / License
 
 The current source package can be downloaded from
 http://panthema.net/2007/stx-btree/
@@ -40,7 +40,7 @@ All auxiliary programs like the wxWidgets demo, test suite and speed tests are
 licensed under the GNU General Public License v3 (GPLv3), which can be found in
 the file COPYING.GPLv3.
 
---- Original Idea ---
+## Original Idea
 
 The idea originally arose while coding a read-only database, which used a huge
 map of millions of non-sequential integer keys to 8-byte file offsets. When
@@ -62,7 +62,7 @@ aspect aroused my academic interest and resulted in the speed test experiments.
 A third inspiration was that no working C++ template implementation of a B+
 tree could be found on the Internet. Now this one can be found.
 
---- Implementation Overview ---
+## Implementation Overview
 
 This implementation contains five main classes within the stx namespace
 (blandly named Some Template eXtensions). The base class btree implements the
@@ -89,7 +89,7 @@ objects. Note that it is somewhat inefficient to implement a set or multiset
 using a B+ tree: a plain B tree (without +) would hold no extra copies of the
 keys. The main focus was on implementing the maps.
 
---- Problem with Separated Key/Data Arrays ---
+## Problem with Separated Key/Data Arrays
 
 The most noteworthy difference to the default red-black tree implementation of
 std::map is that the B+ tree does not hold key/data pairs together in
@@ -106,27 +106,27 @@ prohibits use of many STL algorithms which writing to the B+ tree's
 iterators. I would be grateful for hints on how to resolve this problem without
 folding the key and data arrays.
 
---- Test Suite ---
+## Test Suite
 
 The B+ tree distribution contains an extensive test suite. According to gcov
 90.9% of the btree.h implementation is covered.
 
---- STL Incompatibilities ---
+## STL Incompatibilities
 
-- Key and Data Type Requirements -
+#### Key and Data Type Requirements
 
 The tree algorithms currently do not use copy-construction. All key/data items
 are allocated in the nodes using the default-constructor and are subsequently
 only assigned new data (using operator=).
 
-- Iterators' Operators -
+#### Key Iterators' Operators
 
 The most important incompatibility are the non-writable operator* and
 operator-> of the iterator. See above for a discussion of the problem on
 separated key/data arrays. Instead of *iter and iter-> use the new function
 iter.data() which returns a writable reference to the data value in the tree.
 
-- Erase Functions -
+#### Key Erase Functions
 
 The B+ tree supports three erase functions:
 
@@ -138,10 +138,11 @@ The following STL-required function is not supported:
 
 void erase(iterator first, iterator last);
 
---- Extensions ---
+## Extensions
 
 Beyond the usual STL interface the B+ tree classes support some extra goodies.
 
+```
 // Output the tree in a pseudo-hierarchical text dump to std::cout. This
 // function requires that BTREE_DEBUG is defined prior to including the btree
 // headers. Furthermore the key and data types must be std::ostream printable.
@@ -156,13 +157,15 @@ void verify() const;
 // outside pointers or references.
 void dump(std::ostream &os) const;
 bool restore(std::istream &is);
+```
 
---- B+ Tree Traits ---
+## B+ Tree Traits
 
 All tree template classes take a template parameter structure which holds
 important options of the implementation. The following structure shows which
 static variables specify the options and the corresponding defaults:
 
+```
 struct btree_default_map_traits
 {
     // If true, the tree will self verify it's invariants after each insert()
@@ -192,8 +195,9 @@ struct btree_default_map_traits
     // http://panthema.net/2013/0504-STX-B+Tree-Binary-vs-Linear-Search
     static const size_t binsearch_threshold = 256;
 };
+```
 
---- Speed Tests ---
+## Speed Tests
 
 The implementation was tested using the speed test sources contained in the
 package. For a long discussion on results please see the web page
