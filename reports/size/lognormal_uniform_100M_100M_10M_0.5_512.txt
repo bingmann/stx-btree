@@ -1,0 +1,16 @@
+found flag keys_file = ../data/lognormal-190M.bin.data
+found flag keys_file_type = binary
+found flag init_num_keys = 100000000
+found flag total_num_keys = 100000000
+found flag batch_size = 1000000
+found flag insert_frac = 0.5
+found flag lookup_distribution = uniform
+found flag time_limit = 30
+found flag print_batch_stats
+Num keys: 100000000
+Num Inner Nodes: 97658
+Num Leaf Nodes: 3125000
+The number of key/data slots in each inner node: 32
+The number of key/data slots in each leaf: 32
+The average fill of leaves: 1
+ *****  The height of STX B+ Tree is: 5 when MAX_SIZE is set to 512

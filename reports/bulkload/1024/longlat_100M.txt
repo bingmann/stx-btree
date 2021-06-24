@@ -1,0 +1,89 @@
+found flag keys_file = ../data/longlat-200M.bin.data
+found flag keys_file_type = binary
+found flag init_num_keys = 100000000
+found flag total_num_keys = 100000000
+found flag batch_size = 10000000
+found flag insert_frac = 0.0
+found flag lookup_distribution = uniform
+found flag time_limit = 1
+found flag print_batch_stats
+Num keys: 100000000
+Num Inner Nodes: 24416
+Num Leaf Nodes: 1562500
+The number of key/data slots in each inner node: 64
+The number of key/data slots in each leaf: 64
+The average fill of leaves: 1
+ *****  The height of STX B+ Tree is: 5 when MAX_SIZE is set to 1024
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 1, cumulative ops: 10000000
+	batch throughput:	2822117.8524 lookups/sec,	0.0000 inserts/sec,	2822117.7409 ops/sec
+	cumulative throughput:	2822117.8524 lookups/sec,	0.0000 inserts/sec,	2822117.7409 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 2, cumulative ops: 20000000
+	batch throughput:	2817485.6589 lookups/sec,	0.0000 inserts/sec,	2817485.5478 ops/sec
+	cumulative throughput:	2819799.8533 lookups/sec,	0.0000 inserts/sec,	2819799.7420 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 3, cumulative ops: 30000000
+	batch throughput:	2819516.9981 lookups/sec,	0.0000 inserts/sec,	2819516.9743 ops/sec
+	cumulative throughput:	2819705.5619 lookups/sec,	0.0000 inserts/sec,	2819705.4798 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 4, cumulative ops: 40000000
+	batch throughput:	2822906.3306 lookups/sec,	0.0000 inserts/sec,	2822906.2987 ops/sec
+	cumulative throughput:	2820505.0734 lookups/sec,	0.0000 inserts/sec,	2820505.0038 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 5, cumulative ops: 50000000
+	batch throughput:	2817403.5150 lookups/sec,	0.0000 inserts/sec,	2817403.4356 ops/sec
+	cumulative throughput:	2819884.2156 lookups/sec,	0.0000 inserts/sec,	2819884.1440 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 6, cumulative ops: 60000000
+	batch throughput:	2817968.0157 lookups/sec,	0.0000 inserts/sec,	2817967.9283 ops/sec
+	cumulative throughput:	2819564.6680 lookups/sec,	0.0000 inserts/sec,	2819564.5938 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 7, cumulative ops: 70000000
+	batch throughput:	2817977.0573 lookups/sec,	0.0000 inserts/sec,	2817976.9461 ops/sec
+	cumulative throughput:	2819337.7569 lookups/sec,	0.0000 inserts/sec,	2819337.6774 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 8, cumulative ops: 80000000
+	batch throughput:	2819587.4936 lookups/sec,	0.0000 inserts/sec,	2819587.3187 ops/sec
+	cumulative throughput:	2819368.9716 lookups/sec,	0.0000 inserts/sec,	2819368.8802 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 9, cumulative ops: 90000000
+	batch throughput:	2817041.2742 lookups/sec,	0.0000 inserts/sec,	2817041.1948 ops/sec
+	cumulative throughput:	2819110.1486 lookups/sec,	0.0000 inserts/sec,	2819110.0585 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 10, cumulative ops: 100000000
+	batch throughput:	2817434.7679 lookups/sec,	0.0000 inserts/sec,	2817434.7520 ops/sec
+	cumulative throughput:	2818942.5209 lookups/sec,	0.0000 inserts/sec,	2818942.4382 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 11, cumulative ops: 110000000
+	batch throughput:	2818771.2527 lookups/sec,	0.0000 inserts/sec,	2818771.0699 ops/sec
+	cumulative throughput:	2818926.9502 lookups/sec,	0.0000 inserts/sec,	2818926.8584 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 12, cumulative ops: 120000000
+	batch throughput:	2821112.0151 lookups/sec,	0.0000 inserts/sec,	2821111.8400 ops/sec
+	cumulative throughput:	2819108.9096 lookups/sec,	0.0000 inserts/sec,	2819108.8110 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 13, cumulative ops: 130000000
+	batch throughput:	2817776.3915 lookups/sec,	0.0000 inserts/sec,	2817776.3042 ops/sec
+	cumulative throughput:	2819006.3635 lookups/sec,	0.0000 inserts/sec,	2819006.2657 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 14, cumulative ops: 140000000
+	batch throughput:	2819217.4838 lookups/sec,	0.0000 inserts/sec,	2819217.3725 ops/sec
+	cumulative throughput:	2819021.4425 lookups/sec,	0.0000 inserts/sec,	2819021.3437 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 15, cumulative ops: 150000000
+	batch throughput:	2820141.1389 lookups/sec,	0.0000 inserts/sec,	2820140.8844 ops/sec
+	cumulative throughput:	2819096.0612 lookups/sec,	0.0000 inserts/sec,	2819095.9521 ops/sec
+num_actual_inserts : 0; num_inserts_per_batch : 0; total_num_keys : 100000000; current_num_keys : 100000000
+Batch 16, cumulative ops: 160000000
+	batch throughput:	2820754.4534 lookups/sec,	0.0000 inserts/sec,	2820754.3499 ops/sec
+	cumulative throughput:	2819199.6536 lookups/sec,	0.0000 inserts/sec,	2819199.5448 ops/sec
+Num keys: 100000000
+Num Inner Nodes: 24416
+Num Leaf Nodes: 1562500
+The number of key/data slots in each inner node: 64
+The number of key/data slots in each leaf: 64
+The average fill of leaves: 1.0000
+ *****  The height of STX B+ Tree is: 5 when MAX_SIZE is set to 1024
+Cumulative stats: 16 batches, 160000000 ops (160000000 lookups, 0 inserts)
+	cumulative throughput:	2819199.6536 lookups/sec,	0.0000 inserts/sec,	2819199.5448 ops/sec

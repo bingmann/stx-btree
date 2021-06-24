@@ -1,0 +1,53 @@
+found flag keys_file = ../data/ycsb-200M.bin.data
+found flag keys_file_type = binary
+found flag init_num_keys = 100000000
+found flag total_num_keys = 200000000
+found flag batch_size = 10000000
+found flag insert_frac = 1
+found flag lookup_distribution = zipf
+found flag time_limit = 1
+found flag print_batch_stats
+Num keys: 100000000
+Num Inner Nodes: 781253
+Num Leaf Nodes: 12500000
+The number of key/data slots in each inner node: 16
+The number of key/data slots in each leaf: 8
+The average fill of leaves: 1
+ *****  The height of STX B+ Tree is: 7 when MAX_SIZE is set to 256
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 110000000
+Batch 1, cumulative ops: 10000000
+	batch throughput:	0.0000 lookups/sec,	1115959.0912 inserts/sec,	1115959.0875 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1115959.0912 inserts/sec,	1115959.0875 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 120000000
+Batch 2, cumulative ops: 20000000
+	batch throughput:	0.0000 lookups/sec,	1199360.3720 inserts/sec,	1199360.3692 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1156157.6120 inserts/sec,	1156157.6087 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 130000000
+Batch 3, cumulative ops: 30000000
+	batch throughput:	0.0000 lookups/sec,	1206829.3782 inserts/sec,	1206829.3753 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1172568.6937 inserts/sec,	1172568.6905 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 140000000
+Batch 4, cumulative ops: 40000000
+	batch throughput:	0.0000 lookups/sec,	1166888.9047 inserts/sec,	1166888.9020 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1171143.5691 inserts/sec,	1171143.5660 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 150000000
+Batch 5, cumulative ops: 50000000
+	batch throughput:	0.0000 lookups/sec,	1139646.0155 inserts/sec,	1139646.0130 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1164705.5393 inserts/sec,	1164705.5363 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 160000000
+Batch 6, cumulative ops: 60000000
+	batch throughput:	0.0000 lookups/sec,	1118681.6933 inserts/sec,	1118681.6908 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1156773.7068 inserts/sec,	1156773.7039 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 170000000
+Batch 7, cumulative ops: 70000000
+	batch throughput:	0.0000 lookups/sec,	1094667.3814 inserts/sec,	1094667.3778 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	1147473.3794 inserts/sec,	1147473.3764 ops/sec
+Num keys: 170000000
+Num Inner Nodes: 3080575
+Num Leaf Nodes: 29379613
+The number of key/data slots in each inner node: 16
+The number of key/data slots in each leaf: 8
+The average fill of leaves: 0.7233
+ *****  The height of STX B+ Tree is: 8 when MAX_SIZE is set to 256
+Cumulative stats: 7 batches, 70000000 ops (0 lookups, 70000000 inserts)
+	cumulative throughput:	0.0000 lookups/sec,	1147473.3794 inserts/sec,	1147473.3764 ops/sec

@@ -32,6 +32,10 @@
 #ifndef STX_STX_BTREE_H_HEADER
 #define STX_STX_BTREE_H_HEADER
 
+#define MAX_SIZE 256
+// #define MAX_SIZE 512
+// #define MAX_SIZE 64 * 1024
+
 /**
  * \file include/stx/btree.h
  * Contains the main B+ tree implementation template class btree.
@@ -46,6 +50,7 @@
 #include <memory>
 #include <cstddef>
 #include <cassert>
+#include <iostream>
 
 // *** Debugging Macros
 
@@ -100,17 +105,20 @@ public:
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key)));
+    // static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key)));
+    static const int leafslots = BTREE_MAX(8, MAX_SIZE / (sizeof(_Key)));
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    // static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    static const int innerslots = BTREE_MAX(8, MAX_SIZE / (sizeof(_Key) + sizeof(void*)));
 
     /// As of stx-btree-0.9, the code does linear search in find_lower() and
     /// find_upper() instead of binary_search, unless the node size is larger
     /// than this threshold. See notes at
     /// http://panthema.net/2013/0504-STX-B+Tree-Binary-vs-Linear-Search
-    static const size_t binsearch_threshold = 256;
+    // static const size_t binsearch_threshold = 256;
+    static const size_t binsearch_threshold = MAX_SIZE;
 };
 
 /** Generates default traits for a B+ tree used as a map. It estimates leaf and
@@ -131,17 +139,20 @@ public:
 
     /// Number of slots in each leaf of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(_Data)));
+    // static const int leafslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(_Data)));
+    static const int leafslots = BTREE_MAX(8, MAX_SIZE / (sizeof(_Key) + sizeof(_Data)));
 
     /// Number of slots in each inner node of the tree. Estimated so that each node
     /// has a size of about 256 bytes.
-    static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    // static const int innerslots = BTREE_MAX(8, 256 / (sizeof(_Key) + sizeof(void*)));
+    static const int innerslots = BTREE_MAX(8, MAX_SIZE / (sizeof(_Key) + sizeof(void*)));
 
     /// As of stx-btree-0.9, the code does linear search in find_lower() and
     /// find_upper() instead of binary_search, unless the node size is larger
     /// than this threshold. See notes at
     /// http://panthema.net/2013/0504-STX-B+Tree-Binary-vs-Linear-Search
-    static const size_t binsearch_threshold = 256;
+    // static const size_t binsearch_threshold = 256;
+    static const size_t binsearch_threshold = MAX_SIZE;
 };
 
 /** @brief Basic class implementing a base B+ tree data structure in memory.
@@ -1869,6 +1880,72 @@ public:
         int slot = find_lower(leaf, key);
         return iterator(leaf, slot);
     }
+
+    /// Searches the B+ tree and returns an iterator to the first pair
+    /// equal to or greater than key, or end() if all keys are smaller.
+    // leaf_node * lower_bound_node(const key_type& key)
+    // {
+    //     node* n = m_root;
+    //     if (!n) return end();
+    //     while (!n->isleafnode())
+    //     {
+    //         const inner_node* inner = static_cast<const inner_node*>(n);
+    //         int slot = find_lower(inner, key);
+    //         n = inner->childid[slot];
+    //     }
+    //     leaf_node* leaf = static_cast<leaf_node*>(n);
+    //     return leaf;
+    // }
+
+
+
+
+
+
+
+    /*********** Start for debugging ************/
+
+    void print_root_depth()
+    {
+        std::cout << " *****  The height of STX B+ Tree is: " << m_root->level+1 << " when MAX_SIZE is set to " << MAX_SIZE
+            << std::endl;  
+    }
+
+
+    /// Searches the B+ tree and returns an iterator to the first pair
+    /// equal to or greater than key, or end() if all keys are smaller.
+    /// After getting the first leaf node, follow the link to print all the leaves.
+    void print_all_leaves(const key_type& key)
+    {
+        node* n = m_root;
+        // if (!n) return end();
+
+        while (!n->isleafnode())
+        {
+            const inner_node* inner = static_cast<const inner_node*>(n);
+            int slot = find_lower(inner, key);
+
+            n = inner->childid[slot];
+        }
+
+        leaf_node* current_leaf = static_cast<leaf_node*>(n);
+        int count = 1;
+        // auto max_depth = current_leaf->level;
+        
+        while(current_leaf->nextleaf != NULL)
+        {
+            std::cout << "The " << count << " leaf with level " << current_leaf->level << "  and " << current_leaf->slotuse << " slots." 
+            << std::endl;
+            current_leaf = current_leaf->nextleaf;
+            count++;
+        }
+        
+
+
+
+    } 
+    /*********** End for debugging ************/
+
 
     /// Searches the B+ tree and returns a constant iterator to the
     /// first pair equal to or greater than key, or end() if all keys

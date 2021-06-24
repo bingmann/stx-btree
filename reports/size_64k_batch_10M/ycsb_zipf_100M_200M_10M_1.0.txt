@@ -1,0 +1,37 @@
+found flag keys_file = ../data/ycsb-200M.bin.data
+found flag keys_file_type = binary
+found flag init_num_keys = 100000000
+found flag total_num_keys = 200000000
+found flag batch_size = 10000000
+found flag insert_frac = 1
+found flag lookup_distribution = zipf
+found flag time_limit = 1
+found flag print_batch_stats
+Num keys: 100000000
+Num Inner Nodes: 34
+Num Leaf Nodes: 134409
+The number of key/data slots in each inner node: 4096
+The number of key/data slots in each leaf: 744
+The average fill of leaves: 0.999997
+ *****  The height of STX B+ Tree is: 3 when MAX_SIZE is set to 65536
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 110000000
+Batch 1, cumulative ops: 10000000
+	batch throughput:	0.0000 lookups/sec,	451526.9950 inserts/sec,	451526.9944 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	451526.9950 inserts/sec,	451526.9944 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 120000000
+Batch 2, cumulative ops: 20000000
+	batch throughput:	0.0000 lookups/sec,	450736.3588 inserts/sec,	450736.3584 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	451131.3305 inserts/sec,	451131.3300 ops/sec
+num_actual_inserts : 10000000; num_inserts_per_batch : 10000000; total_num_keys : 200000000; current_num_keys : 130000000
+Batch 3, cumulative ops: 30000000
+	batch throughput:	0.0000 lookups/sec,	429886.9980 inserts/sec,	429886.9976 ops/sec
+	cumulative throughput:	0.0000 lookups/sec,	443820.3647 inserts/sec,	443820.3643 ops/sec
+Num keys: 130000000
+Num Inner Nodes: 67
+Num Leaf Nodes: 268818
+The number of key/data slots in each inner node: 4096
+The number of key/data slots in each leaf: 744
+The average fill of leaves: 0.6500
+ *****  The height of STX B+ Tree is: 3 when MAX_SIZE is set to 65536
+Cumulative stats: 3 batches, 30000000 ops (0 lookups, 30000000 inserts)
+	cumulative throughput:	0.0000 lookups/sec,	443820.3647 inserts/sec,	443820.3643 ops/sec
