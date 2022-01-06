@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/kai/projects/mvb/stx-btree/include/example/main.cpp" "CMakeFiles/example.dir/include/example/main.cpp.o" "gcc" "CMakeFiles/example.dir/include/example/main.cpp.o.d"
+  "/home/kai/projects/mvb/stx-btree/include/mvb/basic.cpp" "CMakeFiles/basic.dir/include/mvb/basic.cpp.o" "gcc" "CMakeFiles/basic.dir/include/mvb/basic.cpp.o.d"
   )
 
 # Targets to which this target links.

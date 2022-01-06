@@ -1,6 +1,7 @@
-CMakeFiles/example.dir/include/example/main.cpp.o: \
-  /home/kai/projects/mvb/stx-btree/include/example/main.cpp \
-  /home/kai/projects/mvb/stx-btree/include/example/../stx/btree.h \
+CMakeFiles/mvb.dir/include/mvb/simple.cpp.o: \
+  /home/kai/projects/mvb/stx-btree/include/mvb/simple.cpp \
+  /home/kai/projects/mvb/stx-btree/include/mvb/../stx/mvbtree.h \
+  /home/kai/projects/mvb/stx-btree/include/stx/btree.h \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/7.5.0/../../../../include/c++/7.5.0/algorithm \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/7.5.0/../../../../include/c++/7.5.0/utility \
   /usr/bin/../lib/gcc/x86_64-linux-gnu/7.5.0/../../../../include/x86_64-linux-gnu/c++/7.5.0/bits/c++config.h \

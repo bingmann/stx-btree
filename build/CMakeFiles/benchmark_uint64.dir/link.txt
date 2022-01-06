@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -march=native -Wall -Wextra -O3 -DNDEBUG CMakeFiles/benchmark_uint64.dir/include/benchmark/main_uint64.cpp.o -o benchmark_uint64 

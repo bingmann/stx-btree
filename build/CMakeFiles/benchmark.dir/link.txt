@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -march=native -Wall -Wextra -O3 -DNDEBUG CMakeFiles/benchmark.dir/include/benchmark/main.cpp.o -o benchmark 

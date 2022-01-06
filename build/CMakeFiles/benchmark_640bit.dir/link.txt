@@ -1,1 +1,0 @@
-/usr/bin/c++ -O3 -march=native -Wall -Wextra -O3 -DNDEBUG CMakeFiles/benchmark_640bit.dir/include/benchmark/main_640bit.cpp.o -o benchmark_640bit 

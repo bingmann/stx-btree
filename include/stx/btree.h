@@ -1,5 +1,5 @@
 /*******************************************************************************
- * include/stx/btree.h
+ * include/stx/btree
  *
  * STX B+ Tree Template Classes v0.9
  * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
@@ -32,7 +32,7 @@
 #ifndef STX_STX_BTREE_H_HEADER
 #define STX_STX_BTREE_H_HEADER
 
-#define MAX_SIZE 256
+#define MAX_SIZE 512
 // #define MAX_SIZE 512
 // #define MAX_SIZE 64 * 1024
 
@@ -1898,55 +1898,6 @@ public:
     // }
 
 
-
-
-
-
-
-    /*********** Start for debugging ************/
-
-    void print_root_depth()
-    {
-        std::cout << " *****  The height of STX B+ Tree is: " << m_root->level+1 << " when MAX_SIZE is set to " << MAX_SIZE
-            << std::endl;  
-    }
-
-
-    /// Searches the B+ tree and returns an iterator to the first pair
-    /// equal to or greater than key, or end() if all keys are smaller.
-    /// After getting the first leaf node, follow the link to print all the leaves.
-    void print_all_leaves(const key_type& key)
-    {
-        node* n = m_root;
-        // if (!n) return end();
-
-        while (!n->isleafnode())
-        {
-            const inner_node* inner = static_cast<const inner_node*>(n);
-            int slot = find_lower(inner, key);
-
-            n = inner->childid[slot];
-        }
-
-        leaf_node* current_leaf = static_cast<leaf_node*>(n);
-        int count = 1;
-        // auto max_depth = current_leaf->level;
-        
-        while(current_leaf->nextleaf != NULL)
-        {
-            std::cout << "The " << count << " leaf with level " << current_leaf->level << "  and " << current_leaf->slotuse << " slots." 
-            << std::endl;
-            current_leaf = current_leaf->nextleaf;
-            count++;
-        }
-        
-
-
-
-    } 
-    /*********** End for debugging ************/
-
-
     /// Searches the B+ tree and returns a constant iterator to the
     /// first pair equal to or greater than key, or end() if all keys
     /// are smaller.
@@ -3621,7 +3572,126 @@ private:
         left->slotuse -= shiftnum;
     }
 
+    /*********** Start for debugging ************/
+
+public:
+    void print_root_depth()
+    {
+        std::cout << " *****  The height of STX B+ Tree is: " << m_root->level+1 << " when MAX_SIZE is set to " << MAX_SIZE
+            << std::endl;  
+    }
+
+
+    /// Searches the B+ tree and returns an iterator to the first pair
+    /// equal to or greater than key, or end() if all keys are smaller.
+    /// After getting the first leaf node, follow the link to print all the leaves.
+    void print_all_leaves(const key_type& key)
+    {
+        node* n = m_root;
+
+        // std::cout << "Root Node at level " << n->level << ". (using " << n->slotuse << " slots)"  << std::endl;
+
+        while (!n->isleafnode())
+        {
+            const inner_node* inner = static_cast<const inner_node*>(n);
+            int slot = find_lower(inner, key);
+
+            std::cout << "Inner Node at level " << inner->level << ". (using " << inner->slotuse << " slots)"  << std::endl;
+            std::cout << "Select slot " << slot << std::endl;
+
+            n = inner->childid[slot];
+        }
+        
+        // std::cout << "Inner Node at level " << n->level << ". (using " << n->slotuse << " slots)"  << std::endl;
+
+        leaf_node* current_leaf = static_cast<leaf_node*>(n);
+        int leaf_id = 1;
+        // auto max_depth = current_leaf->level;
+        
+        while(current_leaf->nextleaf != NULL)
+        {
+            std::cout << "Leaf " << leaf_id << " at level " << current_leaf->level << ". (using " << current_leaf->slotuse << " slots)" 
+            << std::endl;
+
+            // for (int i=0; i< current_leaf->slotuse; i++)
+            // {
+            //     std::cout << current_leaf->slotkey[i] << std::endl;
+            // }
+            current_leaf = current_leaf->nextleaf;
+            leaf_id++;
+        }
+
+    } 
+
+    void print_btree()
+    {
+        node* n = m_root;
+
+        while (!n->isleafnode())
+        {
+            const inner_node* inner = static_cast<const inner_node*>(n);
+
+            std::cout << "Inner Node at level " << inner->level << ". (using " << inner->slotuse << " slots)"  << std::endl;
+            std::string outInnerKey = "";
+            for (int i=0; i<inner->slotuse; i++)
+            {
+                outInnerKey += std::to_string(inner->slotkey[i]);
+                if (i < inner->slotuse - 1)
+                {
+                    outInnerKey += "-";
+                }
+            }
+            std::cout << outInnerKey << std::endl;
+
+            n = inner->childid[0];
+        }
+
+        leaf_node* current_leaf = static_cast<leaf_node*>(n);
+        int leaf_id = 0;
+        
+        while(current_leaf->nextleaf != NULL)
+        {
+            std::cout << "Leaf Node " << leaf_id << " at level " << current_leaf->level << ". (using " << current_leaf->slotuse << " slots)" 
+            << std::endl;
+
+            std::string outLeafKey = "";
+
+            for (int i=0; i< current_leaf->slotuse; i++)
+            {
+                outLeafKey += std::to_string(current_leaf->slotkey[i]);
+                if (i < current_leaf->slotuse - 1)
+                {
+                    outLeafKey += "-";
+                }
+            }
+            std::cout << outLeafKey << std::endl;
+            
+            current_leaf = current_leaf->nextleaf;
+            leaf_id++;
+        }
+
+        std::cout << "Leaf Node " << leaf_id << " at level " << current_leaf->level << ". (using " << current_leaf->slotuse << " slots)" << std::endl;
+        std::string outLastLeafKey = "";
+        for (int i=0; i< current_leaf->slotuse; i++)
+        {
+            outLastLeafKey += std::to_string(current_leaf->slotkey[i]);
+            if (i < current_leaf->slotuse - 1)
+            {
+                outLastLeafKey += "-";
+            }    
+        }
+        std::cout << outLastLeafKey << std::endl;
+
+
+    }
+
+    /*********** End for debugging ************/
+
+
+
+
 #ifdef BTREE_DEBUG
+
 
 public:
     // *** Debug Printing

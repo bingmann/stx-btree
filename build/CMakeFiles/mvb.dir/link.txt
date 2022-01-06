@@ -1,0 +1,1 @@
+/usr/bin/c++ -O3 -march=native -Wall -Wextra CMakeFiles/mvb.dir/include/mvb/mvb.cpp.o -o mvb 

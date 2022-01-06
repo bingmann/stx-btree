@@ -1,1 +1,1 @@
-/usr/bin/c++ -O3 -march=native -Wall -Wextra -O3 -DNDEBUG CMakeFiles/example.dir/include/example/main.cpp.o -o example 
+/usr/bin/c++ -O3 -march=native -Wall -Wextra CMakeFiles/example.dir/include/example/main.cpp.o -o example 
