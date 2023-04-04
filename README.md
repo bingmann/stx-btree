@@ -3,6 +3,9 @@
 Author: Timo Bingmann (Mail: tb a-with-circle panthema dot net)<br/>
 Date: 2013-05-05
 
+[![CMake](https://github.com/Rembrant777/stx-btree/actions/workflows/build.yml/badge.svg)](https://github.com/Rembrant777/stx-btree/actions/workflows/build.yml)
+
+
 # **The STX B+ Tree package is obsolete.**
 
 ## The B+ Tree code was merged into the **TLX Library**:<br/>
