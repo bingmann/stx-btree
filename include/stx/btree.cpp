@@ -37,7 +37,7 @@
  * Forwarder header to btree.h
  */
 
-#include <stx/btree.h>
+#include "btree.h"
 
 #endif // _STX_BTREE_
 

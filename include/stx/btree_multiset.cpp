@@ -37,7 +37,7 @@
  * Forwarder header to btree_multiset.h
  */
 
-#include <stx/btree_multiset.h>
+#include "btree_multiset.h"
 
 #endif // _STX_BTREE_MULTISET_
 
