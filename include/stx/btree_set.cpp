@@ -1,9 +1,9 @@
 // -*- mode: c++ -*-
 /*******************************************************************************
- * include/stx/btree_multimap
+ * include/stx/btree_set
  *
  * STX B+ Tree Template Classes v0.9
- * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
+ * Copyright (C) 2008-2013 Timo Bingmann
  *
  * Boost Software License - Version 1.0 - August 17th, 2003
  *
@@ -30,15 +30,15 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-#ifndef _STX_BTREE_MULTIMAP_
-#define _STX_BTREE_MULTIMAP_
+#ifndef _STX_BTREE_SET_
+#define _STX_BTREE_SET_
 
-/** \file btree_multimap
- * Forwarder header to btree_multimap.h
+/** \file btree_set
+ * Forwarder header to btree_set.h
  */
 
-#include <stx/btree_multimap.h>
+#include "btree_set.h"
 
-#endif // _STX_BTREE_MULTIMAP_
+#endif // _STX_BTREE_SET_
 
 /******************************************************************************/

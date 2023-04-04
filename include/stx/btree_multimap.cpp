@@ -1,6 +1,6 @@
 // -*- mode: c++ -*-
 /*******************************************************************************
- * include/stx/btree_map
+ * include/stx/btree_multimap
  *
  * STX B+ Tree Template Classes v0.9
  * Copyright (C) 2008-2013 Timo Bingmann <tb@panthema.net>
@@ -30,15 +30,15 @@
  * DEALINGS IN THE SOFTWARE.
  ******************************************************************************/
 
-#ifndef _STX_BTREE_MAP_
-#define _STX_BTREE_MAP_
+#ifndef _STX_BTREE_MULTIMAP_
+#define _STX_BTREE_MULTIMAP_
 
-/** \file btree_map
- * Forwarder header to btree_map.h
+/** \file btree_multimap
+ * Forwarder header to btree_multimap.h
  */
 
-#include <stx/btree_map.h>
+#include "btree_multimap.h"
 
-#endif // _STX_BTREE_MAP_
+#endif // _STX_BTREE_MULTIMAP_
 
 /******************************************************************************/
