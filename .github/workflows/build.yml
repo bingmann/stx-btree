@@ -1,0 +1,43 @@
+name: CMake
+
+on: [pull_request]
+
+jobs:
+  build:
+    name: Check on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest]
+      
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Install gtest 
+      run: |
+          echo $(pwd) &&  
+          wget -nv -O /tmp/googletest-1.13.0.tar.gz https://github.com/google/googletest/archive/refs/tags/v1.13.0.tar.gz && 
+          cd /tmp && tar xzf googletest-1.13.0.tar.gz &&  
+          cd googletest-1.13.0/ && 
+          mkdir -p ./build && cd build && cmake ../ && sudo make && sudo  make install && echo $(pwd) && ls * && 
+          ls /usr/local/lib/libg* && ls /usr/local/include/gtest &&  
+          echo "gtest installed ok" 
+    - name: build btree library 
+      run: |
+         echo $(pwd) && cd ./include && sh ./build.sh      
+    - name: execute memprofile 
+      run: |  
+         echo $(pwd) && echo "not implement memprofile step yet!"
+    - name: execute speed test 
+      run: |
+         echo $(pwd) && echo "not implement executed speedtest step yet!" 
+    - name: execute test suite 
+      run: | 
+         echo $(pwd) && echo "not implement test suite step yet!"
+    - name: execute wxbtreedemo 
+      run: |
+         echo $(pwd) && echo "not implement wxbtreedemo step yet!" 
+      
