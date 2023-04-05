@@ -31,7 +31,7 @@ jobs:
     - name: execute memprofile 
       run: |  
          echo "begin to execute memory profile testing" 
-         echo $(pwd) && sudo chmod 755 ./build/bin/memprofile && cd ./build/bin/ && ls -l 
+         echo $(pwd) && sudo chmod 755 ./build/bin/memprofile && cd ./build/bin/ && ./memprofile 
     - name: execute speed test 
       run: |
          echo $(pwd) && echo "not implement executed speedtest step yet!" 
