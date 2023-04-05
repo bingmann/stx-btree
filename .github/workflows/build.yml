@@ -31,7 +31,7 @@ jobs:
     - name: execute memprofile 
       run: |  
          echo "begin to execute memory profile testing" 
-         echo $(pwd) && ls * &&  cd ./build/bin && sh ./memprofile 
+         echo $(pwd) && cd ./build/bin/ && ls * &&  cd ./build/bin && sh ./memprofile 
     - name: execute speed test 
       run: |
          echo $(pwd) && echo "not implement executed speedtest step yet!" 
