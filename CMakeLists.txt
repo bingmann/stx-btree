@@ -28,5 +28,6 @@ endif()
 
 add_subdirectory(btree)
 add_subdirectory(memprofile)
+add_subdirectory(speedtest)
 #enable_testing()
 

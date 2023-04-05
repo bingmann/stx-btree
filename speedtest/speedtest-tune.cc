@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <cassert>
 
-#include <stx/btree_multiset.h>
+#include <btree_multiset.h>
 
 // *** Settings
 
