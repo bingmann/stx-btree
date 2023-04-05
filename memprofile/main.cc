@@ -31,8 +31,8 @@
 
 #include <map>
 #include <ext/hash_map>
-#include <tr1/unordered_map>
-#include <stx/btree_multimap.h>
+#include <unordered_map>
+#include <btree_multimap.h>
 
 #include <vector>
 #include <deque>
@@ -89,7 +89,7 @@ public:
     typedef TestClass<__gnu_cxx::hash_multimap<unsigned int, unsigned int> > HashMap;
 
     /// Test the unordered_map from STL TR1
-    typedef TestClass<std::tr1::unordered_multimap<unsigned int, unsigned int> > UnorderedMap;
+    typedef TestClass<std::unordered_multimap<unsigned int, unsigned int> > UnorderedMap;
 
     /// Test the B+ tree with a auto-detected leaf/inner slots
     typedef TestClass<stx::btree_multimap<unsigned int, unsigned int,

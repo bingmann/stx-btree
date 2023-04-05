@@ -27,10 +27,11 @@ jobs:
           echo "gtest installed ok" 
     - name: build btree library 
       run: |
-         echo $(pwd) && cd ./include && sh ./build.sh      
+         echo $(pwd)  && sh ./build.sh      
     - name: execute memprofile 
       run: |  
-         echo $(pwd) && echo "not implement memprofile step yet!"
+         echo "begin to execute memory profile testing" 
+         echo $(pwd) 
     - name: execute speed test 
       run: |
          echo $(pwd) && echo "not implement executed speedtest step yet!" 

@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.25)
-project(emeralddb VERSION 1.0.0 LANGUAGES C CXX)
+project(stx_bptree VERSION 1.0.0 LANGUAGES C CXX)
+
+if(APPLE)
+set(CMAKE_CXX_FLAGS " -stdlib=libstdc++ -std=c++11 -stdlib=libc++ -Wno-error=c++11-narrowing")
+endif(APPLE)
 
 # set the C++ standard 
 set(CMAKE_CXX_STANDARD 11)
@@ -22,6 +26,7 @@ else(NOT GCOV_PATH)
     message("Gcov path: "${GCOV_PATH})
 endif()
 
-add_subdirectory(stx)
+add_subdirectory(btree)
+add_subdirectory(memprofile)
 #enable_testing()
 
